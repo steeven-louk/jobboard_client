@@ -11,7 +11,7 @@ const Navbar = () => {
         <span className="navbar-brand inline-flex gap-2"><BriefcaseBusinessIcon />Job Portal</span>
           <ul className='inline-flex items-baseline gap-10'>
             <li><Link className='hover:text-[#309689] font-semibold' href={""}>Home</Link></li>
-            <li><Link className='hover:text-[#309689] font-semibold' href={""}>Jobs</Link></li>
+            <li><Link className='hover:text-[#309689] font-semibold' href={"/jobs"}>Jobs</Link></li>
             <li><Link className='hover:text-[#309689] font-semibold' href={""}>About Us</Link></li>
             <li><Link className='hover:text-[#309689] font-semibold' href={""}>Contact Us</Link></li>
           </ul>

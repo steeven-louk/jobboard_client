@@ -1,4 +1,5 @@
 import { BookmarkPlus, BriefcaseBusiness, Clock, Globe2, MapPin, Wallet } from 'lucide-react'
+import Link from 'next/link'
 import React from 'react'
 
 
@@ -27,7 +28,9 @@ export const JobCard = () => {
                     <span className='inline-flex gap-2'><Wallet className='color-primary'/>$40000-$42000</span>
                     <span className='inline-flex gap-2'><MapPin className='color-primary'/> nemour</span>
                 </div>
-                <button className="bg-[#309689] rounded-md px-5 capitalize">job detail</button>
+                <Link href={"/jobs/2"}>
+                    <button className="bg-[#309689] rounded-md p-2 capitalize">job detail</button>
+                </Link>
             </div>
         </div>
     )

@@ -10,7 +10,7 @@ export const RecentJobs = () => {
             <h1 className='capitalize font-bold text-2xl'>recent jobs available</h1>
             <div className="flex justify-between">
                 <p className=' text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                <Link href={""} className='underline color-primary font-semibold'>Voir plus</Link>
+                <Link href={"/jobs"} className='underline color-primary font-semibold'>Voir plus</Link>
             </div>
             <JobCard/>
             <JobCard/>

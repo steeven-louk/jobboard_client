@@ -1,61 +1,98 @@
+"use client"
+import { HeaderComponent } from '@/app/components/headerComponent'
 import { JobCard } from '@/app/components/jobCard'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card'
+import { Slash } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 import React from 'react'
 
 
 const JobDetail = () => {
+    const path:string = usePathname();
+    
     return (
         <div>
-            <div className="bg-red-500 w-full h-[10rem] items-center justify-center">
-            <h1>Jobs details</h1>
-          </div>
+          <HeaderComponent pageName="Jobs details"/>
+            <Breadcrumb className='ml-5 p-1'>
+            <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/">Home</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator>
+          <Slash />
+        </BreadcrumbSeparator>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/jobs">Jobs</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator>
+          <Slash />
+        </BreadcrumbSeparator>
+        <BreadcrumbItem>
+          <BreadcrumbPage className='font-bold'>Job Details</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
           <div className="container mx-auto">
-            <JobCard/>
+            <JobCard path={path}/>
 
             <main className=' grid grid-cols-6'>
-                <section className=' col-start-1 col-end-5 '>
+                <section className=' col-start-1 col-end-5 mt-4'>
 
-                <div className="p-2">
-                    <h2 className='capitalize text-2xl font-bold mb-5'>job description</h2>
+                <Card className="p-2">
+                    <CardTitle className='capitalize text-2xl font-bold mb-5'>job description</CardTitle>
+                    <CardContent>
                     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum quam sunt ab aspernatur vero iste.</p>
                     <br />
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam iure at iste minima saepe officiis aspernatur perferendis provident placeat magnam voluptate nesciunt eum obcaecati dolorem molestiae culpa repellat necessitatibus aliquid quia cumque, ipsam eaque velit.</p>
-                </div>
-                <div className="p-2">
-                    <h2 className='capitalize text-2xl font-bold mb-5'>Skill</h2>
-                    <ul>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                    </ul>
-                </div>
-                <div className="p-2">
-                    <h2 className='capitalize text-2xl font-bold mb-5'>Job requirements</h2>
-                    <ul>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                        <li>sit amet consectetur adipisicing elit.</li>
-                    </ul>
-                </div>
+                    <p>
+                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam iure at iste minima 
+                        saepe officiis aspernatur perferendis provident placeat magnam 
+                        voluptate nesciunt eum obcaecati dolorem molestiae culpa repellat necessitatibus 
+                        aliquid quia cumque, ipsam eaque velit.
+                    </p>
+                    </CardContent>
+                </Card>
+                <Card className="p-2 my-5">
+                    <CardTitle className='capitalize text-2xl font-bold mb-5'>Skill</CardTitle>
+                    <CardContent>
+                        <ul>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                        </ul>
+                    </CardContent>
+                </Card>
+                <Card className="p-2 mb-5">
+                    <CardTitle className='capitalize text-2xl font-bold mb-5'>Job requirements</CardTitle>
+                    <CardContent>
+                        <ul>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                            <li>sit amet consectetur adipisicing elit.</li>
+                        </ul>
+                    </CardContent>
+                </Card>
                 </section>
-            <aside className='col-span-2 col-end-7 bg-red-500'>
-                <div className="card p-2">
-                    <h1 className="text-xl font-bold">Postuler</h1>
-                    <p>Intéressé(e) par ce poste de Développeur Full Stack chez TechCorp ?</p>
+            <aside className='col-span-2 col-end-7  p-3'>
+                <Card className="card p-3 justify-end shadow-md shadow-black">
+                    <CardTitle className="text-xl font-bold">Postuler</CardTitle>
+                    <CardDescription>Intéressé(e) par ce poste de Développeur Full Stack chez TechCorp ?</CardDescription>
                     <div className="btn-group flex flex-col gap-4 mx-auto justify-center items-center">
-                        <button className='p-2 border px-4 w-fit rounded-md'>Postuler maintenant</button>
-                        <button className='border p-2 px-4 rounded-md'>Sauvegarder l&apos;offre</button>
+                        <Button className='p-2 border px-4 w-fit rounded-md'>Postuler maintenant</Button>
+                        <Button variant={'outline'} className='border p-2 px-4 rounded-md'>Sauvegarder l&apos;offre</Button>
                     </div>
-                </div>
+                </Card>
             </aside>
             </main>
           </div>

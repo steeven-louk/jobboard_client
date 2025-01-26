@@ -2,9 +2,18 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { BriefcaseBusinessIcon, Menu, User } from 'lucide-react';
+import { BookmarkIcon, BriefcaseBusiness, BriefcaseBusinessIcon, LayoutDashboard, LogOut, Menu, Settings, User, UserCircle2 } from 'lucide-react';
 import Link from 'next/link'
 import React, { useState } from 'react'
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 
 const navItems = [
@@ -33,7 +42,7 @@ const Navbar = () => {
               </Link>
             ))}
           </div>
-          <div className="btn-group sm:hidden md:block inline-flex items-baseline gap-4 ">
+          {/* <div className="btn-group sm:hidden md:block inline-flex items-baseline gap-4 ">
             {isConnected? 
           <ul className='inline-flex items-baseline gap-5'>
             <li><User/></li>
@@ -45,11 +54,28 @@ const Navbar = () => {
             <Button className='rounded-md p-1 bg-[#309689] px-3 ml-4 font-semibold'>Register</Button> 
           </>
           }
-          </div>
-          <div className="profile">
+          </div> */}
+          {/* <div className="profile">
 
-          </div>
+          </div> */}
           <div className="sm:hidden flex items-center">
+            
+            <DropdownMenu>
+  <DropdownMenuTrigger><UserCircle2/></DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem><LayoutDashboard />Tableau de bord</DropdownMenuItem>
+    <DropdownMenuItem><UserCircle2/>Profil</DropdownMenuItem>
+    <DropdownMenuItem><BriefcaseBusiness />Candidatures</DropdownMenuItem>
+    <DropdownMenuItem><BookmarkIcon/> Articles sauvegardés</DropdownMenuItem>
+    <DropdownMenuItem><Settings />Paramètres</DropdownMenuItem>
+    <DropdownMenuItem><LogOut />Déconnexion</DropdownMenuItem>
+    <Separator className='my-2'/>
+    <DropdownMenuItem>Langue</DropdownMenuItem>
+
+  </DropdownMenuContent>
+</DropdownMenu>
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">

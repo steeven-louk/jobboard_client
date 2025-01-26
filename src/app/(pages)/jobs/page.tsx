@@ -13,7 +13,7 @@ export default function Jobs() {
       <div className="w-full">
          <HeaderComponent pageName="Jobs"/>
          
-        <section className="container mx-auto flex">
+        <section className="container mx-auto flex p-3">
         <div className="flex flex-col md:flex-row gap-8 mt-8">
         <aside className="w-full h-fit md:w-[20rem] rounded-md">
         <Card className="p-3">
@@ -78,7 +78,7 @@ export default function Jobs() {
         <main className="w-full ">
           <div className="flex items-center justify-between">
             <span>Showing 6-9 of 10 results</span>
-            <Select>
+            {/* <Select>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Filtrer par" />
               </SelectTrigger>
@@ -86,7 +86,7 @@ export default function Jobs() {
                 <SelectItem value="date">Date</SelectItem>
                 <SelectItem value="recent">Recent</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
           </div>
             <div className="job_component mt-5">

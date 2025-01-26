@@ -23,19 +23,19 @@ const Fonctionnalite = () => {
         }
     ]
   return (
-    <section className='md:h-[85vh] w-full  my-auto justify-center items-center'>
+    <section className='md:h-[85vh] w-full  my-auto justify-center items-center p-4'>
         <div className='text-center mx-auto w-full max-w-[35rem]'>
         <span className='my-8'>Fonctionnalités</span>
         <h1 className='font-bold text-xl md:text-3xl my-5'>Découvrez les fonctionnalités de JobHunt</h1>
         <p className=''>JobHunt vous offre des outils puissants pour faciliter votre recherche d&apos;emploi. Explorez les fonctionnalités qui vous aideront à rester organisé et proactif.</p>
 
         </div>
-        <div className="grid place-items-center mt-10 grid-cols-1 md:grid-cols-3 mx-auto">
+        <div className="grid place-items-center gap-5 md:gap-0 mt-10 grid-cols-1 md:grid-cols-3 mx-auto">
         {fonctionnalite?.map((item,index)=>(
-            <Card className="card text-center flex flex-col items-center w-[20rem] shadow-md shadow-slate-300 p-2" key={index+1}>
+            <Card className="card text-center flex flex-col items-center md:w-[20rem] w-full shadow-md shadow-slate-300 p-2" key={index+1}>
                 <CardHeader className='text-center mx-auto text-[#309689]'>{item.icon}</CardHeader>
                 <CardTitle className='text-2xl font-bold my-4'>{item.title}</CardTitle>
-                <CardDescription className='text-sm'>{item.subtext}</CardDescription>
+                <CardDescription className='md:text-sm text-xl'>{item.subtext}</CardDescription>
             </Card>
         ))}
         </div>

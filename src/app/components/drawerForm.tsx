@@ -35,7 +35,7 @@ export const DrawerForm = (props: Props) => {
     </DrawerHeader>
     <Separator className='my-4'/>
 
-    <ScrollArea className='h-[43rem]'>
+    <ScrollArea className='h-[43rem] md:h-[31rem]'>
         <form action="" className='p-4'>
             <div className="information">
             <h1 className="font-bold text-2xl">Mes informations</h1>

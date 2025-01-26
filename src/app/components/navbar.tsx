@@ -1,22 +1,39 @@
+"use client"
 import { Button } from '@/components/ui/button';
-import { BriefcaseBusinessIcon, User } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { BriefcaseBusinessIcon, Menu, User } from 'lucide-react';
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 
 
+const navItems = [
+  { name: "Accueil", href: "/" },
+  { name: "Offres d'emploi", href: "/jobs" },
+  // { name: "Entreprises", href: "/companies" },
+  { name: "À propos", href: "/about" },
+  { name: "Nos Contact", href: "/contact" },
+]
 const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false)
   const isConnected:boolean = false;
+
   return (
-    <div className='container mx-auto'>
-      <nav className='w-full max-w-[98%] mx-auto p-3 navbar items-baseline flex justify-between'>
+    <nav className='container mx-auto'>
+      <div className='w-full max-w-[98%] mx-auto p-3 navbar items-baseline flex justify-between'>
         <span className="navbar-brand inline-flex gap-2"><BriefcaseBusinessIcon />Job Portal</span>
-          <ul className='inline-flex items-baseline gap-10'>
-            <li><Link className='hover:text-[#309689] font-semibold' href={"/"}>Home</Link></li>
-            <li><Link className='hover:text-[#309689] font-semibold' href={"/jobs"}>Jobs</Link></li>
-            <li><Link className='hover:text-[#309689] font-semibold' href={""}>About Us</Link></li>
-            <li><Link className='hover:text-[#309689] font-semibold' href={""}>Contact Us</Link></li>
-          </ul>
-          <div className="btn-group inline-flex items-baseline gap-4 ">
+          <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:border-[#309689] hover:text-gray-700"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+          <div className="btn-group sm:hidden md:block inline-flex items-baseline gap-4 ">
             {isConnected? 
           <ul className='inline-flex items-baseline gap-5'>
             <li><User/></li>
@@ -25,12 +42,46 @@ const Navbar = () => {
           :
           <>
             <Link href={''}>Login</Link>
-            <Button className='rounded-md p-1 bg-[#309689] px-3 font-semibold'>Register</Button> 
+            <Button className='rounded-md p-1 bg-[#309689] px-3 ml-4 font-semibold'>Register</Button> 
           </>
           }
           </div>
-      </nav>
-    </div>
+          <div className="profile">
+
+          </div>
+          <div className="sm:hidden flex items-center">
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Ouvrir le menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <nav className="flex flex-col space-y-4 mt-4">
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="text-sm font-medium text-gray-500 hover:text-gray-700"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </nav>
+                  <Separator className='my-4'/>
+                <div className="flex flex-col gap-3">
+                  <Button asChild>
+                    <Link href={''}>Employers</Link>
+                  </Button>
+                  <Button className='rounded-md p-1 bg-[#309689] px-3 font-semibold'>Se connecter</Button> 
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+      </div>
+    </nav>
   )
 }
 

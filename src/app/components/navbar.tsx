@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { BookmarkIcon, BriefcaseBusiness, BriefcaseBusinessIcon, LayoutDashboard, LogOut, Menu, Settings, User, UserCircle2 } from 'lucide-react';
+import { BookmarkIcon, BriefcaseBusiness, BriefcaseBusinessIcon, LayoutDashboard, LogOut, Menu, Settings,  UserCircle2 } from 'lucide-react';
 import Link from 'next/link'
 import React, { useState } from 'react'
 
@@ -25,11 +25,11 @@ const navItems = [
 ]
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const isConnected:boolean = false;
+  // const isConnected:boolean = false;
 
   return (
     <nav className='container mx-auto'>
-      <div className='w-full max-w-[98%] mx-auto p-3 navbar items-baseline flex justify-between'>
+      <div className='w-full max-w-[98%] mx-auto p-3 navbar align-baseline flex justify-between'>
         <span className="navbar-brand inline-flex gap-2"><BriefcaseBusinessIcon />Job Portal</span>
           <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
             {navItems.map((item) => (
@@ -55,27 +55,30 @@ const Navbar = () => {
           </>
           }
           </div> */}
-          {/* <div className="profile">
+          <div className="profile flex align-baseline gap-3">
+              <DropdownMenu>
+      <DropdownMenuTrigger><UserCircle2/></DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem><LayoutDashboard />Tableau de bord</DropdownMenuItem>
+        <DropdownMenuItem><UserCircle2/>Profil</DropdownMenuItem>
+        <DropdownMenuItem><BriefcaseBusiness />Candidatures</DropdownMenuItem>
+        <DropdownMenuItem><BookmarkIcon/> Articles sauvegardés</DropdownMenuItem>
+        <DropdownMenuItem><Settings />Paramètres</DropdownMenuItem>
+        <DropdownMenuItem><LogOut />Déconnexion</DropdownMenuItem>
+        <Separator className='my-2'/>
+        <DropdownMenuItem>Langue</DropdownMenuItem>
 
-          </div> */}
+      </DropdownMenuContent>
+    </DropdownMenu>
+            <Button asChild className='hidden md:block'>
+              <Link href={""}>Se connecter</Link>
+            </Button>
+          </div>
           <div className="sm:hidden flex items-center">
             
-            <DropdownMenu>
-  <DropdownMenuTrigger><UserCircle2/></DropdownMenuTrigger>
-  <DropdownMenuContent>
-    <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
-    <DropdownMenuSeparator />
-    <DropdownMenuItem><LayoutDashboard />Tableau de bord</DropdownMenuItem>
-    <DropdownMenuItem><UserCircle2/>Profil</DropdownMenuItem>
-    <DropdownMenuItem><BriefcaseBusiness />Candidatures</DropdownMenuItem>
-    <DropdownMenuItem><BookmarkIcon/> Articles sauvegardés</DropdownMenuItem>
-    <DropdownMenuItem><Settings />Paramètres</DropdownMenuItem>
-    <DropdownMenuItem><LogOut />Déconnexion</DropdownMenuItem>
-    <Separator className='my-2'/>
-    <DropdownMenuItem>Langue</DropdownMenuItem>
-
-  </DropdownMenuContent>
-</DropdownMenu>
+            
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">

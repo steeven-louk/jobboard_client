@@ -1,3 +1,4 @@
+import { HeaderComponent } from '@/app/components/headerComponent'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card'
@@ -12,8 +13,9 @@ import React from 'react'
  const Profil = () => {
     return (
         <div>
+            <HeaderComponent pageName={'Profil'} />
             <div className="container mx-auto px-4">
-                <Card className='p-4 my-5'>
+                <Card className='p-2 md:p-4 my-5'>
                     <div className='flex justify-between my-5'>
                         <div className="left inline-flex gap-3">
                             <Globe2/>

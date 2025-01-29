@@ -1,3 +1,4 @@
+import { HeaderComponent } from '@/app/components/headerComponent'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card'
 import { Pen, Trash2 } from 'lucide-react'
@@ -8,6 +9,8 @@ type Props = {}
 
 const Settings = (props: Props) => {
   return (
+    <>
+        <HeaderComponent pageName={'Settings'} />
     <div className='setting container mx-auto my-5 px-4'>
         <div className="">
             <Card className='grid grid-cols-1 md:grid-cols-2 p-4'>
@@ -41,7 +44,7 @@ const Settings = (props: Props) => {
             <Card className='grid grid-cols-1 md:grid-cols-2 p-4'>
                 <CardContent>
                     <CardTitle className='font-bold text-3xl'>Supprimer mon compte</CardTitle>
-                    <CardDescription className='mt-2 md:mt-5'>N’hésitez pas à contacter <Link href={"contact"}>notre Service client</Link> si vous avez besoin d’aide.</CardDescription>
+                    <CardDescription className='mt-2 md:mt-5'>N’hésitez pas à contacter <Link href={"contact"} className=" decoration-green-500">notre Service client</Link> si vous avez besoin d’aide.</CardDescription>
                 </CardContent>
                 <CardFooter>
                     <Button className='shadow-md' variant={"destructive"}><Trash2/> Supprimer mon compte</Button>
@@ -49,6 +52,7 @@ const Settings = (props: Props) => {
             </Card>
         </div>
     </div>
+    </>
   )
 }
 

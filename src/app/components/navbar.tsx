@@ -55,17 +55,18 @@ const Navbar = () => {
           </>
           }
           </div> */}
-          <div className="profile flex align-baseline gap-3">
+          <div className="flex align-baseline gap-3">
+            <div className="profile flex align-baseline gap-3">
               <DropdownMenu>
-      <DropdownMenuTrigger><UserCircle2/></DropdownMenuTrigger>
+      <DropdownMenuTrigger><UserCircle2 size={30}/></DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem><LayoutDashboard />Tableau de bord</DropdownMenuItem>
-        <DropdownMenuItem><UserCircle2/>Profil</DropdownMenuItem>
+        <DropdownMenuItem className="inline-flex align-baseline gap-3"><UserCircle2/><Link href={"/profil"}>Profil</Link></DropdownMenuItem>
         <DropdownMenuItem><BriefcaseBusiness />Candidatures</DropdownMenuItem>
         <DropdownMenuItem><BookmarkIcon/> Articles sauvegardés</DropdownMenuItem>
-        <DropdownMenuItem><Settings />Paramètres</DropdownMenuItem>
+        <DropdownMenuItem className="inline-flex align-baseline gap-3"><Settings /><Link href={"/settings"}>Paramètres</Link></DropdownMenuItem>
         <DropdownMenuItem><LogOut />Déconnexion</DropdownMenuItem>
         <Separator className='my-2'/>
         <DropdownMenuItem>Langue</DropdownMenuItem>
@@ -82,8 +83,8 @@ const Navbar = () => {
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Ouvrir le menu</span>
+                  <Menu style={{width: '30px',height: '30px'} } />
+                  <span className="sr-only" >Ouvrir le menu</span>
                 </Button>
               </SheetTrigger>
               <SheetContent side="right">
@@ -109,6 +110,8 @@ const Navbar = () => {
               </SheetContent>
             </Sheet>
           </div>
+          </div>
+          
       </div>
     </nav>
   )

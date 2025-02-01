@@ -6,8 +6,28 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { SelectValue } from "@radix-ui/react-select";
+import {useEffect, useState} from "react"
+import axios from "axios";
 
 export default function Jobs() {
+  const [getJobs, setJobs] = useState<any[]>([]);
+  
+  const URL:string ="http://localhost:5800/";
+
+    useEffect(()=>{
+          const getAllJobs =async()=>{
+      const jobs = await axios.get(URL+"api/jobs");
+      // console.log(jobs);
+      if(jobs.status == 200){
+        const {data} = jobs;
+        setJobs(data.jobs)
+        console.log(data.jobs)
+      }
+    }
+    getAllJobs();
+    },[])
+    // getAllJobs();
+    // console.log("jksdqd", getJobs)
 
     return (
       <div className="w-full">
@@ -90,12 +110,12 @@ export default function Jobs() {
 
           </div>
             <div className="job_component mt-5">
-              <JobCard path={""}/>
-              <JobCard path={""}/>
-              <JobCard path={""}/>
-              <JobCard path={""}/>
-              <JobCard path={""}/>
-              <JobCard path={""}/>
+            {getJobs.length > 0 ? (
+                getJobs.map((job) => <JobCard key={job.id} job={job} path="" />)
+              ) : (
+                <p>Aucun emploi trouvé.</p>
+              )}
+              
             </div>
         </main>
       </div>

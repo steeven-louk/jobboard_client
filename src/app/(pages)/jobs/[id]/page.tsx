@@ -8,12 +8,30 @@ import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/c
 import { Separator } from '@/components/ui/separator'
 import { Slash } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from "axios";
 
-
-const JobDetail = () => {
+const JobDetail = ({params}:{params:{id:number}}) => {
     const path:string = usePathname();
-    
+    const {id} = params
+    const URL ="http://localhost:5800/api/job"
+    const [getJobDetail, setJobDetail] = useState({});
+
+   
+useEffect(()=>{
+  const getJob =async()=>{
+    try {
+      const job = await axios.get(`${URL}/${id}`)
+    if(job.status == 200){
+      const {data} = job
+      setJobDetail(data?.jobs)
+    }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  getJob()
+},[id])
     return (
         <div>
           <HeaderComponent pageName="Jobs details"/>
@@ -37,7 +55,7 @@ const JobDetail = () => {
       </BreadcrumbList>
     </Breadcrumb>
           <div className="container mx-auto p-3 md:p-0">
-            <JobCard path={path}/>
+            <JobCard path={path} job={getJobDetail}/>
 
             <main className=' grid md:grid-cols-6'>
                 <section className=' md:col-start-1 md:col-end-5 mt-4'>
@@ -45,29 +63,14 @@ const JobDetail = () => {
                 <Card className="p-2">
                     <CardTitle className='capitalize text-2xl font-bold mb-5'>job description</CardTitle>
                     <CardContent>
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum quam sunt ab aspernatur vero iste.</p>
-                    <br />
-                    <p>
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam iure at iste minima 
-                        saepe officiis aspernatur perferendis provident placeat magnam 
-                        voluptate nesciunt eum obcaecati dolorem molestiae culpa repellat necessitatibus 
-                        aliquid quia cumque, ipsam eaque velit.
-                    </p>
+                    {getJobDetail?.description}
                     </CardContent>
                 </Card>
                 <Separator className=' my-5 font-bold'/>
                 <Card className="p-2">
                     <CardTitle className='capitalize text-2xl font-bold mb-5'>Skill</CardTitle>
                     <CardContent>
-                        <ul>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                        </ul>
+                        {getJobDetail?.skill}
                     </CardContent>
                 </Card>
                 <Separator className=' my-5 font-bold'/>
@@ -75,17 +78,7 @@ const JobDetail = () => {
                 <Card className="p-2 mb-5">
                     <CardTitle className='capitalize text-2xl font-bold mb-5'>Job requirements</CardTitle>
                     <CardContent>
-                        <ul>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                            <li>sit amet consectetur adipisicing elit.</li>
-                        </ul>
+                        {getJobDetail?.requirement}
                     </CardContent>
                 </Card>
                 </section>
@@ -95,7 +88,7 @@ const JobDetail = () => {
                     <CardDescription className='my-3'>Intéressé(e) par ce poste de Développeur Full Stack chez TechCorp ?</CardDescription>
                     <div className="btn-group flex md:flex-col gap-4 mx-auto justify-center items-center">
                         {/* <Button className='p-2 border px-4 w-fit rounded-md'>Postuler maintenant</Button> */}
-                        <DrawerForm/>
+                        <DrawerForm jobId={id}/>
                         <Button variant={'outline'} className='border p-2 px-4 rounded-md'>Sauvegarder l&apos;offre</Button>
                     </div>
                 </Card>

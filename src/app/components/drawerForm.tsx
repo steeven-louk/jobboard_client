@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
     Drawer,
@@ -17,13 +17,38 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
 import { Checkbox } from '@/components/ui/checkbox'
+import axios from 'axios'
 
 interface Props {
-    
+    jobId:number
 }
 
-export const DrawerForm = (props: Props) => {
-    return (
+export const DrawerForm = ({jobId}: Props) => {
+  const [LM, setLM] = useState<string>("");
+  const [CV, setCv] = useState<string>("");
+  const URL ="http://localhost:5800/api"
+  const AUTH_TOKEN ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3MzgyNjMyMzMsImV4cCI6MTczODUyMjQzM30.ynpR0YXAlBvO_MiUTw3W9MaiSirATp9eZ9T3XWOvg0k"
+  axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+  const postJob = async(e: { preventDefault: () => void })=>{
+    e.preventDefault();
+    try {
+      const job = await axios.post(`${URL}/user/apply_job/${jobId}`,{
+        userId:1,
+        jobId:jobId,
+        coverLetter:LM,
+        cv_url:CV
+      });
+      console.log("jobsubmitted", job)
+    // if(job.status == 200){
+    //   const {data} = job
+    //   setJobDetail(data?.jobs)
+    // }
+    } catch (error) {
+      console.log(error)
+    }
+    console.log(LM,CV);
+  } 
+  return (
         <div>
             <Drawer>
   <DrawerTrigger><Button>Postuler maintenant</Button></DrawerTrigger>
@@ -36,32 +61,10 @@ export const DrawerForm = (props: Props) => {
     <Separator className='my-4'/>
 
     <ScrollArea className='h-[43rem] md:h-[31rem]'>
-        <form action="" className='p-4'>
-            <div className="information">
-            <h1 className="font-bold text-2xl">Mes informations</h1>
+        <form action="" onSubmit={postJob} className='p-4'>
+            <div className="information mx-auto text-center mb-3">
+            <h1 className="font-bold text-2xl md:text-5xl">Mes informations</h1>
 
-            <div className="grid md:grid-cols-2 gap-4 mb-4 mt-5">
-              <div className="form-group">
-                <Label htmlFor='prenom mb-2'>Prénom</Label>
-                <Input type='text' id="prenom"/>
-              </div>
-              <div className="form-group">
-                <Label htmlFor='nom mb-2'>Nom</Label>
-                <Input type='text' id="nom"/>
-              </div>
-              <div className="form-group">
-                <Label htmlFor='email mb-2'>E-mail</Label>
-                <Input value={"admin@gmail.com"} disabled type='email' id="email"/>
-              </div>
-              <div className="form-group">
-                <Label htmlFor='phone mb-2'>Téléphone</Label>
-                <Input type='tel' id="phone"/>
-              </div>
-            </div>
-            <div className="form-group">
-                <Label htmlFor='location mb-2'>Localisation</Label>
-                <Input type='text' id="location"/>
-              </div>
         </div>
         <Separator/>
 
@@ -70,7 +73,7 @@ export const DrawerForm = (props: Props) => {
 
           <div className="form-group mt-5">
                 <Label htmlFor='cv' className='mb-2'>CV (PDF)</Label>
-                <Input type='file' id="cv"/>
+                <Input value={CV} onChange={(e)=>setCv(e.target.value)} type='file' id="cv"/>
               </div>
         </div>
         <Separator className='my-4'/>
@@ -78,7 +81,7 @@ export const DrawerForm = (props: Props) => {
           <h1 className='font-bold text-2xl'>Lettre de motivation</h1>
           {/* <p >Expliquez-nous pourquoi vous souhaitez nous <span className=' underline-offset-4 underline decoration-green-600'>rejoindre !</span></p> */}
           <div className="grid w-full gap-1.5">
-      <Textarea placeholder="Tapez votre message ici." />
+      <Textarea value={LM} onChange={(e)=>setLM(e.target.value)} placeholder="Tapez votre message ici." />
       <p className="text-sm text-muted-foreground">
         Expliquez-nous pourquoi vous souhaitez nous <span className=' underline-offset-4 underline decoration-green-600'>rejoindre !</span>
       </p>
@@ -88,7 +91,7 @@ export const DrawerForm = (props: Props) => {
         <Separator className='my-4'/>
         <h1 className='font-bold text-2xl'>Conditions générales d&apos;utilisation</h1>
         <div className="flex items-center space-x-2 my-5">
-      <Checkbox id="terms" />
+      <Checkbox id="terms" required name='terms'/>
       <label
         htmlFor="terms"
         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -97,7 +100,7 @@ export const DrawerForm = (props: Props) => {
       </label>
     </div>
     <div className="flex items-center space-x-2">
-      <Checkbox id="terms" />
+      <Checkbox id="terms" required />
       <label
         htmlFor="terms"
         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -105,7 +108,7 @@ export const DrawerForm = (props: Props) => {
         J&apos;Accepte que mes données soient traitées par (l&apos;entreprise) dans le cadre de ma candidature.
       </label>
     </div>
-        </form>
+        
  
     <DrawerFooter>
       <Button className='bg-green-400'>J&apos;envoie ma candidature</Button>
@@ -113,6 +116,7 @@ export const DrawerForm = (props: Props) => {
         <Button variant="outline">Annuler</Button>
       </DrawerClose>
     </DrawerFooter>
+    </form>
      </ScrollArea>
   </DrawerContent>
 </Drawer>

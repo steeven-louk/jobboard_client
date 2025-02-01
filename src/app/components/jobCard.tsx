@@ -5,11 +5,23 @@ import { BookmarkPlus, BriefcaseBusiness, Clock, Globe2, MapPin, Wallet } from '
 import Link from 'next/link'
 import React from 'react'
 
-interface props{
-    path: string
+
+interface jobCard{
+    id: number
+    title: string
+    description: string
+    skill: string
+    requirement: string
+    location: string
+    salary: number
+    duration: string
+    jobType: string
+    isPremium: boolean
+
 }
-export const JobCard = ({path}:props) => {
+export const JobCard = ({path,job}:{path: string; job: jobCard}) => {
     // alert(path)
+    // console.log("jpoCard",job)
     return (
         <Card className='card shadow-md hover:shadow-slate-400 transition-shadow p-3 shadow-slate-700 rounded-md my-5'>
             <div className='flex justify-between mb-3'>
@@ -22,7 +34,7 @@ export const JobCard = ({path}:props) => {
                 <div className="flex gap-4">
                     <span className="icon"><Globe2/></span>
                     <div className="flex flex-col">
-                        <CardTitle className='capitalize font-bold text-xl'>Forward Security Director</CardTitle>
+                        <CardTitle className='capitalize font-bold text-xl'>{job?.title}</CardTitle>
                         <CardDescription className='text-sm'>Lorem ipsum dolor sit.</CardDescription>
                     </div>
                 </div>
@@ -31,12 +43,12 @@ export const JobCard = ({path}:props) => {
                 <div className="md:inline-flex flex flex-wrap md:flex-nowrap gap-6 md:gap-5 mt-3">
                     <span className='inline-flex gap-2'><BriefcaseBusiness className='color-primary'/>Hotels & Tourism</span>
                     <span className='inline-flex gap-2'><Clock className='color-primary'/> Full time</span>
-                    <span className='inline-flex gap-2'><Wallet className='color-primary'/>$40000-$42000</span>
-                    <span className='inline-flex gap-2'><MapPin className='color-primary'/> nemour</span>
+                    <span className='inline-flex gap-2'><Wallet className='color-primary'/>${job?.salary}</span>
+                    <span className='inline-flex gap-2'><MapPin className='color-primary'/>{job?.location}</span>
                 </div>
                 {!path &&
                 <Button asChild className="bg-[#309689] rounded-md p-2 capitalize mt-4 md:mt-0 w-36">
-                <Link href={"/jobs/2"}>
+                <Link href={`/jobs/${job.id}`}>
                     job detail
                 </Link>
                 </Button>

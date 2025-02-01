@@ -5,9 +5,9 @@ import { Pen, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
-type Props = {}
+// type Props = {}
 
-const Settings = (props: Props) => {
+const Settings = () => {
   return (
     <>
         <HeaderComponent pageName={'Settings'} />

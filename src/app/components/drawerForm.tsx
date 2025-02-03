@@ -39,10 +39,6 @@ export const DrawerForm = ({jobId}: Props) => {
         cv_url:CV
       });
       console.log("jobsubmitted", job)
-    // if(job.status == 200){
-    //   const {data} = job
-    //   setJobDetail(data?.jobs)
-    // }
     } catch (error) {
       console.log(error)
     }

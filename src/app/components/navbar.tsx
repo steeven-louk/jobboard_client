@@ -59,15 +59,15 @@ const Navbar = () => {
             <div className="profile flex align-baseline gap-3">
               <DropdownMenu>
       <DropdownMenuTrigger><UserCircle2 size={30}/></DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className='flex flex-col'>
         <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem><LayoutDashboard />Tableau de bord</DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><UserCircle2/><Link href={"/profil"}>Profil</Link></DropdownMenuItem>
-        <DropdownMenuItem><BriefcaseBusiness />Candidatures</DropdownMenuItem>
-        <DropdownMenuItem><BookmarkIcon/> Articles sauvegardés</DropdownMenuItem>
+        <DropdownMenuItem className="inline-flex align-baseline gap-3"><BriefcaseBusiness /><Link href={"/candidature"}>Candidatures</Link></DropdownMenuItem>
+        <DropdownMenuItem className="inline-flex align-baseline gap-3"><BookmarkIcon/><Link href={"/bookmark"}>Articles sauvegardés</Link></DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><Settings /><Link href={"/settings"}>Paramètres</Link></DropdownMenuItem>
-        <DropdownMenuItem><LogOut />Déconnexion</DropdownMenuItem>
+        <DropdownMenuItem className='bg-red-500 text-white shadow-sm'><LogOut />Déconnexion</DropdownMenuItem>
         <Separator className='my-2'/>
         <DropdownMenuItem>Langue</DropdownMenuItem>
 

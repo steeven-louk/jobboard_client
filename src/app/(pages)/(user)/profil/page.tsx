@@ -17,23 +17,37 @@ import React, { useEffect, useState } from 'react'
     const [userDetail, setUserDetail] = useState<any>();
     const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
     const URL = "http://localhost:5800/api/user/profil/";
+    const EXP_URL = "http://localhost:5800/api/user/profil/experience";
 
+    const handleGetProfil =async()=>{
+    try {
+        const user = await axios.get(URL, {
+            headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
+          });
+          if(user.status === 200){
+            const {data} =  user
+            setUserDetail(data?.user);
+            //   console.log(data.user);
+          }
+    } catch (error) {
+        console.log("erreur lors de la recuperation du profil" ,error)
+    }
+}
+    const deleteExperience =async(id:number)=>{
+        try {
+            const experience = await axios.delete(`${EXP_URL}/${id}`, {
+                headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
+              });
+             console.log(experience);
+             handleGetProfil();
+        } catch (error) {
+            console.log("erreur lors de la suppression de l'experience" ,error)
+        }
+    }
     
     useEffect(() => {
-        const handleGetProfil =async()=>{
-            try {
-                const user = await axios.get(URL, {
-                    headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
-                  });
-                  if(user.status === 200){
-                    const {data} =  user
-                    setUserDetail(data?.user);
-                      console.log(data.user);
-                  }
-            } catch (error) {
-                console.log("erreur lors de la recuperation du profil" ,error)
-            }
-        }
+       
+
         handleGetProfil();
     }, []);
    
@@ -101,7 +115,7 @@ import React, { useEffect, useState } from 'react'
                                         {/* <PenIcon /> <span className='md:block hidden'>Modifier</span> */}
                                         <UpdateProfilModal experience={exp}/>
                                     {/* </Button> */}
-                                    <Button variant={"destructive"}><Trash2 /></Button>
+                                    <Button onClick={()=>deleteExperience(exp.id)} variant={"destructive"}><Trash2 /></Button>
                                 </div>
                             </div>
                             <CardContent className='mt-6 grid gap-4 md:gap-0'>

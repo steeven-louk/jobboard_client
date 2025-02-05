@@ -42,13 +42,13 @@ export const JobCard = ({path,job}:{path: string; job: jobCard}) => {
             <CardFooter className="card-footer flex flex-col md:flex-row justify-between">
                 <div className="md:inline-flex flex flex-wrap md:flex-nowrap gap-6 md:gap-5 mt-3">
                     <span className='inline-flex gap-2'><BriefcaseBusiness className='color-primary'/>Hotels & Tourism</span>
-                    <span className='inline-flex gap-2'><Clock className='color-primary'/> Full time</span>
-                    <span className='inline-flex gap-2'><Wallet className='color-primary'/>${job?.salary}</span>
+                    <span className='inline-flex gap-2'><Clock className='color-primary'/>{job?.duration}</span>
+                    {job?.salary &&   <span className='inline-flex gap-2'><Wallet className='color-primary'/>${job?.salary}</span>}
                     <span className='inline-flex gap-2'><MapPin className='color-primary'/>{job?.location}</span>
                 </div>
                 {!path &&
                 <Button asChild className="bg-[#309689] rounded-md p-2 capitalize mt-4 md:mt-0 w-36">
-                <Link href={`/jobs/${job.id}`}>
+                <Link href={`/jobs/${job?.id}`}>
                     job detail
                 </Link>
                 </Button>

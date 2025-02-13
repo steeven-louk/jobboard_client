@@ -8,10 +8,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/u
 import { SelectValue } from "@radix-ui/react-select";
 import {useEffect, useState} from "react"
 import axios from "axios";
+import SearchBar from "@/app/components/searchBar";
+import { useSearchParams } from "next/navigation";
+
 
 export default function Jobs() {
+  const searchParams = useSearchParams()
+  const initialSearchTerm = searchParams.get("search") || ""
+
   const [getJobs, setJobs] = useState<any[]>([]);
-  
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm)
+
+  useEffect(() => {
+    setSearchTerm(initialSearchTerm)
+  }, [initialSearchTerm])
   const URL:string ="http://localhost:5800/";
 
     useEffect(()=>{
@@ -26,14 +37,20 @@ export default function Jobs() {
     }
     getAllJobs();
     },[])
-    // getAllJobs();
-    // console.log("jksdqd", getJobs)
+    const handleSearch = (term: string) => {
+      setSearchTerm(term)
+      setCurrentPage(1)
+    }
 
     return (
       <div className="w-full">
          <HeaderComponent pageName="Jobs"/>
          
-        <section className="container mx-auto flex p-3">
+        <section className="container mx-auto flex flex-col p-3">
+
+          <h1 className="text-3xl font-bold mb-8">Offres d&apos;emploi disponibles</h1>
+          <SearchBar onSearch={handleSearch} initialSearchTerm={searchTerm} />
+
         <div className="flex flex-col md:flex-row gap-8 mt-8">
         <aside className="w-full h-fit md:w-[20rem] rounded-md">
         <Card className="p-3">
@@ -96,6 +113,7 @@ export default function Jobs() {
     </Card>
         </aside>
         <main className="w-full ">
+        
           <div className="flex items-center justify-between">
             <span>Showing 6-9 of 10 results</span>
             {/* <Select>

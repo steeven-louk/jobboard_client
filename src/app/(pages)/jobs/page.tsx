@@ -10,16 +10,31 @@ import {useEffect, useState} from "react"
 import axios from "axios";
 import SearchBar from "@/app/components/searchBar";
 import { useSearchParams } from "next/navigation";
+import { JobFilters } from "@/app/components/jobFilter";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
 export default function Jobs() {
   const searchParams = useSearchParams()
   const initialSearchTerm = searchParams.get("search") || ""
+  const JOBS_PER_PAGE = 8;
 
   const [getJobs, setJobs] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1)
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm)
-
+  const [sortBy, setSortBy] = useState("")
+  const [contractTypes, setContractTypes] = useState({
+    cdi: false,
+    cdd: false,
+    stage:false,
+    freelance: false,
+  })
+  const [experienceLevels, setExperienceLevels] = useState({
+    junior: false,
+    intermediaire: false,
+    senior: false,
+  })
   useEffect(() => {
     setSearchTerm(initialSearchTerm)
   }, [initialSearchTerm])
@@ -36,12 +51,79 @@ export default function Jobs() {
       }
     }
     getAllJobs();
-    },[])
+    },[]);
+
+    const filterJob = getJobs?.filter((job)=>{
+      if(searchTerm){
+        const searchLower = searchTerm?.toLowerCase();
+        return(
+          job.title?.toLowerCase()?.includes(searchLower) ||
+          job.description?.toLowerCase().includes(searchLower) ||
+          job.company?.toLowerCase().includes(searchLower)
+        );
+        
+      }
+      return true;
+    }).filter((job) => {
+      if (Object.values(contractTypes).every((v) => !v)) return true
+      return contractTypes[job?.jobType.toLowerCase() as keyof typeof contractTypes]
+    }).sort((a, b) => {
+      switch (sortBy) {
+        case "recent":
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        case "salary-high":
+          return Number.parseInt(b.salary) - Number.parseInt(a.salary)
+        case "salary-low":
+          return Number.parseInt(a.salary) - Number.parseInt(b.salary)
+        case "company":
+          return a.company.localeCompare(b.company)
+        default:
+          return 0
+      }
+    })
+
+
+    const handleSortChange = (value: string) => {
+      setSortBy(value)
+      // setCurrentPage(1)
+    }
+    const handleContractTypeChange = (type: keyof typeof contractTypes) => {
+      setContractTypes((prev) => ({ ...prev, [type]: !prev[type] }))
+      // setCurrentPage(1)
+    }
+  
+    const handleExperienceLevelChange = (level: keyof typeof experienceLevels) => {
+      setExperienceLevels((prev) => ({ ...prev, [level]: !prev[level] }))
+      // setCurrentPage(1)
+    }
     const handleSearch = (term: string) => {
       setSearchTerm(term)
-      setCurrentPage(1)
+      // setCurrentPage(1)
     }
 
+    const clearFilters = () => {
+      setSortBy("")
+      setContractTypes({
+        cdi: false,
+        cdd: false,
+        stage: false,
+        freelance: false,
+      })
+      setExperienceLevels({
+        junior: false,
+        intermediaire: false,
+        senior: false,
+      })
+      // setCurrentPage(1)
+      setSearchTerm("")
+    }
+
+    const totalPages = Math.ceil(filterJob?.length / JOBS_PER_PAGE)
+    const paginatedJobs = filterJob?.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE)
+  
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page)
+    }
     return (
       <div className="w-full">
          <HeaderComponent pageName="Jobs"/>
@@ -52,7 +134,7 @@ export default function Jobs() {
           <SearchBar onSearch={handleSearch} initialSearchTerm={searchTerm} />
 
         <div className="flex flex-col md:flex-row gap-8 mt-8">
-        <aside className="w-full h-fit md:w-[20rem] rounded-md">
+        {/* <aside className="w-full h-fit md:w-[20rem] rounded-md">
         <Card className="p-3">
       <div className="mb-2 flex justify-between">
         <p>Filtres</p>
@@ -111,6 +193,17 @@ export default function Jobs() {
         </div>
       </CardContent>
     </Card>
+        </aside> */}
+        <aside className="w-full h-fit md:w-[20rem] rounded-md">
+        <JobFilters
+            sortBy={sortBy}
+            contractTypes={contractTypes}
+            experienceLevels={experienceLevels}
+            onSortChange={handleSortChange}
+            onContractTypeChange={handleContractTypeChange}
+            onExperienceLevelChange={handleExperienceLevelChange}
+            onClearFilters={clearFilters}
+          />
         </aside>
         <main className="w-full ">
         
@@ -128,12 +221,39 @@ export default function Jobs() {
 
           </div>
             <div className="job_component mt-5">
-            {getJobs.length > 0 ? (
-                getJobs.map((job) => <JobCard key={job.id} job={job} path="" />)
+            {paginatedJobs.length > 0 ? (
+                filterJob.map((job) => <JobCard key={job.id} job={job} path="" />)
               ) : (
                 <p>Aucun emploi trouvé.</p>
               )}
               
+            </div>
+            <div className="pagination w-full">
+            {totalPages > 6 && (
+        <div className="flex justify-between items-center mt-8">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft className="h-4 w-4 mr-2" />
+            Précédent
+          </Button>
+          <span>
+            Page {currentPage} sur {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Suivant
+            <ChevronRight className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
+      )}
             </div>
         </main>
       </div>

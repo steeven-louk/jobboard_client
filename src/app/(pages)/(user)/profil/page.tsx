@@ -1,6 +1,8 @@
 "use client"
 import { HeaderComponent } from '@/app/components/headerComponent'
-import UpdateProfilModal from '@/app/components/modals/updateProfilModal'
+import DiplomeModal from '@/app/components/modals/diplomeModal'
+import ProfilModal from '@/app/components/modals/profilModal'
+import ExperienceModal from '@/app/components/modals/updateExperienceModal'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card'
@@ -68,7 +70,7 @@ import React, { useEffect, useState } from 'react'
 
                             </div>
                         </div>
-                        <Button>Modifier</Button>
+                        <ProfilModal profil={userDetail}/>
                     </div>
                     <CardContent className='grid grid-cols-2 gap-4'>
                         <div className="inline-flex align-baseline gap-2">
@@ -77,7 +79,7 @@ import React, { useEffect, useState } from 'react'
                         </div>
                         <div className="inline-flex align-baseline gap-2">
                             <Cake/>
-                            <span>{userDetail?.birthdate}</span>
+                            <span>{new Date(userDetail?.birthdate).toLocaleDateString()}</span>
                         </div>
                         <div className="inline-flex align-baseline gap-2">
                             <Phone/>
@@ -98,7 +100,7 @@ import React, { useEffect, useState } from 'react'
                             <p>Parlez-nous de vos expériences passées et actuelles, de vos Projets</p>
                         </div>
                         {/* <Button><Plus/>Ajouter</Button> */}
-                        <UpdateProfilModal />
+                        <ExperienceModal />
 
                     </div>
 
@@ -113,7 +115,7 @@ import React, { useEffect, useState } from 'react'
                                 <div className="btn-group inline-flex gap-3">
                                     {/* <Button className='inline-flex md:gap-4 md:align-baseline'> */}
                                         {/* <PenIcon /> <span className='md:block hidden'>Modifier</span> */}
-                                        <UpdateProfilModal experience={exp}/>
+                                        <ExperienceModal experience={exp}/>
                                     {/* </Button> */}
                                     <Button onClick={()=>deleteExperience(exp.id)} variant={"destructive"}><Trash2 /></Button>
                                 </div>
@@ -244,7 +246,8 @@ import React, { useEffect, useState } from 'react'
                             <h1 className='font-bold text-2xl'>Diplômes & formations</h1>
                             <p>Listez vos diplômes, formations et certifications pertinents.</p>
                         </div>
-                        <Button><Plus/>Ajouter</Button>
+                        {/* <Button><Plus/>Ajouter</Button> */}
+                        <DiplomeModal/>
                     </div>
                 <Separator className='my-5'/>
                 {userDetail?.Diplome?.length > 0 ? userDetail.Diplome.map((diplome) => (
@@ -268,7 +271,8 @@ import React, { useEffect, useState } from 'react'
                                 <p className=' font-semibold inline-flex align-baseline'>{diplome?.title}</p>
                             </div>
                             <div className="btn-group inline-flex gap-3">
-                                <Button className='inline-flex md:gap-4 md:align-baseline'><PenIcon/> <span className='md:block hidden'>Modifier</span></Button>
+                                {/* <Button className='inline-flex md:gap-4 md:align-baseline'><PenIcon/> <span className='md:block hidden'>Modifier</span></Button> */}
+                                <DiplomeModal diplome={diplome}/>
                                 <Button variant={"destructive"}><Trash2/></Button>
                             </div>
                             </div>

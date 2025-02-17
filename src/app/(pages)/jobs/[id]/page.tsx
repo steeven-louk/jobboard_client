@@ -20,13 +20,20 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
     const [getJobDetail, setJobDetail] = useState<any>(null);
     const [isInFavorie, setIsInFavorie] = useState<boolean>(false);
     
-    const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
+    // const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
 
-    
+    // const AUTH_TOKEN = localStorage.getItem("token");
+    const AUTH_TOKEN = typeof window !== "undefined"? localStorage.getItem("token") : null;
+    const parsedToken = AUTH_TOKEN ? JSON.parse(AUTH_TOKEN): null;
+    // console.log("token",AUTH_TOKEN)
     const addToFavorie = async () => {
+        if(!parsedToken){
+            console.log("Aucun token trouvé, veuillez vous connecter.")
+            return;
+        }
       try {
         const response = await axios.post(`${URL}/add_favorie/${id}`, {}, {
-          headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
+          headers: { Authorization: `Bearer ${parsedToken}` }
         });
     
         if (response.status === 200) {
@@ -42,9 +49,10 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
     };
     
     
-    console.log(isInFavorie)
+    // console.log("jobDetail",getJobDetail.company)
 
     useEffect(() => {
+        if(!id)return;
         const getJob = async () => {
             try {
                 const response = await axios.get(`${URL}/${id}`);
@@ -111,7 +119,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
                             <CardTitle className="text-xl font-bold">Postuler</CardTitle>
                             <CardDescription className='my-3'>Intéressé(e) par ce poste de Développeur Full Stack chez TechCorp ?</CardDescription>
                             <div className="btn-group flex md:flex-col gap-4 mx-auto justify-center items-center">
-                                <DrawerForm jobId={id} />
+                                <DrawerForm jobId={id} companyName={getJobDetail?.company.name} />
                                 <Button onClick={addToFavorie} variant={'outline'} className='border p-2 px-4 rounded-md'>
                                     Sauvegarder l&apos;offre
                                 </Button>

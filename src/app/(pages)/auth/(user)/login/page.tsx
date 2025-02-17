@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import axios from "axios"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -18,12 +19,30 @@ export default function LoginPage() {
   const [role, setRole] = useState("candidate")
   const router = useRouter()
 
+  const URL ="http://localhost:5800/api/auth/login"
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+      e.preventDefault();
+    try {
+        if(!email || !password){
+            console.log("email ou mot de passe incorrect");
+        }
+        const login = await axios.post(URL,{
+            email,
+            password
+        });
+        if(login.status ===200){
+            console.log(login)
+            router.push("/")
+            localStorage.setItem("token",JSON.stringify(login.data.token))
+        }
     // Ici, vous implémenteriez la logique de connexion
     console.log("Tentative de connexion avec:", { email, password, role })
     // Après une connexion réussie, redirigez l'utilisateur
     // router.push("/dashboard")
+    } catch (error) {
+        console.log("erreur lors de la connexion", error);
+    }
   }
 
   const handleGoogleSignIn = () => {
@@ -111,7 +130,7 @@ export default function LoginPage() {
             <CardFooter>
               <p className="text-center text-sm text-gray-600">
                 Pas encore de compte ?{" "}
-                <Link href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                <Link href="/auth/register" className="font-medium text-indigo-600 hover:text-indigo-500">
                   S&apos;inscrire
                 </Link>
               </p>

@@ -10,8 +10,9 @@ import React, { useEffect, useState } from 'react'
 
 const Candidature = () => {
     const [getApplication, setGetApplication] = useState<any>();
-    const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
+    // const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
     const URL = "http://localhost:5800/api/user/applications/";
+    const AUTH_TOKEN:string = JSON.parse(localStorage.getItem("token"));
 
     
     useEffect(() => {
@@ -26,7 +27,7 @@ const Candidature = () => {
                       console.log(data?.applications);
                   }
             } catch (error) {
-                console.log("erreur lors de la recuperation des favoris" ,error)
+                console.log("erreur lors de la recuperation des candidature" ,error)
             }
         }
         handleGetApplication();

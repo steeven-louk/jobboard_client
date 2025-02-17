@@ -17,9 +17,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 export default function Jobs() {
   const searchParams = useSearchParams();
   const initialSearchTerm = searchParams.get("search") || "";
-  const JOBS_PER_PAGE = 8;
+  const JOBS_PER_PAGE = 6;
 
-  const [getJobs, setJobs] = useState<any[]>([]);
+  // const [getJobs, setJobs] = useState<any[]>([]);
+  const [getJobs, setJobs] = useState<
+    { id: string; title: string; description: string; company: string; jobType: string; salary: string; createdAt: string }[]
+  >([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [sortBy, setSortBy] = useState("");
@@ -37,16 +40,18 @@ export default function Jobs() {
   useEffect(() => {
     setSearchTerm(initialSearchTerm);
   }, [initialSearchTerm]);
-  const URL: string = "http://localhost:5800/";
+
+  // const URL: string = "http://localhost:5800/";
 
   useEffect(() => {
     const getAllJobs = async () => {
-      const jobs = await axios.get(URL + "api/jobs");
-      // console.log(jobs);
-      if (jobs.status == 200) {
-        const { data } = jobs;
-        setJobs(data.jobs);
-        console.log(data.jobs);
+     try {
+        const response = await axios.get("http://localhost:5800/api/jobs");
+        if (response.status === 200) {
+          setJobs(response.data.jobs);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des jobs :", error);
       }
     };
     getAllJobs();
@@ -54,6 +59,7 @@ export default function Jobs() {
 
   const filterJob = getJobs
     ?.filter((job) => {
+      if (!searchTerm) return true;
       if (searchTerm) {
         const searchLower = searchTerm?.toLowerCase();
         return (
@@ -62,7 +68,7 @@ export default function Jobs() {
           job.company?.toLowerCase().includes(searchLower)
         );
       }
-      return true;
+      // return true;
     })
     .filter((job) => {
       if (Object.values(contractTypes).every((v) => !v)) return true;
@@ -77,9 +83,9 @@ export default function Jobs() {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
         case "salary-high":
-          return Number.parseInt(b.salary) - Number.parseInt(a.salary);
+          return parseInt(b.salary) - parseInt(a.salary);
         case "salary-low":
-          return Number.parseInt(a.salary) - Number.parseInt(b.salary);
+          return parseInt(a.salary) - parseInt(b.salary);
         case "company":
           return a.company.localeCompare(b.company);
         default:
@@ -125,7 +131,7 @@ export default function Jobs() {
   };
 
   const totalPages = Math.ceil(filterJob?.length / JOBS_PER_PAGE);
-  const paginatedJobs = filterJob?.slice(
+  const paginatedJobs = filterJob.slice(
     (currentPage - 1) * JOBS_PER_PAGE,
     currentPage * JOBS_PER_PAGE
   );
@@ -217,7 +223,7 @@ export default function Jobs() {
           </aside>
           <main className="w-full ">
             <div className="flex items-center justify-between">
-              <span>Showing 6-9 of 10 results</span>
+              {/* <span>Showing 6-9 of 10 results</span> */}
               {/* <Select>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Filtrer par" />
@@ -230,7 +236,7 @@ export default function Jobs() {
             </div>
             <div className="job_component mt-5">
               {paginatedJobs.length > 0 ? (
-                filterJob.map((job) => (
+                paginatedJobs.map((job) => (
                   <JobCard key={job.id} job={job} path="" />
                 ))
               ) : (
@@ -238,7 +244,7 @@ export default function Jobs() {
               )}
             </div>
             <div className="pagination w-full">
-              {totalPages > 6 && (
+              {totalPages > 1 && (
                 <div className="flex justify-between items-center mt-8">
                   <Button
                     variant="outline"

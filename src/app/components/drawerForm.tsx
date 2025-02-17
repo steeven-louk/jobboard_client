@@ -20,23 +20,30 @@ import { Checkbox } from '@/components/ui/checkbox'
 import axios from 'axios'
 
 interface Props {
-    jobId:number
+    jobId:number,
+    companyName:string
 }
 
-export const DrawerForm = ({jobId}: Props) => {
+export const DrawerForm = ({jobId, companyName}: Props) => {
   const [LM, setLM] = useState<string>("");
   const [CV, setCv] = useState<string>("");
   const URL ="http://localhost:5800/api"
-  const AUTH_TOKEN ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3MzgyNjMyMzMsImV4cCI6MTczODUyMjQzM30.ynpR0YXAlBvO_MiUTw3W9MaiSirATp9eZ9T3XWOvg0k"
-  axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+  // const AUTH_TOKEN ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzk0NzE2MjYsImV4cCI6MTczOTczMDgyNn0.qGvZPk67vnQgJKeJ0EPKtwcIXFkZecFMKmUbgGmOaiI"
+  // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+  // const AUTH_TOKEN:string = JSON.parse(localStorage.getItem("token"));
+  const AUTH_TOKEN = typeof window !== "undefined"? localStorage.getItem("token") : null;
+  const parsedToken = AUTH_TOKEN ? JSON.parse(AUTH_TOKEN): null;
+  // console.log("token", AUTH_TOKEN)
   const postJob = async(e: { preventDefault: () => void })=>{
     e.preventDefault();
     try {
       const job = await axios.post(`${URL}/user/apply_job/${jobId}`,{
-        userId:1,
+        // userId:1,
         jobId:jobId,
         coverLetter:LM,
         cv_url:CV
+      },{
+        headers: { Authorization: `Bearer ${parsedToken}` }
       });
       console.log("jobsubmitted", job)
     } catch (error) {
@@ -51,7 +58,7 @@ export const DrawerForm = ({jobId}: Props) => {
   <DrawerContent className='md:max-w-[52rem] w-full mx-auto'>
       
       <DrawerHeader className='shadow-md shadow-black'>
-      <DrawerTitle className='uppercase font-semibold text-xl'>docoon groupe</DrawerTitle>
+      <DrawerTitle className='uppercase font-semibold text-xl'>{companyName}</DrawerTitle>
       <DrawerDescription className='font-bold text-1xl'>Stage 4/6 mois chargé de mission événementielle et communication F/H</DrawerDescription>
     </DrawerHeader>
     <Separator className='my-4'/>

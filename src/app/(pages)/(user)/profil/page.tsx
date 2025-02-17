@@ -17,9 +17,13 @@ import React, { useEffect, useState } from 'react'
 
  const Profil = () => {
     const [userDetail, setUserDetail] = useState<any>();
-    const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
+    // const AUTH_TOKEN ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzk0NzE2MjYsImV4cCI6MTczOTczMDgyNn0.qGvZPk67vnQgJKeJ0EPKtwcIXFkZecFMKmUbgGmOaiI"
     const URL = "http://localhost:5800/api/user/profil/";
     const EXP_URL = "http://localhost:5800/api/user/profil/experience";
+    const AUTH_TOKEN:string = JSON.parse(localStorage.getItem("token"));
+    // console.log("AUTH_", AUTH_TOKEN)
+    // console.log("AUTH_2", JSON.parse(AUTH_TOKEN2))
+
 
     const handleGetProfil =async()=>{
     try {

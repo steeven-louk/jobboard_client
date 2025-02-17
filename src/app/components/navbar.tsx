@@ -74,7 +74,7 @@ const Navbar = () => {
       </DropdownMenuContent>
     </DropdownMenu>
             <Button asChild className='hidden md:block'>
-              <Link href={""}>Se connecter</Link>
+              <Link href={"/auth/login"}>Se connecter</Link>
             </Button>
           </div>
           <div className="sm:hidden flex items-center">

@@ -8,9 +8,9 @@ import React, { useEffect, useState } from 'react'
 
 const Bookmark = () => {
     const [getBookmark, setGetBookmark] = useState<any>();
-    const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
+    // const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
     const URL = "http://localhost:5800/api/user/favories";
-
+    const AUTH_TOKEN = JSON.parse(localStorage.getItem("token"));
     
     useEffect(() => {
         const handleGetBookmark =async()=>{
@@ -35,7 +35,7 @@ const Bookmark = () => {
             
             <div className="container my-5 mx-auto p-5">
                 {getBookmark?.length > 0?(
-                    getBookmark?.map((favoris)=>(
+                    getBookmark?.map((favoris:any)=>(
                         <div key={favoris.id}>
                         <JobCard path={""} job={favoris?.job} />
                     </div>

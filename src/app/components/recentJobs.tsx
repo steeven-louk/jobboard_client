@@ -14,7 +14,7 @@ export const RecentJobs = () => {
             </div>
             <JobCard path={''}/>
             <JobCard path={''}/>
-            <JobCard path={''}/>
+            <JobCard path={''} job={undefined}/>
             <JobCard path={''}/>
             <JobCard path={''}/>
             <JobCard path={''}/>

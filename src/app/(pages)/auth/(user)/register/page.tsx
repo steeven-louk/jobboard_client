@@ -1,61 +1,78 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-// import { signIn } from "next-auth/react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import axios from "axios";
 
-import axios from "axios"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+
 export default function RegisterPage() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [phone, setPhone] = useState("")
-  const [city, setCity] = useState("")
-  const [role, setRole] = useState("candidate")
-  const [company, setCompany] = useState("")
-  const router = useRouter()
-const URL ="http://localhost:5800/api/auth/register"
+  const [role, setRole] = useState("candidate");
+  const [step, setStep] = useState(1);
+  const router = useRouter();
+  const URL = "http://localhost:5800/api/auth/";
 
-  const handleSubmit =async (e: React.FormEvent) => {
-    e.preventDefault();
-    try{
-      if(!email || !password || !name || !phone || !city){
-        console.log("veuillez remplir tout les champs");
-    }
-    const register = await axios.post(URL,{
-        fullName: name,
-        email,
-        password,
-        phone:phone.toString(),
-        city
-    });
-    if(register.status ===201){
-        console.log(register)
-        router.push("/auth/login")
-    }
-      // Ici, vous implémenteriez la logique d'inscription
-    console.log("Tentative d'inscription avec:", { name, email, password, role, company })
-    // Après une inscription réussie, redirigez l'utilisateur
-    // router.push("/dashboard")
-    }
-    catch (error){
-      console.log("error lors du register", error);
-    }
-  }
+  // Schéma de validation pour le candidat
+  const candidateSchema = z.object({
+    fullName: z.string().min(3, "Nom trop court"),
+    email: z.string().email("Email invalide"),
+    password: z.string().min(6, "Mot de passe trop court"),
+    phone: z.string().min(9, "Numéro de téléphone incorrect"),
+    city: z.string().min(2, "Ville requise"),
+    birthdate: z.string().min(10, "Date de naissance requise"),
+  });
 
-  const handleGoogleSignIn = () => {
-    // signIn("google", { callbackUrl: "/dashboard" });
-    console.log("sign In");
-  }
- 
+  // Schéma de validation pour le recruteur (avec des champs supplémentaires)
+  const recruiterSchema = candidateSchema.extend({
+    companyName: z.string().min(3, "Nom de l'entreprise trop court"),
+    companyLocation: z.string().min(3, "Localisation invalide"),
+    description: z.string().min(5, "Description trop courte"),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm({
+    resolver: zodResolver(role === "candidate" ? candidateSchema : recruiterSchema),
+  });
+
+  const handleNextStep = () => {
+    const values = getValues();
+    const requiredFields = ["fullName", "email", "password", "phone", "city", "birthdate"];
+    
+    if (role === "recruiter") {
+      requiredFields.push("companyName", "companyLocation", "description");
+    }
+
+    const isValid = requiredFields.every(field => values[field]);
+    
+    if (!isValid) {
+      alert("Veuillez remplir tous les champs obligatoires avant de continuer.");
+      return;
+    }
+
+    setStep(2);
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      const endpoint = role === "candidate" ? `${URL}register` : `${URL}register-recruiter`;
+      const response = await axios.post(endpoint, { ...data, role });
+      console.log(response);
+      router.push("/auth/login");
+    } catch (error) {
+      console.log("Erreur lors de l'inscription", error);
+    }
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -73,137 +90,63 @@ const URL ="http://localhost:5800/api/auth/register"
                   <TabsTrigger value="recruiter">Recruteur</TabsTrigger>
                 </TabsList>
                 <TabsContent value="candidate">
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <Label htmlFor="name-candidate">Nom complet</Label>
-                      <Input
-                        id="name-candidate"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email-candidate">Adresse e-mail</Label>
-                      <Input
-                        id="email-candidate"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="password-candidate">Mot de passe</Label>
-                      <Input
-                        id="password-candidate"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="phone-candidate">Telephone</Label>
-                      <Input
-                        id="phone-candidate"
-                        type="tel"
-                        value={phone}
-                        name ="phone"
-                        onChange={(e) => setPhone(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="ville-candidate">Ville</Label>
-                      <Input
-                        id="ville-candidate"
-                        type="text"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <Button type="submit" className="w-full">
-                      S&apos;inscrire en tant que candidat
-                    </Button>
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <Input {...register("fullName")} placeholder="Nom complet" />
+                    {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName.message}</p>}
+                    
+                    <Input {...register("email")} placeholder="Email" type="email" />
+                    {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                    
+                    <Input {...register("password")} placeholder="Mot de passe" type="password" />
+                    {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+                    
+                    <Input {...register("phone")} placeholder="Téléphone" type="tel" />
+                    {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
+                    
+                    <Input {...register("city")} placeholder="Ville" />
+                    {errors.city && <p className="text-red-500 text-sm">{errors.city.message}</p>}
+                    
+                    <Input {...register("birthdate")} placeholder="Date de naissance" type="date" />
+                    {errors.birthdate && <p className="text-red-500 text-sm">{errors.birthdate.message}</p>}
+                    
+                    <Button type="submit" className="w-full">S'inscrire en tant que candidat</Button>
                   </form>
                 </TabsContent>
                 <TabsContent value="recruiter">
-                  <form  className="space-y-4">
-                    <div>
-                      <Label htmlFor="name-recruiter">Nom complet</Label>
-                      <Input
-                        id="name-recruiter"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email-recruiter">Adresse e-mail professionnelle</Label>
-                      <Input
-                        id="email-recruiter"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="password-recruiter">Mot de passe</Label>
-                      <Input
-                        id="password-recruiter"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="company">Entreprise</Label>
-                      <Input
-                        id="company"
-                        type="text"
-                        value={company}
-                        onChange={(e) => setCompany(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <Button type="submit" className="w-full">
-                      S&apos;inscrire en tant que recruteur
-                    </Button>
+                  <Progress value={step === 1 ? 50 : 100} className="mb-4" />
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    {step === 1 ? (
+                      <>
+                        <Input {...register("fullName")} placeholder="Nom complet" />
+                        <Input {...register("email")} placeholder="Email" type="email" />
+                        <Input {...register("password")} placeholder="Mot de passe" type="password" />
+                        <Input {...register("phone")} placeholder="Téléphone" type="tel" />
+                        <Input {...register("city")} placeholder="Ville" />
+                        <Input {...register("birthdate")} placeholder="Date de naissance" type="date" />
+                        
+                        <Button type="button" onClick={handleNextStep} className="w-full">Suivant</Button>
+                      </>
+                    ) : (
+                      <>
+                        <Input {...register("companyName")} placeholder="Nom de l'entreprise" />
+                        {errors.companyName && <p className="text-red-500 text-sm">{errors.companyName.message}</p>}
+                        
+                        <Input {...register("companyLocation")} placeholder="Localisation" />
+                        {errors.companyLocation && <p className="text-red-500 text-sm">{errors.companyLocation.message}</p>}
+                        
+                        <Input {...register("description")} placeholder="Description" />
+                        {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+                        
+                        <Button type="submit" className="w-full">S'inscrire en tant que recruteur</Button>
+                      </>
+                    )}
                   </form>
                 </TabsContent>
               </Tabs>
-              <Separator className="my-4" />
-              <Button onClick={handleGoogleSignIn} variant="outline" className="w-full">
-                <Image src="/google-logo.svg" alt="Google logo" width={20} height={20} className="mr-2" />
-                S&apos;inscrire avec Google
-              </Button>
             </CardContent>
-            <CardFooter>
-              <p className="text-center text-sm text-gray-600">
-                Déjà un compte ?{" "}
-                <Link href="/auth/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Se connecter
-                </Link>
-              </p>
-            </CardFooter>
           </Card>
         </div>
       </div>
-      <div className="relative hidden w-0 flex-1 lg:block">
-        <Image
-          src="/placeholder.svg?height=1080&width=1920"
-          alt="Image d'inscription"
-          layout="fill"
-          objectFit="cover"
-        />
-      </div>
     </div>
-  )
+  );
 }
-

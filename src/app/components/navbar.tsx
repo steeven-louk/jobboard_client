@@ -62,7 +62,7 @@ const Navbar = () => {
       <DropdownMenuContent className='flex flex-col'>
         <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem><LayoutDashboard />Tableau de bord</DropdownMenuItem>
+        <DropdownMenuItem className="inline-flex align-baseline gap-3"><LayoutDashboard /><Link href={"/recruiter/dashboard"}>Tableau de bord</Link></DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><UserCircle2/><Link href={"/profil"}>Profil</Link></DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><BriefcaseBusiness /><Link href={"/candidature"}>Candidatures</Link></DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><BookmarkIcon/><Link href={"/bookmark"}>Articles sauvegardés</Link></DropdownMenuItem>

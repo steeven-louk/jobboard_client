@@ -8,8 +8,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { JobCard } from "@/app/components/jobCard"
 import axios from "axios"
 import { useRouter } from "next/navigation"
-import ApplicationDetailPage from "../applications/[id]/page"
+// import ApplicationDetailPage from "../applications/[id]/page"
 // import JobCard from "@/app/jobs/components/job-card"
+import { useSession } from 'next-auth/react';
 
 
 export default function RecruiterDashboard() {
@@ -17,11 +18,12 @@ export default function RecruiterDashboard() {
   const [jobData, setJobData] = useState();
   const [companyJob, setCompanyJob] = useState();
 
-  const companyApplyUrl ="http://localhost:5800/api/company/company-applyJob/1";
-  const companyUrl ="http://localhost:5800/api/company/company-job/1";
+  const companyApplyUrl ="http://localhost:5800/api/company/company-applyJob";
+  const companyUrl ="http://localhost:5800/api/company/company-job";
 
-  const AUTH_TOKEN = typeof window !== "undefined"? localStorage.getItem("token") : null;
-  const parsedToken = AUTH_TOKEN ? JSON.parse(AUTH_TOKEN): null;
+     const {data:session} = useSession()
+     
+     const AUTH_TOKEN:string = session?.user?.token;
 
   const router = useRouter();
 
@@ -29,7 +31,7 @@ export default function RecruiterDashboard() {
     const getCompanyJob = async()=>{
         try {
             const response =await axios.get(`${companyUrl}`,{
-                headers: { Authorization: `Bearer ${parsedToken}` }
+                headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
             });
             if(response.status === 200){
                 const {data} = response
@@ -41,13 +43,13 @@ export default function RecruiterDashboard() {
         }
       }
     getCompanyJob();
-  }, [parsedToken])
+  }, [AUTH_TOKEN])
 
   useEffect(() => {
       const getData = async()=>{
     try {
         const response =await axios.get(`${companyApplyUrl}`,{
-            headers: { Authorization: `Bearer ${parsedToken}` }
+            headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
         });
         if(response.status === 200){
             const {data} = response
@@ -58,15 +60,15 @@ export default function RecruiterDashboard() {
     }
   }
     getData();
-  }, [parsedToken]);
+  }, [AUTH_TOKEN]);
 
-  const handleViewDetails = (application, jobTitle) => {
-    router.push(
-      `/recruiter/applications/${application.id}?data=${encodeURIComponent(
-        JSON.stringify(application)
-      )}&jobTitle=${encodeURIComponent(jobTitle)}`
-    );
-  };
+//   const handleViewDetails = (application, jobTitle) => {
+//     router.push(
+//       `/recruiter/applications/${application.id}?data=${encodeURIComponent(
+//         JSON.stringify(application)
+//       )}&jobTitle=${encodeURIComponent(jobTitle)}`
+//     );
+//   };
 
   return (
     <div className="container mx-auto px-4 py-8">

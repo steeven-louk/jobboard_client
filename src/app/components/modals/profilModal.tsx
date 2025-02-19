@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { PenIcon, PlusIcon } from "lucide-react";
 // import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
+import { useSession } from 'next-auth/react';
 
 interface Profil {
   id: number;
@@ -33,8 +34,11 @@ interface Props {
 }
 
 export default function ProfilModal({ profil }: Props) {
-  const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
+  // const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
   const BASE_URL = "http://localhost:5800/api/user/profil/update";
+  const {data:session} = useSession()
+  
+  const AUTH_TOKEN:string = session?.user?.token;
 
   // Définir les valeurs par défaut si aucune expérience n'est fournie (mode ajout)
   const [formData, setFormData] = useState<Profil>(

@@ -19,6 +19,8 @@ import { Separator } from '@/components/ui/separator'
 import { Checkbox } from '@/components/ui/checkbox'
 import axios from 'axios'
 
+import { useSession } from 'next-auth/react';
+
 interface Props {
     jobId:number,
     companyName:string
@@ -31,8 +33,11 @@ export const DrawerForm = ({jobId, companyName}: Props) => {
   // const AUTH_TOKEN ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzk0NzE2MjYsImV4cCI6MTczOTczMDgyNn0.qGvZPk67vnQgJKeJ0EPKtwcIXFkZecFMKmUbgGmOaiI"
   // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
   // const AUTH_TOKEN:string = JSON.parse(localStorage.getItem("token"));
-  const AUTH_TOKEN = typeof window !== "undefined"? localStorage.getItem("token") : null;
-  const parsedToken = AUTH_TOKEN ? JSON.parse(AUTH_TOKEN): null;
+  // const AUTH_TOKEN = typeof window !== "undefined"? localStorage.getItem("token") : null;
+  // const AUTH_TOKEN = AUTH_TOKEN ? JSON.parse(AUTH_TOKEN): null;
+      const {data:session} = useSession()
+      
+      const AUTH_TOKEN:string = session?.user?.token;
   // console.log("token", AUTH_TOKEN)
   const postJob = async(e: { preventDefault: () => void })=>{
     e.preventDefault();
@@ -43,13 +48,15 @@ export const DrawerForm = ({jobId, companyName}: Props) => {
         coverLetter:LM,
         cv_url:CV
       },{
-        headers: { Authorization: `Bearer ${parsedToken}` }
+        headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
       });
       console.log("jobsubmitted", job)
     } catch (error) {
       console.log(error)
+      setLM("")
+      setCv("")
     }
-    console.log(LM,CV);
+    // console.log(LM,CV);
   } 
   return (
         <div>

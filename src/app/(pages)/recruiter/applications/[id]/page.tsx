@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FileText, Paperclip } from "lucide-react"
 import axios from "axios";
+import { useSession } from 'next-auth/react';
 
 
 interface Application {
@@ -33,8 +34,9 @@ export default function ApplicationDetailPage() {
   const router = useRouter()
   const searchParams = useSearchParams();
 
-  const AUTH_TOKEN = typeof window !== "undefined"? localStorage.getItem("token") : null;
-  const parsedToken = AUTH_TOKEN ? JSON.parse(AUTH_TOKEN): null;
+    const {data:session} = useSession()
+    
+    const AUTH_TOKEN:string = session?.user?.token;
 
   useEffect(() => {
 const applications = searchParams.get("data");
@@ -53,10 +55,10 @@ const applications = searchParams.get("data");
   const handleStatusChange = async (newStatus: string) => {
     if (application) {
       setApplication({ ...application, status: newStatus })
-      const updateStatus = await axios.put(`http://localhost:5800/api/company/company-jobStatus/1/${application.id}`,{
+      const updateStatus = await axios.put(`http://localhost:5800/api/company/company-jobStatus/${application.id}`,{
         status:newStatus
       },{
-        headers: { Authorization: `Bearer ${parsedToken}` }
+        headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
       })
       if(updateStatus.status ===200){
 

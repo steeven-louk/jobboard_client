@@ -12,10 +12,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import axios from "axios"
-
+import {signIn} from "next-auth/react"
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
   const [role, setRole] = useState("candidate")
   const router = useRouter()
 
@@ -23,19 +24,30 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
+      setError("");
     try {
-        if(!email || !password){
-            console.log("email ou mot de passe incorrect");
+        // if(!email || !password){
+        //     console.log("email ou mot de passe incorrect");
+        // }
+        const result = await signIn("credentials",{
+          email,
+          password,
+          redirect:false
+        })
+        if (result?.error) {
+          setError("Identifiants incorrects");
+        } else {
+          router.push("/");
         }
-        const login = await axios.post(URL,{
-            email,
-            password
-        });
-        if(login.status ===200){
-            console.log(login)
-            router.push("/")
-            localStorage.setItem("token",JSON.stringify(login.data.token))
-        }
+        // const login = await axios.post(URL,{
+        //     email,
+        //     password
+        // });
+        // if(login.status ===200){
+        //     console.log(login)
+        //     router.push("/")
+        //     localStorage.setItem("token",JSON.stringify(login.data.token))
+        // }
     // Ici, vous implémenteriez la logique de connexion
     console.log("Tentative de connexion avec:", { email, password, role })
     // Après une connexion réussie, redirigez l'utilisateur
@@ -66,6 +78,7 @@ export default function LoginPage() {
                   <TabsTrigger value="recruiter">Recruteur</TabsTrigger>
                 </TabsList>
                 <TabsContent value="candidate">
+                  {error && <p className="text-red-500">{error}</p>}
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                       <Label htmlFor="email-candidate">Adresse e-mail</Label>

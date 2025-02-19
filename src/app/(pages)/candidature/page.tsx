@@ -4,16 +4,17 @@ import { JobCard } from '@/app/components/jobCard';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 
-// interface Props {
-    
-// }
+import { useSession } from 'next-auth/react';
+
 
 const Candidature = () => {
     const [getApplication, setGetApplication] = useState<any>();
     // const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
     const URL = "http://localhost:5800/api/user/applications/";
-    const AUTH_TOKEN:string = JSON.parse(localStorage.getItem("token"));
-
+    // const AUTH_TOKEN:string = JSON.parse(localStorage.getItem("token"));
+   const {data:session} = useSession()
+        // const userRole = session?.user?.role
+        const AUTH_TOKEN:string = session?.user?.token;
     
     useEffect(() => {
         const handleGetApplication =async()=>{
@@ -31,7 +32,7 @@ const Candidature = () => {
             }
         }
         handleGetApplication();
-    }, [])
+    }, [AUTH_TOKEN])
     return (
         <div>
             <HeaderComponent pageName="Candidatures"/>
@@ -42,7 +43,7 @@ const Candidature = () => {
                                         <JobCard path={""} job={apk?.job} />
                                     </div>
                                     ))
-                                ):(<p>rajouter des favoris</p>)}
+                                ):(<p>Aucune candidature</p>)}
             </div>
         </div>
     )

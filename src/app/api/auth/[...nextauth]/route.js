@@ -1,0 +1,61 @@
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import axios from "axios";
+
+export const authOptions = {
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Mot de passe", type: "password" }
+      },
+      async authorize(credentials) {
+        try {
+          const response = await axios.post("http://localhost:5800/api/auth/login", {
+            email: credentials.email,
+            password: credentials.password
+          });
+
+          if (response.data.token) {
+            return {
+              id: response.data.user.id,
+              name: response.data.user.fullName,
+              email: response.data.user.email,
+              role: response.data.user.role,
+              token: response.data.token,
+            };
+          }
+        } catch (error) {
+          throw new Error("Email ou mot de passe incorrect");
+        }
+        return null;
+      }
+    })
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+        token.token = user.token;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.role = token.role;
+        session.user.token = token.token;
+      }
+      return session;
+    }
+  },
+  pages: {
+    signIn: "auth/login"
+  },
+  secret: process.env.NEXTAUTH_SECRET
+};
+
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

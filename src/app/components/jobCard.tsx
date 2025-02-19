@@ -1,3 +1,4 @@
+"use client"
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card'
@@ -6,6 +7,7 @@ import Link from 'next/link'
 import React from 'react'
 import { formatedRelativeTime } from '../utils/formatRelativeTime'
 
+import { useSession } from 'next-auth/react';
 
 interface jobCard{
     id: number
@@ -24,6 +26,8 @@ interface jobCard{
 export const JobCard = ({path,job}:{path: string; job: jobCard}) => {
     // alert(path)
     console.log("jpoCard",job)
+      const {data:session} = useSession()
+      const userRole = session?.user?.role;
 // const d =job.createdAt
     return (
         <Card className='card shadow-md hover:shadow-slate-400 transition-shadow p-3 shadow-slate-700 rounded-md my-5'>
@@ -31,7 +35,7 @@ export const JobCard = ({path,job}:{path: string; job: jobCard}) => {
                 <Badge className="text-base  color-primary px-1 rounded-md bg-green-300">
                    {formatedRelativeTime(job?.createdAt)}
                 </Badge>
-                <BookmarkPlus className='w-fit cursor-pointer'/>
+              {userRole ==="RECRUITER"  && <BookmarkPlus className='w-fit cursor-pointer'/>}
             </div>
             <CardContent className="card-header">
                 <div className="flex gap-4">

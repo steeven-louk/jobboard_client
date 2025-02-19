@@ -11,7 +11,7 @@ import { Slash } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import React, { useState, useEffect, use } from 'react';
 import axios from "axios";
-
+import { useSession } from 'next-auth/react';
 const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
 
     const path = usePathname();
@@ -23,17 +23,20 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
     // const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
 
     // const AUTH_TOKEN = localStorage.getItem("token");
-    const AUTH_TOKEN = typeof window !== "undefined"? localStorage.getItem("token") : null;
-    const parsedToken = AUTH_TOKEN ? JSON.parse(AUTH_TOKEN): null;
+    // const AUTH_TOKEN = typeof window !== "undefined"? localStorage.getItem("token") : null;
+    // const AUTH_TOKEN = AUTH_TOKEN ? JSON.parse(AUTH_TOKEN): null;
+        const {data:session} = useSession()
+        const userRole = session?.user?.role
+        const AUTH_TOKEN:string = session?.user?.token;
     // console.log("token",AUTH_TOKEN)
     const addToFavorie = async () => {
-        if(!parsedToken){
+        if(!AUTH_TOKEN){
             console.log("Aucun token trouvé, veuillez vous connecter.")
             return;
         }
       try {
         const response = await axios.post(`${URL}/add_favorie/${id}`, {}, {
-          headers: { Authorization: `Bearer ${parsedToken}` }
+          headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
         });
     
         if (response.status === 200) {
@@ -49,7 +52,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
     };
     
     
-    // console.log("jobDetail",getJobDetail.company)
+    console.log("jobDetail",getJobDetail)
 
     useEffect(() => {
         if(!id)return;
@@ -117,9 +120,9 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
                     <aside className='md:col-span-2 md:col-end-7 p-3'>
                         <Card className="card p-3 justify-end md:sticky md:top-11 shadow-md shadow-black">
                             <CardTitle className="text-xl font-bold">Postuler</CardTitle>
-                            <CardDescription className='my-3'>Intéressé(e) par ce poste de Développeur Full Stack chez TechCorp ?</CardDescription>
+                            <CardDescription className='my-3'>Intéressé(e) par ce poste de {getJobDetail?.title} chez {getJobDetail?.company.name} ?</CardDescription>
                             <div className="btn-group flex md:flex-col gap-4 mx-auto justify-center items-center">
-                                <DrawerForm jobId={id} companyName={getJobDetail?.company.name} />
+                             {userRole ==="USER" &&  <DrawerForm jobId={id} companyName={getJobDetail?.company.name} />}
                                 <Button onClick={addToFavorie} variant={'outline'} className='border p-2 px-4 rounded-md'>
                                     Sauvegarder l&apos;offre
                                 </Button>

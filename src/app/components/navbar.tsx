@@ -14,6 +14,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { signIn, signOut, useSession } from 'next-auth/react';
+
 
 
 const navItems = [
@@ -26,11 +28,14 @@ const navItems = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   // const isConnected:boolean = false;
-
+  const {data:session,status} = useSession()
+  const userRole = session?.user?.role;
+console.log(status)
   return (
     <nav className='container mx-auto'>
       <div className='w-full max-w-[98%] mx-auto p-3 navbar align-baseline flex justify-between'>
         <span className="navbar-brand inline-flex gap-2"><BriefcaseBusinessIcon />Job Portal</span>
+        
           <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
             {navItems.map((item) => (
               <Link
@@ -62,20 +67,27 @@ const Navbar = () => {
       <DropdownMenuContent className='flex flex-col'>
         <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="inline-flex align-baseline gap-3"><LayoutDashboard /><Link href={"/recruiter/dashboard"}>Tableau de bord</Link></DropdownMenuItem>
+      {userRole === "RECRUITER" &&  <DropdownMenuItem className="inline-flex align-baseline gap-3"><LayoutDashboard /><Link href={"/recruiter/dashboard"}>Tableau de bord</Link></DropdownMenuItem>}
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><UserCircle2/><Link href={"/profil"}>Profil</Link></DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><BriefcaseBusiness /><Link href={"/candidature"}>Candidatures</Link></DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><BookmarkIcon/><Link href={"/bookmark"}>Articles sauvegardés</Link></DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><Settings /><Link href={"/settings"}>Paramètres</Link></DropdownMenuItem>
-        <DropdownMenuItem className='bg-red-500 text-white shadow-sm'><LogOut />Déconnexion</DropdownMenuItem>
+        <DropdownMenuItem className='bg-red-500 text-white shadow-sm' onClick={()=>signOut()}><LogOut />Déconnexion</DropdownMenuItem>
         <Separator className='my-2'/>
         <DropdownMenuItem>Langue</DropdownMenuItem>
 
       </DropdownMenuContent>
     </DropdownMenu>
-            <Button asChild className='hidden md:block'>
-              <Link href={"/auth/login"}>Se connecter</Link>
+    {status === "authenticated" &&
+     <p className='capitalize font-semibold top-1 relative'>{session?.user?.name}</p>
+      }
+      {status === "unauthenticated" &&
+      
+            <Button asChild className='hidden md:block' onClick={()=>signIn()}>
+              Se connecter
             </Button>
+      }
+            
           </div>
           <div className="sm:hidden flex items-center">
             
@@ -105,7 +117,7 @@ const Navbar = () => {
                   <Button asChild>
                     <Link href={''}>Employers</Link>
                   </Button>
-                  <Button className='rounded-md p-1 bg-[#309689] px-3 font-semibold'>Se connecter</Button> 
+                  {/* {!status:string === "authenticated" && <Button className='rounded-md p-1 bg-[#309689] px-3 font-semibold' onClick={()=>signIn()}>Se connecter</Button>}  */}
                 </div>
               </SheetContent>
             </Sheet>

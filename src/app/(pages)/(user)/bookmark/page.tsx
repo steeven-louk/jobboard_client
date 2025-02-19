@@ -4,13 +4,16 @@ import { JobCard } from '@/app/components/jobCard'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 
+import { useSession } from 'next-auth/react';
 
 
 const Bookmark = () => {
     const [getBookmark, setGetBookmark] = useState<any>();
     // const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
     const URL = "http://localhost:5800/api/user/favories";
-    const AUTH_TOKEN = JSON.parse(localStorage.getItem("token"));
+      const {data:session} = useSession()
+            // const userRole = session?.user?.role
+            const AUTH_TOKEN:string = session?.user?.token;
     
     useEffect(() => {
         const handleGetBookmark =async()=>{
@@ -28,7 +31,7 @@ const Bookmark = () => {
             }
         }
         handleGetBookmark();
-    }, [])
+    }, [AUTH_TOKEN])
     return (
         <div>
                         <HeaderComponent pageName="Bookmark" />
@@ -40,7 +43,7 @@ const Bookmark = () => {
                         <JobCard path={""} job={favoris?.job} />
                     </div>
                     ))
-                ):(<p>rajouter des favoris</p>)}
+                ):(<p>Aucun favoris trouvé</p>)}
                 {/* <JobCard path={path} job={getJobDetail} /> */}
 
                 

@@ -11,51 +11,52 @@ import axios from 'axios'
 import { Building, Cake, Globe2, IdCard, Mail, PenIcon, Phone, Plus, Trash2 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
-// interface Props {
-    
-// }
+import { useSession } from 'next-auth/react';
+
 
  const Profil = () => {
     const [userDetail, setUserDetail] = useState<any>();
+    const {data:session} = useSession()
     // const AUTH_TOKEN ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzk0NzE2MjYsImV4cCI6MTczOTczMDgyNn0.qGvZPk67vnQgJKeJ0EPKtwcIXFkZecFMKmUbgGmOaiI"
     const URL = "http://localhost:5800/api/user/profil/";
     const EXP_URL = "http://localhost:5800/api/user/profil/experience";
-    const AUTH_TOKEN:string = JSON.parse(localStorage.getItem("token"));
+    // const AUTH_TOKEN:string = JSON.parse(localStorage.getItem("token"));
+    const AUTH_TOKEN:string = session?.user?.token;
     // console.log("AUTH_", AUTH_TOKEN)
     // console.log("AUTH_2", JSON.parse(AUTH_TOKEN2))
+    const userRole = session?.user?.role
+    // console.log(AUTH_TOKEN)
 
-
-    const handleGetProfil =async()=>{
-    try {
-        const user = await axios.get(URL, {
-            headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
-          });
-          if(user.status === 200){
-            const {data} =  user
-            setUserDetail(data?.user);
-            //   console.log(data.user);
-          }
-    } catch (error) {
-        console.log("erreur lors de la recuperation du profil" ,error)
-    }
-}
     const deleteExperience =async(id:number)=>{
         try {
             const experience = await axios.delete(`${EXP_URL}/${id}`, {
                 headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
               });
              console.log(experience);
-             handleGetProfil();
+            //  handleGetProfil();
         } catch (error) {
             console.log("erreur lors de la suppression de l'experience" ,error)
         }
     }
     
     useEffect(() => {
-       
+        const handleGetProfil =async()=>{
+            try {
+                const user = await axios.get(URL, {
+                    headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
+                  });
+                  if(user.status === 200){
+                    const {data} =  user
+                    setUserDetail(data?.user);
+                    //   console.log(data.user);
+                  }
+            } catch (error) {
+                console.log("erreur lors de la recuperation du profil" ,error)
+            }
+        }
 
         handleGetProfil();
-    }, []);
+    }, [AUTH_TOKEN]);
    
 
 
@@ -97,6 +98,8 @@ import React, { useEffect, useState } from 'react'
                 </Card>
                 <Separator className='my-5'/>
 
+{userRole === "USER" &&
+<>
                 <section className='my-4 shadow-md p-3 rounded-md bg-white'>
                     <div className="flex gap-4 md:gap-0 align-baseline md:flex-row flex-col justify-between">
                         <div>
@@ -159,89 +162,6 @@ import React, { useEffect, useState } from 'react'
                     )) : (
                         <p>Aucune expérience enregistrée.</p>
                     )}
-                    <Card className='p-4 border-none shadow-none'>
-                        <div className='flex justify-between'>
-                            <div className="flex flex-col align-baseline gap-4">
-                                <span>Intitulé de poste</span>
-                                <CardTitle>Developpeur de jardin</CardTitle>
-                            </div>
-                            <div className="btn-group inline-flex gap-3">
-                                <Button className='inline-flex md:gap-4 md:align-baseline'><PenIcon/> <span className='md:block hidden'>Modifier</span></Button>
-                                <Button variant={"destructive"}><Trash2/></Button>
-                            </div>
-                        </div>
-                        {/* flex flex-col md:flex-row */}
-                        <CardContent className='mt-6 grid gap-4 md:gap-0'>
-                            <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Entreprise ou client</span>
-                                <p className=' font-semibold inline-flex align-baseline'><Building />L2R service consulting</p>
-                            </div>
-                            <div className="grid md:mt-4 md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Localisation</span>
-                                <p className='relative text-start'>Paris, France</p>
-                            </div>
-                            <div className="grid md:my-4 md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Type de contrat</span>
-                                <p className=''>Stage</p>
-                            </div>
-                            <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Date</span>
-                                <p className=''>De septembre 2021 a decembre 2022</p>
-                            </div>
-                            <div className="flex md:my-4 flex-col md:flex-row  gap-1 md:gap-5">
-                                <span className='text-gray-500'>Description, missions</span>
-                                <p className='md:ml-[7.5rem]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores, ipsa.</p>
-                            </div>
-                            <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Compétences</span>
-                                <p className='relative '><Badge>Wordpress</Badge></p>
-                            </div>
-                            {/* <div className="flex flex-col gap-1 md:gap-5"></div> */}
-                        </CardContent>
-                        <Separator className='my-5'/>
-                    </Card>
-
-                    <Card className='p-4 border-none shadow-none'>
-                        <div className='flex justify-between'>
-                            <div className="flex flex-col align-baseline gap-4">
-                                <span>Intitulé de poste</span>
-                                <CardTitle>Developpeur de jardin</CardTitle>
-                            </div>
-                            <div className="btn-group inline-flex gap-3">
-                                <Button className='inline-flex md:gap-4 md:align-baseline'><PenIcon/> <span className='md:block hidden'>Modifier</span></Button>
-                                <Button variant={"destructive"}><Trash2/></Button>
-                            </div>
-                        </div>
-                        {/* flex flex-col md:flex-row */}
-                        <CardContent className='mt-6 grid gap-4 md:gap-0'>
-                            <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Entreprise ou client</span>
-                                <p className=' font-semibold inline-flex align-baseline'><Building />L2R service consulting</p>
-                            </div>
-                            <div className="grid md:mt-4 md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Localisation</span>
-                                <p className='relative text-start'>Paris, France</p>
-                            </div>
-                            <div className="grid md:my-4 md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Type de contrat</span>
-                                <p className=''>Stage</p>
-                            </div>
-                            <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Date</span>
-                                <p className=''>De septembre 2021 a decembre 2022</p>
-                            </div>
-                            <div className="flex md:my-4 flex-col md:flex-row  gap-1 md:gap-5">
-                                <span className='text-gray-500'>Description, missions</span>
-                                <p className='md:ml-[7.5rem]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores, ipsa.</p>
-                            </div>
-                            <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Compétences</span>
-                                <p className='relative '><Badge>Wordpress</Badge></p>
-                            </div>
-                            {/* <div className="flex flex-col gap-1 md:gap-5"></div> */}
-                        </CardContent>
-                        <Separator className='my-5'/>
-                    </Card>
                 </section>
 
                 <section className='my-5 shadow-md p-3 rounded-md bg-white'>
@@ -315,48 +235,10 @@ import React, { useEffect, useState } from 'react'
                     )) : (
                         <p>Aucun diplome enregistrée.</p>
                     )}
-                    <Card className='p-4 border-none shadow-none'>
-                        <div className='flex justify-between'>
-                            <div className="flex flex-col align-baseline gap-4">
-                                <span>Intitulé de poste</span>
-                                <CardTitle>Developpeur de jardin</CardTitle>
-                            </div>
-                            <div className="btn-group inline-flex gap-3">
-                                <Button className='inline-flex md:gap-4 md:align-baseline'><PenIcon/> <span className='md:block hidden'>Modifier</span></Button>
-                                <Button variant={"destructive"}><Trash2/></Button>
-                            </div>
-                        </div>
-                        {/* flex flex-col md:flex-row */}
-                        <CardContent className='mt-6 grid gap-4 md:gap-0'>
-                            <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Entreprise ou client</span>
-                                <p className=' font-semibold inline-flex align-baseline'><Building />L2R service consulting</p>
-                            </div>
-                            <div className="grid md:mt-4 md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Localisation</span>
-                                <p className='relative text-start'>Paris, France</p>
-                            </div>
-                            <div className="grid md:my-4 md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Type de contrat</span>
-                                <p className=''>Stage</p>
-                            </div>
-                            <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Date</span>
-                                <p className=''>De septembre 2021 a decembre 2022</p>
-                            </div>
-                            <div className="flex md:my-4 flex-col md:flex-row  gap-1 md:gap-5">
-                                <span className='text-gray-500'>Description, missions</span>
-                                <p className='md:ml-[7.5rem]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores, ipsa.</p>
-                            </div>
-                            <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                <span className='text-gray-500'>Compétences</span>
-                                <p className='relative '><Badge>Wordpress</Badge></p>
-                            </div>
-                            {/* <div className="flex flex-col gap-1 md:gap-5"></div> */}
-                        </CardContent>
-                        <Separator className='my-5'/>
-                    </Card>
                 </section>
+</>
+
+                }
             </div>
         </>
     )

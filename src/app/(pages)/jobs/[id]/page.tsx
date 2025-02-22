@@ -98,21 +98,21 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
                     <section className='md:col-start-1 md:col-end-5 mt-4'>
                         <Card className="p-2">
                             <CardTitle className='capitalize text-2xl font-bold mb-5'>Job description</CardTitle>
-                            <CardContent>
+                            <CardContent className='whitespace-break-spaces'>
                                 {getJobDetail?.description || "Aucune description disponible."}
                             </CardContent>
                         </Card>
                         <Separator className='my-5 font-bold' />
                         <Card className="p-2">
                             <CardTitle className='capitalize text-2xl font-bold mb-5'>Skills</CardTitle>
-                            <CardContent>
+                            <CardContent className='whitespace-break-spaces'>
                                 {getJobDetail?.skill || "Aucune compétence spécifiée."}
                             </CardContent>
                         </Card>
                         <Separator className='my-5 font-bold' />
                         <Card className="p-2 mb-5">
                             <CardTitle className='capitalize text-2xl font-bold mb-5'>Job requirements</CardTitle>
-                            <CardContent>
+                            <CardContent  className='whitespace-break-spaces'>
                                 {getJobDetail?.requirement || "Aucune exigence spécifiée."}
                             </CardContent>
                         </Card>

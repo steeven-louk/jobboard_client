@@ -40,9 +40,9 @@ export const JobCard = ({path,job}:{path: string; job: jobCard}) => {
             <CardContent className="card-header">
                 <div className="flex gap-4">
                     <span className="icon"><Globe2/></span>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col overflow-hidden">
                         <CardTitle className='capitalize font-bold text-xl'>{job?.title}</CardTitle>
-                        <CardDescription className='text-sm'>{job?.description}</CardDescription>
+                        <CardDescription className='text-sm truncate w-[50rem]'>{job?.description}</CardDescription>
                     </div>
                 </div>
             </CardContent>

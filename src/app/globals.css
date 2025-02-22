@@ -84,5 +84,6 @@ header{
   background-size: cover;
   background-position: top center;
   box-shadow: 0 0 5px #000;
+  background-attachment: fixed;
   /* background: rgba(125, 115, 120, 0.336) */
 }

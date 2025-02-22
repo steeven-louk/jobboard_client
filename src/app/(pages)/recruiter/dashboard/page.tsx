@@ -89,7 +89,7 @@ export default function RecruiterDashboard() {
                   <JobCard key={job.id} job={job} path={""} />
                 ))}
               </div>
-              <Link href="/jobs/new" className="block mt-4">
+              <Link href="/companies/jobs/new" className="block mt-4">
                 <Button>Publier une nouvelle offre</Button>
               </Link>
             </CardContent>

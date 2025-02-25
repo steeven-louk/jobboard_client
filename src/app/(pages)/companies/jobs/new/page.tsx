@@ -15,7 +15,9 @@ import {
 } from "@/components/ui/select";
 import axios from "axios";
 import { useSession } from 'next-auth/react';
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardFooter } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { cn } from "@/lib/utils";
 
 
 interface jobType{
@@ -28,8 +30,21 @@ interface jobType{
     requirement: string
     duration: string
     expiration_date: Date | string
+    selectedOffer: string
 }
 
+interface Offer {
+  title: string
+  description: string
+  price: number
+  duration: number
+}
+
+const offerTypes: Offer[] = [
+  { title: "Offre Basic", description: "Visibilité standard", price: 50, duration: 30 },
+  { title: "Offre Premium", description: "Visibilité accrue", price: 100, duration: 60 },
+  { title: "Offre Gold", description: "Visibilité maximale", price: 200, duration: 90 },
+]
 export default function NewJobPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -46,6 +61,7 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
     requirement: "",
     duration: "",
     expiration_date: "",
+    selectedOffer: offerTypes[0],
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -78,18 +94,22 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
       console.error("Erreur:", error);
     }
   };
-  console.log(jobData.expiration_date)
+  
+  const handleOfferChange = (value: string) => {
+    const selectedOffer = offerTypes.find((offer) => offer.title === value) || offerTypes[0]
+    setJobData((prev) => ({ ...prev, selectedOffer }))
+  }
 
   return (
     <div className="container  mx-auto px-4 py-8 ">
       <h1 className="text-3xl font-bold mb-6 text-center">Ajouter une nouvelle offre d&apos;emploi</h1>
 
-      <Card className="container shadow-md shadow-black p-3">
-        <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-3xl mx-auto">
+      {/* <Card className="container p-3"> */}
+        {/* <CardContent className=""> */}
+        <form onSubmit={handleSubmit} className="shadow-md shadow-black rounded-md p-4 space-y-4 max-w-3xl mx-auto">
         {step === 1 && (
           <>
-            <div className="form-group grid grid-cols-1 space-x-3 md:grid-cols-2">
+            <div className="form-group grid grid-cols-1 gap-2 md:gap-0 md:space-x-3 md:grid-cols-2">
                 <div>
                 <Label htmlFor="title">Titre du poste</Label>
                 <Input 
@@ -113,7 +133,7 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
                 </div>
             </div>
 
-            <div className="form-group grid grid-cols-1 space-x-3 md:grid-cols-2">
+            <div className="form-group grid grid-cols-1 gap-2 md:gap-0 md:space-x-3 md:grid-cols-2">
                             <div>
               <Label htmlFor="salary">Salaire</Label>
               <Input 
@@ -213,28 +233,65 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
             </div>
           </>
         )}
+        {step ===3 && (
+          <>
+            <div className="space-y-4">
+              <Label className="text-xl font-semibold">Choisissez votre offre de publication</Label>
+              <RadioGroup onValueChange={handleOfferChange} defaultValue={offerTypes[0].title}>
+                {offerTypes.map((offer, index) => (
+                  <div key={index} className="relative">
+                    <RadioGroupItem value={offer.title} id={`offer-${index}`} className="sr-only" />
+                    <Label htmlFor={`offer-${index}`} className="flex flex-col cursor-pointer">
+                      <Card className={cn(offer.value ===offer.duration ? "border-green-500 bg-green-500":"hover:bg-secondary/50","p-4 border-2 transition-all")}>
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="font-semibold text-lg">
+                              {offer.duration} jours
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              {offer.description}
+                            </p>
+                          </div>
+                        <div className="text-right">
+                          <p className="text-xl font-bold">{offer.price}€</p>
+                          <p>{(offer.price / offer.duration ).toFixed(2)} / jours</p>
+                        </div>
+                        </div>
+                      </Card>
+                      {/* <div className="font-semibold">{offer.title}</div>
+                      <div className="text-sm text-gray-500">{offer.description}</div>
+                      <div className="text-sm">
+                        Prix: {offer.price}€ - Durée: {offer.duration} jours
+                      </div> */}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+          </>
+        )}
 
         {/* Navigation entre les étapes */}
         <CardFooter>
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between gap-4 md:gap-0 mt-4">
           {step > 1 && (
             <Button type="button" onClick={() => setStep(step - 1)}>
               Précédent
             </Button>
           )}
           
-          {step < 2 ? (
-            <Button type="button" onClick={() => setStep(step + 1)}>
+          {step < 3 ? (
+            <Button type="button" className="ml-5" onClick={() => setStep(step + 1)}>
               Suivant
             </Button>
           ) : (
-            <Button type="submit">Publier l&apos;offre</Button>
+            <Button type="submit" className="bg-green-500 ml-5">Publier l&apos;offre</Button>
           )}
         </div>
         </CardFooter>
       </form>
-        </CardContent>
-      </Card>
+        {/* </CardContent> */}
+      {/* </Card> */}
     </div>
   );
 }

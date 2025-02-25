@@ -18,7 +18,7 @@ export function HomeSearchBar() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex search-box w-full justify-center items-center">
+    <form onSubmit={handleSubmit} className="flex sm:flex-col sm:gap-2 search-box w-full justify-center items-center">
     <div className=' max-w-[40rem] w-full bg-white inline-flex gap-3 items-center p-4 rounded-md rounded-r-none'>
         <Search className='text-gray-600'/>
         <Input type="text" 
@@ -29,7 +29,7 @@ export function HomeSearchBar() {
           />
         <X onClick={()=>setSearchTerm("")} className=' text-black cursor-pointer'/>
         </div>
-        <Button type="submit" className='inline-flex font-bold items-center gap-2 border h-[4.25rem]  px-2 rounded-r-md rounded-l-none bg-[#309689]'>
+        <Button type="submit" className='inline-flex font-bold items-center gap-2 border h-[3.25rem]  px-2 rounded-r-md sm:rounded-l-md md:rounded-l-none bg-[#309689]'>
           <Search className='h-4 w-4 mr-2'/>
           Trouver un job
         </Button>

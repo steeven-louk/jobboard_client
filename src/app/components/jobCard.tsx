@@ -35,11 +35,11 @@ export const JobCard = ({path,job}:{path: string; job: jobCard}) => {
                 <Badge className="text-base  color-primary px-1 rounded-md bg-green-300">
                    {formatedRelativeTime(job?.createdAt)}
                 </Badge>
-              {userRole ==="RECRUITER"  && <BookmarkPlus className='w-fit cursor-pointer'/>}
+              {userRole ==="USER"  && <BookmarkPlus className='w-fit cursor-pointer'/>}
             </div>
             <CardContent className="card-header">
                 <div className="flex gap-4">
-                    <span className="icon"><Globe2/></span>
+                    <span className="icon"><Globe2 size={30}/></span>
                     <div className="flex flex-col overflow-hidden">
                         <CardTitle className='capitalize font-bold text-xl'>{job?.title}</CardTitle>
                         <CardDescription className='text-sm truncate w-[50rem]'>{job?.description}</CardDescription>

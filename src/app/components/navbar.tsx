@@ -15,13 +15,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { useRouter } from "next/navigation";
 
 
 
 const navItems = [
   { name: "Accueil", href: "/" },
   { name: "Offres d'emploi", href: "/jobs" },
-  // { name: "Entreprises", href: "/companies" },
+  { name: "Entreprises", href: "/companies" },
   { name: "À propos", href: "/about" },
   { name: "Nos Contact", href: "/contact" },
 ]
@@ -29,8 +30,19 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   // const isConnected:boolean = false;
   const {data:session,status} = useSession()
+
   const userRole = session?.user?.role;
-console.log(status)
+  const companyId = session?.user?.companyId;
+
+  const router = useRouter();
+
+  const handleProtectedAction = () => {
+    if (!session) {
+      router.push("auth/login");
+  };
+}
+console.log("sesssion", session)
+
   return (
     <nav className='container mx-auto'>
       <div className='w-full max-w-[98%] mx-auto p-3 navbar align-baseline flex justify-between'>
@@ -63,30 +75,34 @@ console.log(status)
           <div className="flex align-baseline gap-3">
             <div className="profile flex align-baseline gap-3">
               <DropdownMenu>
-      <DropdownMenuTrigger><UserCircle2 size={30}/></DropdownMenuTrigger>
+      <DropdownMenuTrigger><UserCircle2 onClick={()=>handleProtectedAction} size={30}/></DropdownMenuTrigger>
       <DropdownMenuContent className='flex flex-col'>
         <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
         <DropdownMenuSeparator />
       {userRole === "RECRUITER" &&  <DropdownMenuItem className="inline-flex align-baseline gap-3"><LayoutDashboard /><Link href={"/recruiter/dashboard"}>Tableau de bord</Link></DropdownMenuItem>}
+      {userRole === "RECRUITER" &&  <DropdownMenuItem className="inline-flex align-baseline gap-3"><LayoutDashboard /><Link href={`/companies/${companyId}`}>Mon entreprise</Link></DropdownMenuItem>}
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><UserCircle2/><Link href={"/profil"}>Profil</Link></DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><BriefcaseBusiness /><Link href={"/candidature"}>Candidatures</Link></DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><BookmarkIcon/><Link href={"/bookmark"}>Articles sauvegardés</Link></DropdownMenuItem>
         <DropdownMenuItem className="inline-flex align-baseline gap-3"><Settings /><Link href={"/settings"}>Paramètres</Link></DropdownMenuItem>
-        <DropdownMenuItem className='bg-red-500 text-white shadow-sm' onClick={()=>signOut()}><LogOut />Déconnexion</DropdownMenuItem>
+      {status === "authenticated" && <DropdownMenuItem className='bg-red-500 text-white shadow-sm' onClick={()=>signOut()}><LogOut />Déconnexion</DropdownMenuItem>}
         <Separator className='my-2'/>
         <DropdownMenuItem>Langue</DropdownMenuItem>
 
       </DropdownMenuContent>
     </DropdownMenu>
+    <>
     {status === "authenticated" &&
      <p className='capitalize font-semibold top-1 relative'>{session?.user?.name}</p>
       }
-      {status === "unauthenticated" &&
+       {!session &&
       
             <Button asChild className='hidden md:block' onClick={()=>signIn()}>
               Se connecter
             </Button>
-      }
+}
+      
+    </>
             
           </div>
           <div className="sm:hidden flex items-center">

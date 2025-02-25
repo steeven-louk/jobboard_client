@@ -13,19 +13,29 @@ import { useSearchParams } from "next/navigation";
 import { JobFilters } from "@/app/components/jobFilter";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
 
 export default function Jobs() {
   const searchParams = useSearchParams();
   const initialSearchTerm = searchParams.get("search") || "";
   const JOBS_PER_PAGE = 6;
 
+  interface jobType{
+    id:string
+    title: string
+    description: string
+    company: string
+    jobType: string
+    salary: string
+    createdAt: string
+  }
   // const [getJobs, setJobs] = useState<any[]>([]);
-  const [getJobs, setJobs] = useState<
-    { id: string; title: string; description: string; company: string; jobType: string; salary: string; createdAt: string }[]
-  >([]);
+  const [getJobs, setJobs] = useState<jobType[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [sortBy, setSortBy] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+
   const [contractTypes, setContractTypes] = useState({
     cdi: false,
     cdd: false,
@@ -39,6 +49,9 @@ export default function Jobs() {
   });
   useEffect(() => {
     setSearchTerm(initialSearchTerm);
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 1500)
   }, [initialSearchTerm]);
 
   // const URL: string = "http://localhost:5800/";
@@ -49,6 +62,9 @@ export default function Jobs() {
         const response = await axios.get("http://localhost:5800/api/jobs");
         if (response.status === 200) {
           setJobs(response.data.jobs);
+          setTimeout(() => {
+            setIsLoading(false)
+          }, 1500)
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des jobs :", error);
@@ -235,13 +251,19 @@ export default function Jobs() {
             </Select> */}
             </div>
             <div className="job_component mt-5">
-              {paginatedJobs.length > 0 ? (
+              {/* {paginatedJobs.length > 0 ? ( */}
+              {isLoading ? (
+            <div className="space-y-4">
+              {[...Array(JOBS_PER_PAGE)].map((_, index) => (
+                <JobCardSkeleton key={index} />
+              ))}
+            </div>
+          ) :(
                 paginatedJobs.map((job) => (
                   <JobCard key={job.id} job={job} path="" />
                 ))
-              ) : (
-                <p>Aucun emploi trouvé.</p>
-              )}
+              ) }
+              {paginatedJobs.length ===0 && <p>Aucun emploi trouvé.</p>}
             </div>
             <div className="pagination w-full">
               {totalPages > 1 && (

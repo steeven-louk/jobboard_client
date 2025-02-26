@@ -12,6 +12,9 @@ import { Building, Cake, Globe2, IdCard, Mail, PenIcon, Phone, Plus, Trash2 } fr
 import React, { useEffect, useState } from 'react'
 
 import { useSession } from 'next-auth/react';
+import { getUserProfile } from '@/app/services/profileService'
+import { handleDeleteExperience } from '@/app/services/experienceService'
+import { handleDeleteFormation } from '@/app/services/diplomeService'
 
 
  const Profil = () => {
@@ -29,9 +32,7 @@ import { useSession } from 'next-auth/react';
 
     const deleteExperience =async(id:number)=>{
         try {
-            const experience = await axios.delete(`${EXP_URL}/${id}`, {
-                headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
-              });
+            const experience = await handleDeleteExperience(id)
              console.log(experience);
             //  handleGetProfil();
         } catch (error) {
@@ -42,21 +43,16 @@ import { useSession } from 'next-auth/react';
     useEffect(() => {
         const handleGetProfil =async()=>{
             try {
-                const user = await axios.get(URL, {
-                    headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
-                  });
-                  if(user.status === 200){
-                    const {data} =  user
-                    setUserDetail(data?.user);
+                const data = await getUserProfile();
+                setUserDetail(data);
                     //   console.log(data.user);
-                  }
             } catch (error) {
                 console.log("erreur lors de la recuperation du profil" ,error)
             }
         }
 
         handleGetProfil();
-    }, [AUTH_TOKEN]);
+    }, []);
    
 
 
@@ -197,7 +193,7 @@ import { useSession } from 'next-auth/react';
                             <div className="btn-group inline-flex gap-3">
                                 {/* <Button className='inline-flex md:gap-4 md:align-baseline'><PenIcon/> <span className='md:block hidden'>Modifier</span></Button> */}
                                 <DiplomeModal diplome={diplome}/>
-                                <Button variant={"destructive"}><Trash2/></Button>
+                                <Button className='cursor-pointer' onClick={()=>handleDeleteFormation(diplome?.id)} variant={"destructive"}><Trash2/></Button>
                             </div>
                             </div>
                             {/* <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">

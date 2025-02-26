@@ -5,6 +5,9 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 
 import { useSession } from 'next-auth/react';
+import { getFavoris } from '@/app/services/favorisService';
+import { JobCardSkeleton } from '@/app/components/skeletons/job-card-skeleton';
+// import { setTimeout } from 'timers/promises';
 
 
 const Bookmark = () => {
@@ -14,30 +17,28 @@ const Bookmark = () => {
       const {data:session} = useSession()
             // const userRole = session?.user?.role
             const AUTH_TOKEN:string = session?.user?.token;
-    
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     useEffect(() => {
         const handleGetBookmark =async()=>{
             try {
-                const favoris = await axios.get(URL, {
-                    headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
-                  });
-                  if(favoris.status === 200){
-                    const {data} =  favoris
-                        setGetBookmark(data?.favoris)
-                      console.log(data?.favoris)
-                  }
+                const favoris = await getFavoris();
+                setGetBookmark(favoris)
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 1200);
             } catch (error) {
                 console.log("erreur lors de la recuperation des favoris" ,error)
             }
         }
         handleGetBookmark();
-    }, [AUTH_TOKEN])
+    }, [])
     return (
         <div>
                         <HeaderComponent pageName="Bookmark" />
             
             <div className="container my-5 mx-auto p-5">
-                {getBookmark?.length > 0?(
+                {isLoading? <JobCardSkeleton/> :
+                  getBookmark?.length > 0?(
                     getBookmark?.map((favoris:any)=>(
                         <div key={favoris.id}>
                         <JobCard path={""} job={favoris?.job} />

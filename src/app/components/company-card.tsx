@@ -13,6 +13,7 @@ interface CompanyCardProps {
 }
 
 export function CompanyCard({ company }: CompanyCardProps) {
+  // console.log("company", company)
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>

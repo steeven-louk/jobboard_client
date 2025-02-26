@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation"
 // import ApplicationDetailPage from "../applications/[id]/page"
 // import JobCard from "@/app/jobs/components/job-card"
 import { useSession } from 'next-auth/react';
+import { getCompanyApplyJobs, getCompanyJobs } from "@/app/services/companyService"
 
 
 export default function RecruiterDashboard() {
@@ -30,37 +31,26 @@ export default function RecruiterDashboard() {
   useEffect(() => {
     const getCompanyJob = async()=>{
         try {
-            const response =await axios.get(`${companyUrl}`,{
-                headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
-            });
-            if(response.status === 200){
-                const {data} = response
-                setCompanyJob(data?.jobs);
-                // console.log("companyJob",data.jobs);
-            }
+            const response =await getCompanyJobs();
+                setCompanyJob(response);
         } catch (error) {
             console.log("erreur lors de la recuperation des données", error);
         }
       }
     getCompanyJob();
-  }, [AUTH_TOKEN])
+  }, []);
 
   useEffect(() => {
       const getData = async()=>{
     try {
-        const response =await axios.get(`${companyApplyUrl}`,{
-            headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
-        });
-        if(response.status === 200){
-            const {data} = response
-            setJobData(data?.applyJobs);
-        }
+        const response =await getCompanyApplyJobs();
+        setJobData(response);
     } catch (error) {
         console.log("erreur lors de la recuperation des données", error);
     }
   }
     getData();
-  }, [AUTH_TOKEN]);
+  }, []);
 
 //   const handleViewDetails = (application, jobTitle) => {
 //     router.push(

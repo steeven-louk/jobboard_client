@@ -20,6 +20,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import axios from 'axios'
 
 import { useSession } from 'next-auth/react';
+import { applyToJob } from '../services/applicationService'
 
 interface Props {
     jobId:number,
@@ -42,15 +43,10 @@ export const DrawerForm = ({jobId, companyName}: Props) => {
   const postJob = async(e: { preventDefault: () => void })=>{
     e.preventDefault();
     try {
-      const job = await axios.post(`${URL}/user/apply_job/${jobId}`,{
+      const job = await applyToJob(jobId,CV,LM)
         // userId:1,
-        jobId:jobId,
-        coverLetter:LM,
-        cv_url:CV
-      },{
-        headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
-      });
-      console.log("jobsubmitted", job)
+      console.log("jobsubmitted",job);
+
     } catch (error) {
       console.log(error)
       setLM("")

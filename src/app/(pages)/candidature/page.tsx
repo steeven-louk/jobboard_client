@@ -5,12 +5,13 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 
 import { useSession } from 'next-auth/react';
+import { getUserApplications } from '@/app/services/applicationService';
 
 
 const Candidature = () => {
     const [getApplication, setGetApplication] = useState<any>();
     // const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
-    const URL = "http://localhost:5800/api/user/applications/";
+    // const URL = "http://localhost:5800/api/user/applications/";
     // const AUTH_TOKEN:string = JSON.parse(localStorage.getItem("token"));
    const {data:session} = useSession()
         // const userRole = session?.user?.role
@@ -19,20 +20,16 @@ const Candidature = () => {
     useEffect(() => {
         const handleGetApplication =async()=>{
             try {
-                const application = await axios.get(URL, {
-                    headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
-                  });
-                  if(application.status === 200){
-                    const {data} =  application
-                    setGetApplication(data?.applications);
-                      console.log(data?.applications);
-                  }
+                const data = await getUserApplications();
+                 
+                    setGetApplication(data);
+                    //   console.log(data?.applications);
             } catch (error) {
                 console.log("erreur lors de la recuperation des candidature" ,error)
             }
         }
         handleGetApplication();
-    }, [AUTH_TOKEN])
+    }, [])
     return (
         <div>
             <HeaderComponent pageName="Candidatures"/>

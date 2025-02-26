@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card'
 import { BookmarkPlus, BriefcaseBusiness, Clock, Globe2, MapPin, Wallet } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { formatedRelativeTime } from '../utils/formatRelativeTime'
 
 import { useSession } from 'next-auth/react';
+import { isInFavorite, toggleFavorite } from '../services/favorisService'
 
 interface jobCard{
     id: number
@@ -25,9 +26,34 @@ interface jobCard{
 }
 export const JobCard = ({path,job}:{path: string; job: jobCard}) => {
     // alert(path)
-    console.log("jpoCard",job)
+    // console.log("jpoCard",job)
       const {data:session} = useSession()
       const userRole = session?.user?.role;
+    const [isFavorite, setIsInFavorie] = useState<boolean>(false);
+
+    const addToFavorie = async () => {
+
+      if (!session) return alert("Vous devez être connecté pour ajouter aux favoris");
+      try {
+        const response = await toggleFavorite(job?.id);
+        setIsInFavorie(response)
+        console.log(response);
+      } catch (error) {
+        console.error("Erreur lors de l'ajout aux favoris :", error);
+      }
+    };
+
+          useEffect(() => {
+              if(!session) return;
+                const check =async()=>{
+                    if (session) {
+                     const response = await isInFavorite(job?.id);
+                     setIsInFavorie(response);
+                  }
+                }
+             
+                  check();
+          }, [job?.id, session]);
 // const d =job.createdAt
     return (
         <Card className='card shadow-md hover:shadow-slate-400 transition-shadow p-3 shadow-slate-700 rounded-md my-5'>
@@ -35,7 +61,9 @@ export const JobCard = ({path,job}:{path: string; job: jobCard}) => {
                 <Badge className="text-base  color-primary px-1 rounded-md bg-green-300">
                    {formatedRelativeTime(job?.createdAt)}
                 </Badge>
-              {userRole ==="USER"  && <BookmarkPlus className='w-fit cursor-pointer'/>}
+              {userRole ==="USER"  && <BookmarkPlus onClick={()=>addToFavorie()} className={`w-6 h-6 cursor-pointer transition ${
+            isFavorite ? "text-red-500 fill-red-500" : "text-gray-400"
+          }`}/>}
             </div>
             <CardContent className="card-header">
                 <div className="flex gap-4">

@@ -15,6 +15,7 @@ import { PenIcon, PlusIcon } from "lucide-react";
 // import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
 import { useSession } from 'next-auth/react';
+import { handleAddFormation, handleUpdateFormation } from "@/app/services/diplomeService";
 
 interface Diplome {
   id?: number;
@@ -64,16 +65,12 @@ export default function DiplomeModal({ diplome }: Props) {
     try {
       if (diplome) {
         // Mise à jour
-        const response = await axios.put(`${BASE_URL}/${diplome.id}`, formData, {
-          headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
-        });
-        console.log("Formation mise à jour :", response.data);
+        const response = await handleUpdateFormation(diplome?.id, formData)
+        console.log("Formation mise à jour :", response?.data);
       } else {
         // Ajout
-        const response = await axios.post(BASE_URL, formData, {
-          headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
-        });
-        console.log("Nouvelle formation ajoutée :", response.data);
+        const response = await handleAddFormation(formData);
+        console.log("Nouvelle formation ajoutée :", response?.data);
       }
     } catch (error) {
       console.error("Erreur lors de l'opération", error);

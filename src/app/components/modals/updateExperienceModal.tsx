@@ -15,6 +15,7 @@ import { PenIcon, PlusIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
 import { useSession } from 'next-auth/react';
+import { handleAddExperience, handleUpdateExperience } from "@/app/services/experienceService";
 
 interface Experience {
   id?: number;
@@ -67,16 +68,12 @@ export default function ExperienceModal({ experience }: Props) {
     try {
       if (experience) {
         // Mise à jour
-        const response = await axios.put(`${BASE_URL}/${experience.id}`, formData, {
-          headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
-        });
-        console.log("Expérience mise à jour :", response.data);
+        const response = await handleUpdateExperience(experience?.id,formData)
+        console.log("Expérience mise à jour :", response);
       } else {
         // Ajout
-        const response = await axios.post(BASE_URL, formData, {
-          headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
-        });
-        console.log("Nouvelle expérience ajoutée :", response.data);
+        const response = await handleAddExperience(formData);
+        console.log("Nouvelle expérience ajoutée :", response?.data);
       }
     } catch (error) {
       console.error("Erreur lors de l'opération", error);

@@ -18,6 +18,7 @@ import { PenIcon, PlusIcon } from "lucide-react";
 // import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
 import { useSession } from 'next-auth/react';
+import { updateUserProfile } from "@/app/services/profileService";
 
 interface Profil {
   id: number;
@@ -66,10 +67,8 @@ export default function ProfilModal({ profil }: Props) {
 
     try {
         // Mise à jour
-        const response = await axios.put(`${BASE_URL}`, formData, {
-          headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
-        });
-        console.log("Profil mise à jour :", response.data);
+        const response = await updateUserProfile(formData)
+        console.log("Profil mise à jour :", response);
     } catch (error) {
       console.error("Erreur lors de l'opération", error);
     }

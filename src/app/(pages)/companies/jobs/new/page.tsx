@@ -18,6 +18,7 @@ import { useSession } from 'next-auth/react';
 import { Card, CardFooter } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
+import { createJob } from "@/app/services/jobService";
 
 
 interface jobType{
@@ -77,11 +78,7 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:5800/api/create_job", {
-        ...jobData
-      },
-     { headers: { Authorization: `Bearer ${AUTH_TOKEN}` }}
-    );
+      const response = await createJob(jobData);
       console.log("responseAjout", response)
 
     //   if (!response.st) {

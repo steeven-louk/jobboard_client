@@ -1,6 +1,7 @@
 "use client"
 import { CompanyCard } from "@/app/components/company-card"
 import { CompanyCardSkeleton } from "@/app/components/skeletons/company-card-skeleton"
+import { getCompanies } from "@/app/services/companyService"
 import { Button } from "@/components/ui/button"
 import axios from "axios"
 import Link from "next/link"
@@ -22,16 +23,14 @@ export default function CompaniesPage() {
     useEffect(() => {
         const getAllCompanies =async()=>{
             try {
-                const response = await axios.get(companie_url);
-                if(response.status ===200){
-                    const {data} = response
-                    console.log("companyyy", data);
-                    setCompanies(data?.companies)
+                const response = await getCompanies();
+
+                    setCompanies(response)
 
                     setTimeout(() => {
                       setIsLoading(false)
                     }, 1500)
-                }
+                
             } catch (error) {
                 console.log("erreur lors de la recuperation des company",error)
             }

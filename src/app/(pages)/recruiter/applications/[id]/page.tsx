@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FileText, Paperclip } from "lucide-react"
 import axios from "axios";
 import { useSession } from 'next-auth/react';
+import { changeStatus } from "@/app/services/applicationService";
 
 
 interface Application {
@@ -55,15 +56,16 @@ const applications = searchParams.get("data");
   const handleStatusChange = async (newStatus: string) => {
     if (application) {
       setApplication({ ...application, status: newStatus })
-      const updateStatus = await axios.put(`http://localhost:5800/api/company/company-jobStatus/${application.id}`,{
-        status:newStatus
-      },{
-        headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
-      })
-      if(updateStatus.status ===200){
+      await changeStatus(application,newStatus)
+      // const updateStatus = await axios.put(`http://localhost:5800/api/company/company-jobStatus/${application.id}`,{
+      //   status:newStatus
+      // },{
+      //   headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
+      // })
+      // if(updateStatus.status ===200){
 
-          console.log(`Status updated to: ${newStatus}`, updateStatus)
-      }
+      //     console.log(`Status updated to: ${newStatus}`, updateStatus)
+      // }
     }
   }
 

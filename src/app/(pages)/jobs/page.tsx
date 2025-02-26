@@ -14,6 +14,7 @@ import { JobFilters } from "@/app/components/jobFilter";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
+import { getAllJob } from "@/app/services/jobService";
 
 export default function Jobs() {
   const searchParams = useSearchParams();
@@ -59,13 +60,11 @@ export default function Jobs() {
   useEffect(() => {
     const getAllJobs = async () => {
      try {
-        const response = await axios.get("http://localhost:5800/api/jobs");
-        if (response.status === 200) {
-          setJobs(response.data.jobs);
+      const data = await getAllJob();
+      setJobs(data);
           setTimeout(() => {
             setIsLoading(false)
           }, 1500)
-        }
       } catch (error) {
         console.error("Erreur lors de la récupération des jobs :", error);
       }

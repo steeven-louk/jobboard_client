@@ -5,12 +5,14 @@ import Link from "next/link"
 // import JobCard from "@/app/jobs/components/job-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { JobCard } from "@/app/components/jobCard"
-import { use, useEffect, useState } from "react"
+import { SetStateAction, use, useEffect, useState } from "react"
 import axios from "axios"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
+import { getCompanyDetail, updateCompany } from "@/app/services/companyService"
 
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { CompanyEditForm } from "@/app/components/company-edit-form"
 
 // const mockJobs = [
 //   {
@@ -37,7 +39,7 @@ interface companyDetail{
   description: string
   name: string
   id:number
-  industry:string
+  // domaine:string
   location:string
   employeeCount:string
   domaine: string
@@ -50,28 +52,41 @@ export default function CompanyProfilePage({ params }: { params: Promise<{ id: s
   const {data:session} = useSession()
   const userRole = session?.user?.role;
 
-const [company, setCompany] = useState<companyDetail|null>(null)
-const companie_detail_url =`http://localhost:5800/api/company/company-detail/${parseInt(id)}`
+const [company, setCompany] = useState<companyDetail|null>(null);
+// const [company, setCompany] = useState();
+const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+// const companie_detail_url =`http://localhost:5800/api/company/company-detail/${parseInt(id)}`
 // const companyJobUrl ="http://localhost:5800/api/company/company-job";
 useEffect(() => {
     const getCompanyDetails =async()=>{
         try {
-            const response = await axios.get(companie_detail_url);
-            if(response.status ===200){
-                const {data} = response
-                console.log("companyyy-detail", data);
-                setCompany(data?.company)
-            }
-            console.log("response", response)
+            const response = await getCompanyDetail(id)
+
+                setCompany(response);
+            
         } catch (error) {
             console.log("erreur lors de la recuperation des company",error)
         }
     };
     getCompanyDetails();
-}, [companie_detail_url]);
+}, [id]);
 
+const handleCompanyUpdate =async (updatedCompany) => {
+  setCompany(updatedCompany);
+  try {
+    const response = await updateCompany(id, company);
+    setIsEditModalOpen(false)
+    console.log("response", response);
+  } catch (error) {
+    console.log("erreur lors de la modification de la company",error)
+  }
+  
+  // Here you would typically update the company data in your backend
+  console.log("Company updated:", updatedCompany)
+}
+console.log("companydtail", company)
   // Mock function to check if the current user is a recruiter for this company
-  const isRecruiter = true // This should be replaced with actual authentication logic
+  // const isRecruiter = true // This should be replaced with actual authentication logic
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -83,7 +98,7 @@ useEffect(() => {
           height={100}
           className="rounded-full mr-4"
         />
-        <h1 className="text-3xl font-bold">{company?.name}</h1>
+        <h1 className="text-3xl font-bold ml-4">{company?.name}</h1>
       </div>
       <div className="grid grid-cols-1 flex-col-reverse md:flex-none md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
@@ -146,11 +161,28 @@ useEffect(() => {
                 <Link href={`/companies/jobs/new`}>
                   <Button className="w-full">Ajouter une offre d&apos;emploi</Button>
                 </Link>
-                <Link href={`/companies/${company?.id}/edit`} className="my-5">
+                {/* <Link href={`/companies/${company?.id}/edit`} className="my-5">
                   <Button variant="outline" className="w-full">
                     Modifier le profil de l&apos;entreprise
                   </Button>
-                </Link>
+                </Link> */}
+                <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full">
+                      Modifier le profil de l&apos;entreprise
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Modifier le profil de l&apos;entreprise</DialogTitle>
+                    </DialogHeader>
+                    <CompanyEditForm
+                      company={company}
+                      onSubmit={handleCompanyUpdate}
+                      onCancel={() => setIsEditModalOpen(false)}
+                    />
+                  </DialogContent>
+                </Dialog>
                 <Link href="/recruiter/dashboard">
                   <Button variant="secondary" className="w-full">
                     Tableau de bord recruteur

@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { BookmarkIcon, BriefcaseBusiness, BriefcaseBusinessIcon, LayoutDashboard, LogOut, Menu, Settings,  UserCircle2 } from 'lucide-react';
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   DropdownMenu,
@@ -28,7 +28,8 @@ const navItems = [
 ]
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
-  // const isConnected:boolean = false;
+  const [isScrolled, setIsScrolled] = useState(false);
+;
   const {data:session,status} = useSession()
 
   const userRole = session?.user?.role;
@@ -36,17 +37,33 @@ const Navbar = () => {
 
   const router = useRouter();
 
-  const handleProtectedAction = () => {
-    if (!session) {
-      router.push("auth/login");
-  };
-}
+//   const handleProtectedAction = () => {
+//   //   if (session) {
+//   //     router.push("auth/login");
+//   // };
+//   alert("navbar")
+// }
 console.log("sesssion", session)
 
+useEffect(() => {
+  const handleScroll = () => {
+    if (window.scrollY > 40) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+ 
+// }
+
   return (
-    <nav className='container mx-auto'>
+    <nav className={`container mx-auto  top-0 sticky  transition-all duration-300 ${isScrolled ? "bg-slate-100 shadow-lg shadow-gray-800 rounded-lg top-2" : "bg-transparent" }`}>
       <div className='w-full max-w-[98%] mx-auto p-3 navbar align-baseline flex justify-between'>
-        <span className="navbar-brand inline-flex gap-2"><BriefcaseBusinessIcon />Job Portal</span>
+        <Link href={"/"} className="navbar-brand inline-flex my-auto gap-2 font-semibold"><BriefcaseBusinessIcon />Job Portal</Link>
         
           <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
             {navItems.map((item) => (
@@ -75,7 +92,7 @@ console.log("sesssion", session)
           <div className="flex align-baseline gap-3">
             <div className="profile flex align-baseline gap-3">
               <DropdownMenu>
-      <DropdownMenuTrigger><UserCircle2 onClick={()=>handleProtectedAction} size={30}/></DropdownMenuTrigger>
+      <DropdownMenuTrigger><UserCircle2 size={30}/></DropdownMenuTrigger>
       <DropdownMenuContent className='flex flex-col'>
         <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -95,9 +112,9 @@ console.log("sesssion", session)
     {status === "authenticated" &&
      <p className='capitalize font-semibold top-1 relative'>{session?.user?.name}</p>
       }
-       {!session &&
+       {status === "unauthenticated" &&
       
-            <Button asChild className='hidden md:block' onClick={()=>signIn()}>
+            <Button  className='md:block' onClick={()=>signIn()}>
               Se connecter
             </Button>
 }

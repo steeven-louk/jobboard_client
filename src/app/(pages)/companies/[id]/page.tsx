@@ -51,6 +51,7 @@ export default function CompanyProfilePage({ params }: { params: Promise<{ id: s
   const {id} = use(params);
   const {data:session} = useSession()
   const userRole = session?.user?.role;
+  const userId = session?.user?.id;
 
 const [company, setCompany] = useState<companyDetail|null>(null);
 // const [company, setCompany] = useState();
@@ -74,19 +75,15 @@ useEffect(() => {
 const handleCompanyUpdate =async (updatedCompany) => {
   setCompany(updatedCompany);
   try {
-    const response = await updateCompany(id, company);
+    const response = await updateCompany(id,userId, company);
     setIsEditModalOpen(false)
     console.log("response", response);
   } catch (error) {
     console.log("erreur lors de la modification de la company",error)
   }
   
-  // Here you would typically update the company data in your backend
   console.log("Company updated:", updatedCompany)
 }
-console.log("companydtail", company)
-  // Mock function to check if the current user is a recruiter for this company
-  // const isRecruiter = true // This should be replaced with actual authentication logic
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -94,9 +91,9 @@ console.log("companydtail", company)
         <Image
           src={company?.logo || "/placeholder.svg"}
           alt={`${company?.name} logo`}
-          width={100}
-          height={100}
-          className="rounded-full mr-4"
+          width={150}
+          height={150}
+          className="rounded-full w-[9rem] h-[9rem] bg-cover  max-w-full max-h-full  mr-4"
         />
         <h1 className="text-3xl font-bold ml-4">{company?.name}</h1>
       </div>
@@ -161,11 +158,7 @@ console.log("companydtail", company)
                 <Link href={`/companies/jobs/new`}>
                   <Button className="w-full">Ajouter une offre d&apos;emploi</Button>
                 </Link>
-                {/* <Link href={`/companies/${company?.id}/edit`} className="my-5">
-                  <Button variant="outline" className="w-full">
-                    Modifier le profil de l&apos;entreprise
-                  </Button>
-                </Link> */}
+              
                 <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="w-full">

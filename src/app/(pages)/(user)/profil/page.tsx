@@ -12,29 +12,36 @@ import { Building, Cake, Globe2, IdCard, Mail, PenIcon, Phone, Plus, Trash2 } fr
 import React, { useEffect, useState } from 'react'
 
 import { useSession } from 'next-auth/react';
-import { getUserProfile } from '@/app/services/profileService'
+import { getUserProfile, updateUserProfile } from '@/app/services/profileService'
 import { handleDeleteExperience } from '@/app/services/experienceService'
 import { handleDeleteFormation } from '@/app/services/diplomeService'
+import Image from 'next/image'
 
+interface profilDetail{
+    sexe: boolean
+    fullName: string
+    id:number
+    phone:string
+    location:string
+    birthdate:string
+    domaine: string
+    picture?: string
+    email:string
+  }
 
  const Profil = () => {
-    const [userDetail, setUserDetail] = useState<any>();
+    const [userDetail, setUserDetail] = useState<profilDetail>();
     const {data:session} = useSession()
-    // const AUTH_TOKEN ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzk0NzE2MjYsImV4cCI6MTczOTczMDgyNn0.qGvZPk67vnQgJKeJ0EPKtwcIXFkZecFMKmUbgGmOaiI"
-    const URL = "http://localhost:5800/api/user/profil/";
-    const EXP_URL = "http://localhost:5800/api/user/profil/experience";
-    // const AUTH_TOKEN:string = JSON.parse(localStorage.getItem("token"));
-    const AUTH_TOKEN:string = session?.user?.token;
-    // console.log("AUTH_", AUTH_TOKEN)
-    // console.log("AUTH_2", JSON.parse(AUTH_TOKEN2))
+
     const userRole = session?.user?.role
-    // console.log(AUTH_TOKEN)
+    const userId: string = session?.user?.id || "";
+
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     const deleteExperience =async(id:number)=>{
         try {
             const experience = await handleDeleteExperience(id)
              console.log(experience);
-            //  handleGetProfil();
         } catch (error) {
             console.log("erreur lors de la suppression de l'experience" ,error)
         }
@@ -45,7 +52,6 @@ import { handleDeleteFormation } from '@/app/services/diplomeService'
             try {
                 const data = await getUserProfile();
                 setUserDetail(data);
-                    //   console.log(data.user);
             } catch (error) {
                 console.log("erreur lors de la recuperation du profil" ,error)
             }
@@ -53,17 +59,36 @@ import { handleDeleteFormation } from '@/app/services/diplomeService'
 
         handleGetProfil();
     }, []);
-   
+    const handleOpenModal =()=> setIsModalOpen(true);
+    const handleCloseModal =()=> setIsModalOpen(false);
 
+ const handleProfilUpdate = async (updatedProfil)=>{
+    setUserDetail(updatedProfil);
 
-    return (
+    try {
+         await updateUserProfile(userId,userDetail); 
+            
+    } catch (error) {
+        console.log("Erreur lors de la modification du profil", error)
+    }
+
+ }
+
+ return (
         <>
             <HeaderComponent pageName={'Profil'} />
             <div className="container mx-auto px-4">
                 <Card className='p-2 md:p-4 my-5'>
                     <div className='flex justify-between my-5'>
-                        <div className="left inline-flex gap-3">
-                            <Globe2/>
+                        <div className="left inline-flex gap-3 items-baseline ">
+                            {/* <Globe2/> */}
+                             <Image
+                                      src={userDetail?.picture || "/placeholder.svg"}
+                                      alt={`${userDetail?.fullName} picture`}
+                                      width={150}
+                                      height={150}
+                                      className="rounded-full w-[5rem] bg-red-500 h-[5rem] bg-cover  max-w-full max-h-full  mr-4"
+                                    />
                             <div className="flex flex-col gap-2">
                                 <CardTitle>{userDetail?.fullName}</CardTitle>
                                 <CardDescription>{userDetail?.domaine}</CardDescription>
@@ -71,7 +96,8 @@ import { handleDeleteFormation } from '@/app/services/diplomeService'
 
                             </div>
                         </div>
-                        <ProfilModal profil={userDetail}/>
+
+                        <ProfilModal profil={userDetail} onSubmit={handleProfilUpdate} onOpen={handleOpenModal}  onClose={handleCloseModal} />
                     </div>
                     <CardContent className='grid grid-cols-2 gap-4'>
                         <div className="inline-flex align-baseline gap-2">
@@ -102,7 +128,6 @@ import { handleDeleteFormation } from '@/app/services/diplomeService'
                             <h1 className='font-bold text-2xl'>Expérience</h1>
                             <p>Parlez-nous de vos expériences passées et actuelles, de vos Projets</p>
                         </div>
-                        {/* <Button><Plus/>Ajouter</Button> */}
                         <ExperienceModal />
 
                     </div>
@@ -233,7 +258,6 @@ import { handleDeleteFormation } from '@/app/services/diplomeService'
                     )}
                 </section>
 </>
-
                 }
             </div>
         </>

@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Building2, MapPin, Users } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 
 interface CompanyCardProps {
@@ -9,6 +10,7 @@ interface CompanyCardProps {
     domaine: string
     location: string
     employeeCount: string
+    logo:string
   }
 }
 
@@ -16,7 +18,14 @@ export function CompanyCard({ company }: CompanyCardProps) {
   // console.log("company", company)
   return (
     <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center gap-2 w-fit">
+        <Image
+                  src={company?.logo || "/placeholder.svg"}
+                  alt="Company logo preview"
+                  width={50}
+                  height={50}
+                  className="rounded-full w-[4rem] h-[4rem] bg-cover  max-w-full max-h-full "
+                />
         <CardTitle>{company.name}</CardTitle>
       </CardHeader>
       <CardContent>

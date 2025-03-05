@@ -34,6 +34,7 @@ export function CompanyEditForm({ company, onSubmit, onCancel }: CompanyEditForm
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+        // console.log("fillle company", file);
       const reader = new FileReader()
       reader.onloadend = () => {
         setPreviewLogo(reader.result as string)
@@ -55,8 +56,8 @@ export function CompanyEditForm({ company, onSubmit, onCancel }: CompanyEditForm
           src={previewLogo || "/placeholder.svg"}
           alt="Company logo preview"
           width={100}
-          height={100}
-          className="rounded-full "
+          height={150}
+          className="rounded-full w-[8rem] h-[8rem] bg-cover  max-w-full max-h-full "
         />
         <div>
           <Label htmlFor="logo">Logo de l&apos;entreprise</Label>

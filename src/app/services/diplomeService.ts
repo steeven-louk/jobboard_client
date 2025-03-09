@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import api from "./api";
 import { getUserProfile } from "./profileService";
 
@@ -22,6 +23,9 @@ export const handleDeleteFormation =async(id:number)=>{
 
     } catch(error){
         console.log(error);
+        toast("Erreur", {
+            description: "erreur lors de la suppression de l'experience",
+          })
         console.log("erreur lors de la suppression de l'experience" ,error)
 
     }

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import axios from "axios"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 // Données mockées pour les entreprises
 // const mockCompanies = [
@@ -32,6 +33,9 @@ export default function CompaniesPage() {
                     }, 1500)
                 
             } catch (error) {
+              toast("Erreur", {
+                      description: "Erreur lors de la récupération des company",
+                    })
                 console.log("erreur lors de la recuperation des company",error)
             }
         };

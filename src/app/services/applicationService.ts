@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import api from "./api";
 
 export const getUserApplications = async () => {
@@ -8,6 +9,9 @@ export const getUserApplications = async () => {
         return data?.applications;
       }
   } catch (error) {
+    toast("Erreur", {
+      description: "Erreur de récupération des candidatures",
+    })
     throw error.response?.data || "Erreur de récupération des candidatures";
   }
 };
@@ -19,7 +23,7 @@ export const changeStatus =async(application,newStatus:string)=>{
         status:newStatus
       },);
     if(response.status ===200){
-
+      toast(`Status updated to: ${newStatus}`)
         console.log(`Status updated to: ${newStatus}`, response)
     }
    } catch (error) {
@@ -37,6 +41,9 @@ export const applyToJob = async ( jobId:number, CV:string, LM:string) => {
       });
       return response;
     } catch (error) {
+      toast("Erreur", {
+        description: "Erreur de candidature",
+      })
       throw error.response?.data || "Erreur de candidature";
     }
   };

@@ -14,6 +14,7 @@ import axios from "axios";
 import { useSession } from 'next-auth/react';
 import { getDetailJob } from '@/app/services/jobService';
 import { toggleFavorite,isInFavorite } from '@/app/services/favorisService';
+import { toast } from 'sonner';
 const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
 
     const path = usePathname();
@@ -36,7 +37,10 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
         //     console.log("Aucun token trouvé, veuillez vous connecter.")
         //     return;
         // }
-        if (!session) return alert("Vous devez être connecté pour ajouter aux favoris");
+        if (!session) {
+            toast("Vous devez être connecté pour ajouter aux favoris")
+            return alert("Vous devez être connecté pour ajouter aux favoris")
+        };
       try {
         const response = await toggleFavorite(id);
         setIsInFavorie(response)
@@ -48,6 +52,9 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
     
         console.log(response);
       } catch (error) {
+        toast("Erreur", {
+                description: "Erreur lors de l'ajout aux favoris",
+              })
         console.error("Erreur lors de l'ajout aux favoris :", error);
       }
     };
@@ -69,6 +76,9 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
                 setJobDetail(response);
                 
             } catch (error) {
+                toast("Erreur", {
+                        description: "Erreur lors de la récupération du job",
+                      })
                 console.error("Erreur lors de la récupération du job :", error);
             }
         };

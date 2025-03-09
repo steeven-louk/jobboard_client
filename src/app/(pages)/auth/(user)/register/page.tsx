@@ -17,6 +17,7 @@ import Link from "next/link";
 
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 export default function RegisterPage() {
   const [role, setRole] = useState("candidate");
   const [step, setStep] = useState(1);
@@ -75,6 +76,7 @@ export default function RegisterPage() {
     const isValid = requiredFields.every(field => values[field]);
     console.log(values,requiredFields)
     if (!isValid) {
+      toast("Veuillez remplir tous les champs obligatoires avant de continuer.")
       alert("Veuillez remplir tous les champs obligatoires avant de continuer.");
       return;
     }
@@ -89,6 +91,9 @@ export default function RegisterPage() {
       console.log(response);
       router.push("/auth/login");
     } catch (error) {
+      toast("Erreur", {
+          description: "Erreur lors de l'inscription",
+        })
       console.log("Erreur lors de l'inscription", error);
     }
   };

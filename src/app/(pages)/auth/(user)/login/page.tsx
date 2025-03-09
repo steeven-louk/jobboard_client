@@ -53,6 +53,9 @@ export default function LoginPage() {
     // Après une connexion réussie, redirigez l'utilisateur
     // router.push("/dashboard")
     } catch (error) {
+      toast("Erreur", {
+                description: "Erreur lors de la connexion",
+              })
         console.log("erreur lors de la connexion", error);
     }
   }

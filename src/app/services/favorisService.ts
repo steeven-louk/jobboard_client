@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import api from "./api";
 
 export const getFavoris = async()=>{
@@ -22,6 +23,9 @@ export const toggleFavorite = async (jobId:number) => {
         return res.data.isFavorite;
       }
     } catch (error) {
+      toast("Erreur", {
+        description: "erreur lors de l'ajout du favoris",
+      })
       console.error("erreur lors de l'ajout du favoris",error);
     }
   };
@@ -34,6 +38,9 @@ export const toggleFavorite = async (jobId:number) => {
           return res.data.isFavorite;
       }
     } catch (error) {
+      toast("Erreur", {
+        description: "erreur lors de la verification du favoris",
+      });
       console.error("erreur lors de la verification du favoris",error);
     }
   };

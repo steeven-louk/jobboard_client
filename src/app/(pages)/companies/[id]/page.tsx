@@ -13,6 +13,7 @@ import { getCompanyDetail, updateCompany } from "@/app/services/companyService"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { CompanyEditForm } from "@/app/components/company-edit-form"
+import { toast } from "sonner"
 
 // const mockJobs = [
 //   {
@@ -66,6 +67,9 @@ useEffect(() => {
                 setCompany(response);
             
         } catch (error) {
+          toast("Erreur", {
+                  description: "Erreur lors de la recuperation des company",
+                })
             console.log("erreur lors de la recuperation des company",error)
         }
     };
@@ -79,9 +83,12 @@ const handleCompanyUpdate =async (updatedCompany) => {
     setIsEditModalOpen(false)
     console.log("response", response);
   } catch (error) {
+    toast("Erreur", {
+            description: "Erreur lors de la modification de la company",
+          })
     console.log("erreur lors de la modification de la company",error)
   }
-  
+  toast("Company mis à jour")
   console.log("Company updated:", updatedCompany)
 }
 

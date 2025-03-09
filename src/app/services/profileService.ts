@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import api from "./api";
 import { handleUpload } from "./companyService";
 
@@ -10,7 +11,10 @@ export const getUserProfile = async () => {
         return data?.user;
       }
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        toast("Erreur", {
+          description: "Erreur de récupération du profil",
+        });
       throw error.response?.data || "Erreur de récupération du profil";
     }
   };
@@ -26,6 +30,9 @@ export const getUserProfile = async () => {
         const uploadResponse = await handleUpload("profile_image", userId, formData.picture);
         console.log("upload reponse", uploadResponse)
         if (!uploadResponse || !uploadResponse.fileUrl) {
+          toast("Erreur", {
+            description: "L'upload du picture a échoué. Annulation de la mise à jour.",
+          });
           console.error("L'upload du picture a échoué. Annulation de la mise à jour.");
           return null; // Ne pas continuer si l'upload échoue
         }
@@ -34,10 +41,14 @@ export const getUserProfile = async () => {
       const response = await api.put("/user/profil/update", formData);
       if (response.status === 200) {
         console.log("Mise à jour réussie :", response.data);
+        toast("Mise à jour réussie");
         await getUserProfile();
         return response.data;
     }
     } catch (error) {
+      toast("Erreur", {
+        description: "Erreur de la modification du profil.",
+      });
         console.log("Erreur de la modification du profil",error)
       throw error?.response?.data || "Erreur de la modification du profil";
     }

@@ -16,6 +16,7 @@ import { PenIcon, PlusIcon } from "lucide-react";
 import axios from "axios";
 import { useSession } from 'next-auth/react';
 import { handleAddFormation, handleUpdateFormation } from "@/app/services/diplomeService";
+import { toast } from "sonner";
 
 interface Diplome {
   id?: number;
@@ -66,13 +67,19 @@ export default function DiplomeModal({ diplome }: Props) {
       if (diplome) {
         // Mise à jour
         const response = await handleUpdateFormation(diplome?.id, formData)
+        toast("Formation mise à jour")
+
         console.log("Formation mise à jour :", response?.data);
       } else {
         // Ajout
         const response = await handleAddFormation(formData);
+        toast("Nouvelle formation ajoutée")
         console.log("Nouvelle formation ajoutée :", response?.data);
       }
     } catch (error) {
+      toast("Erreur", {
+        description: "Erreur lors de l'opération",
+      })
       console.error("Erreur lors de l'opération", error);
     }
   };

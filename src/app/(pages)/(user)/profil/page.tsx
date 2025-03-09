@@ -16,6 +16,7 @@ import { getUserProfile, updateUserProfile } from '@/app/services/profileService
 import { handleDeleteExperience } from '@/app/services/experienceService'
 import { handleDeleteFormation } from '@/app/services/diplomeService'
 import Image from 'next/image'
+import { toast } from 'sonner'
 
 interface profilDetail{
     sexe: boolean
@@ -43,6 +44,9 @@ interface profilDetail{
             const experience = await handleDeleteExperience(id)
              console.log(experience);
         } catch (error) {
+            toast("Erreur", {
+                description: "Erreur lors de la suppression de l'experience",
+              })
             console.log("erreur lors de la suppression de l'experience" ,error)
         }
     }
@@ -53,6 +57,9 @@ interface profilDetail{
                 const data = await getUserProfile();
                 setUserDetail(data);
             } catch (error) {
+                toast("Erreur", {
+                    description: "Erreur lors de la recupération du profil",
+                  })
                 console.log("erreur lors de la recuperation du profil" ,error)
             }
         }
@@ -69,6 +76,9 @@ interface profilDetail{
          await updateUserProfile(userId,userDetail); 
             
     } catch (error) {
+        toast("Erreur", {
+                  description: "Erreur lors de la modification du profil",
+                })
         console.log("Erreur lors de la modification du profil", error)
     }
 

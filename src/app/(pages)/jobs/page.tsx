@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
 import { getAllJob } from "@/app/services/jobService";
+import { toast } from "sonner";
 
 export default function Jobs() {
   const searchParams = useSearchParams();
@@ -66,6 +67,9 @@ export default function Jobs() {
             setIsLoading(false)
           }, 1500)
       } catch (error) {
+        toast("Erreur", {
+                    description: "Erreur lors de la recuperation des jobs",
+                  })
         console.error("Erreur lors de la récupération des jobs :", error);
       }
     };

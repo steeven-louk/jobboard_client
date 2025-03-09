@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 // import JobCard from "@/app/jobs/components/job-card"
 import { useSession } from 'next-auth/react';
 import { getCompanyApplyJobs, getCompanyJobs } from "@/app/services/companyService"
+import { toast } from "sonner"
 
 
 export default function RecruiterDashboard() {
@@ -34,6 +35,9 @@ export default function RecruiterDashboard() {
             const response =await getCompanyJobs();
                 setCompanyJob(response);
         } catch (error) {
+          toast("Erreur", {
+            description: "Erreur lors de la recuperation des données",
+          })
             console.log("erreur lors de la recuperation des données", error);
         }
       }
@@ -46,6 +50,9 @@ export default function RecruiterDashboard() {
         const response =await getCompanyApplyJobs();
         setJobData(response);
     } catch (error) {
+      toast("Erreur", {
+        description: "Erreur lors de la recuperation des données",
+      })
         console.log("erreur lors de la recuperation des données", error);
     }
   }

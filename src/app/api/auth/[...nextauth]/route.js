@@ -28,6 +28,9 @@ export const authOptions = {
             };
           }
         } catch (error) {
+          toast("Erreur", {
+                        description: "Email ou mot de passe incorrect",
+                      })
           throw new Error("Email ou mot de passe incorrect");
         }
         return null;

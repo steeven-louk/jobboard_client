@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 
 import { useSession } from 'next-auth/react';
 import { getUserApplications } from '@/app/services/applicationService';
+import { toast } from 'sonner';
 
 
 const Candidature = () => {
@@ -25,6 +26,9 @@ const Candidature = () => {
                     setGetApplication(data);
                     //   console.log(data?.applications);
             } catch (error) {
+                toast("Erreur", {
+                    description: "Erreur lors de la recuperation des candidature",
+                  })
                 console.log("erreur lors de la recuperation des candidature" ,error)
             }
         }

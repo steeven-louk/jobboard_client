@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react';
 import { getFavoris } from '@/app/services/favorisService';
 import { JobCardSkeleton } from '@/app/components/skeletons/job-card-skeleton';
+import { toast } from 'sonner';
 // import { setTimeout } from 'timers/promises';
 
 
@@ -27,6 +28,9 @@ const Bookmark = () => {
                     setIsLoading(false);
                 }, 1200);
             } catch (error) {
+                toast("Erreur", {
+                                  description: "Erreur lors de la récupération des favoris",
+                                })
                 console.log("erreur lors de la recuperation des favoris" ,error)
             }
         }

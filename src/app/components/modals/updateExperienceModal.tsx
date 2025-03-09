@@ -16,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
 import { useSession } from 'next-auth/react';
 import { handleAddExperience, handleUpdateExperience } from "@/app/services/experienceService";
+import { toast } from "sonner";
 
 interface Experience {
   id?: number;
@@ -70,12 +71,18 @@ export default function ExperienceModal({ experience }: Props) {
         // Mise à jour
         const response = await handleUpdateExperience(experience?.id,formData)
         console.log("Expérience mise à jour :", response);
+        toast("Expérience mise à jour");
+
       } else {
         // Ajout
         const response = await handleAddExperience(formData);
+        toast("Nouvelle expérience ajoutée");
         console.log("Nouvelle expérience ajoutée :", response?.data);
       }
     } catch (error) {
+      toast("Erreur", {
+              description: "Erreur lors de l'opération",
+            })
       console.error("Erreur lors de l'opération", error);
     }
   };

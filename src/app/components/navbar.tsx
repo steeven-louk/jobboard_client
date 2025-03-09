@@ -43,7 +43,7 @@ const Navbar = () => {
 //   // };
 //   alert("navbar")
 // }
-console.log("sesssion", session)
+console.log("sesssion", session,status)
 
 useEffect(() => {
   const handleScroll = () => {
@@ -61,7 +61,7 @@ useEffect(() => {
 // }
 
   return (
-    <nav className={`container mx-auto  top-0 sticky  transition-all duration-300 ${isScrolled ? "bg-slate-100 shadow-lg shadow-gray-800 rounded-lg top-2" : "bg-transparent" }`}>
+    <nav className={`container mx-auto z-30 top-0 sticky  transition-all duration-300 ${isScrolled ? "bg-slate-100 shadow-lg shadow-gray-800 rounded-lg top-2" : "bg-transparent" }`}>
       <div className='w-full max-w-[98%] mx-auto p-3 navbar align-baseline flex justify-between'>
         <Link href={"/"} className="navbar-brand inline-flex my-auto gap-2 font-semibold"><BriefcaseBusinessIcon />Job Portal</Link>
         
@@ -112,11 +112,12 @@ useEffect(() => {
     {status === "authenticated" &&
      <p className='capitalize font-semibold top-1 relative'>{session?.user?.name}</p>
       }
-       {status === "unauthenticated" &&
-      
-            <Button  className='md:block' onClick={()=>signIn()}>
+       {status === "unauthenticated"   &&
+          <Link href={"/auth/login"}>
+            <Button   className='md:block'>
               Se connecter
             </Button>
+            </Link>
 }
       
     </>

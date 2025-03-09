@@ -133,10 +133,10 @@ interface profilDetail{
                     </div>
 
                 <Separator className='my-5'/>
-                {userDetail?.Experience?.length > 0 ? userDetail.Experience.map((exp) => (
+                {userDetail?.Experience?.length > 0 ? userDetail?.Experience.map((exp) => (
                         <Card className='p-4 border-none shadow-none' key={exp.id}>
                             <div className='flex justify-between'>
-                                <div className="flex flex-col align-baseline gap-4">
+                                <div className="flex flex-col align-baseline gap-3">
                                     <span>Intitulé de poste</span>
                                     <CardTitle>{exp.title}</CardTitle>
                                 </div>

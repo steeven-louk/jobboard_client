@@ -153,6 +153,7 @@ export default function Jobs() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    
   };
   return (
     <div className="w-full">

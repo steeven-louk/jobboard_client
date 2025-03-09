@@ -64,9 +64,9 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen container mx-auto">
-      <div className=" flex flex-1 flex-col bg-gray-400 rounded-md  justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+      <div className=" flex flex-1 flex-col  justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto  w-full max-w-sm lg:w-96">
-          <Card>
+          <Card className="shadow-md shadow-black">
             <CardHeader>
               <CardTitle>Connexion</CardTitle>
               <CardDescription>Connectez-vous à votre compte JobBoard</CardDescription>
@@ -151,8 +151,8 @@ export default function LoginPage() {
           </Card>
         </div>
       </div>
-      <div className="p-2 relative hidden bg-black  flex-1 lg:block">
-        <Image src="/placeholder.svg?height=1080&width=1920" alt="Image de connexion" layout="fill" objectFit="cover" />
+      <div className="p-2 relative hidden flex-1 lg:block">
+        <Image src={"/assets/bg-auth.webp"} alt="Image de connexion" layout="fill" objectFit="cover" className="w-full rounded-md" />
       </div>
     </div>
   )

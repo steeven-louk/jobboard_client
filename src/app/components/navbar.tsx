@@ -65,12 +65,12 @@ useEffect(() => {
       <div className='w-full max-w-[98%] mx-auto p-3 navbar align-baseline flex justify-between'>
         <Link href={"/"} className="navbar-brand inline-flex my-auto gap-2 font-semibold"><BriefcaseBusinessIcon />Job Portal</Link>
         
-          <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+          <div className="hidden sm:ml-6 md:flex sm:space-x-5 xl:space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:border-[#309689] hover:text-gray-700"
+                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent transition-all duration-300 text-sm font-medium text-gray-500 hover:border-[#309689] hover:text-gray-700"
               >
                 {item.name}
               </Link>
@@ -91,6 +91,7 @@ useEffect(() => {
           </div> */}
           <div className="flex align-baseline gap-3">
             <div className="profile flex align-baseline gap-3">
+     {status === "authenticated" &&
               <DropdownMenu>
       <DropdownMenuTrigger><UserCircle2 size={30}/></DropdownMenuTrigger>
       <DropdownMenuContent className='flex flex-col'>
@@ -108,6 +109,7 @@ useEffect(() => {
 
       </DropdownMenuContent>
     </DropdownMenu>
+    }
     <>
     {status === "authenticated" &&
      <p className='capitalize font-semibold top-1 relative'>{session?.user?.name}</p>

@@ -18,14 +18,21 @@ import Link from "next/link";
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
 export default function RegisterPage() {
-  const [role, setRole] = useState("candidate");
+  const [role, setRole] = useState<"USER" | "RECRUITER">("USER");
   const [step, setStep] = useState(1);
   // const [profileImage, setProfileImage] = useState<string | null>(null)
   // const fileInputRef = useRef<HTMLInputElement>(null)
 
   const router = useRouter();
   const URL = "http://localhost:5800/api/auth/";
+
+  // Définition des dates minimales pour l'âge des utilisateurs
+const today = new Date();
+const minDateForCandidate = new Date(today.getFullYear() - 15, today.getMonth(), today.getDate());
+const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+
 
   // Schéma de validation pour le candidat
   const candidateSchema = z.object({
@@ -34,7 +41,11 @@ export default function RegisterPage() {
     password: z.string().min(6, "Mot de passe trop court"),
     phone: z.string().min(9, "Numéro de téléphone incorrect"),
     city: z.string().min(2, "Ville requise"),
-    birthdate: z.string().min(10, "Date de naissance requise"),
+    // birthdate: z.string().min(10, "Date de naissance requise"),
+    birthdate: z.string().refine((dateStr) => {
+      const birthDate = new Date(dateStr);
+      return birthDate <= minDateForCandidate;
+    }, { message: "Vous devez avoir au moins 15 ans pour vous inscrire." }),
   });
 
   // Schéma de validation pour le recruteur (avec des champs supplémentaires)
@@ -42,6 +53,10 @@ export default function RegisterPage() {
     companyName: z.string().min(3, "Nom de l'entreprise trop court"),
     companyLocation: z.string().min(3, "Localisation invalide"),
     description: z.string().min(5, "Description trop courte"),
+    birthdate: z.string().refine((dateStr) => {
+      const birthDate = new Date(dateStr);
+      return birthDate <= minDateForRecruiter;
+    }, { message: "Vous devez avoir au moins 15 ans pour vous inscrire." }),
   });
 
   const {
@@ -50,28 +65,18 @@ export default function RegisterPage() {
     formState: { errors },
     getValues,
   } = useForm({
-    resolver: zodResolver(role === "candidate" ? candidateSchema : recruiterSchema),
+    resolver: zodResolver(role === "USER" ? candidateSchema : recruiterSchema),
   });
-
-  // const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0]
-  //   if (file) {
-  //     const reader = new FileReader()
-  //     reader.onloadend = () => {
-  //       setProfileImage(reader.result as string)
-  //     }
-  //     reader.readAsDataURL(file)
-  //   }
-  // }
 
 
   const handleNextStep = () => {
     const values = getValues();
     const requiredFields = ["fullName", "email", "password", "phone", "city", "birthdate"];
-     if (role === "recruiter") {
+
+     if (role === "RECRUITER") {
       requiredFields.push("companyName", "companyLocation", "description");
     }
-   
+   console.log("eqqdsfhgj", requiredFields)
 
     const isValid = requiredFields.every(field => values[field]);
     console.log(values,requiredFields)
@@ -84,11 +89,12 @@ export default function RegisterPage() {
     setStep(2);
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data:any) => {
     try {
-      const endpoint = role === "candidate" ? `${URL}register` : `${URL}register-recruiter`;
+      const endpoint = role === "USER" ? `${URL}register` : `${URL}register-recruiter`;
       const response = await axios.post(endpoint, { ...data, role });
       console.log(response);
+      toast("inscription reussie")
       router.push("/auth/login");
     } catch (error) {
       toast("Erreur", {
@@ -112,13 +118,13 @@ export default function RegisterPage() {
               <CardDescription>Créez votre compte JobBoard</CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs value={role} onValueChange={setRole} className="w-full">
+              <Tabs value={role} onValueChange={(value)=>setRole(value as "USER" | "RECRUITER")} className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="candidate">Candidat</TabsTrigger>
-                  <TabsTrigger value="recruiter">Recruteur</TabsTrigger>
+                  <TabsTrigger value="USER">Candidat</TabsTrigger>
+                  <TabsTrigger value="RECRUITER">Recruteur</TabsTrigger>
                 </TabsList>
-                <TabsContent value="candidate">
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <TabsContent value="USER">
+                  {/* <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <Input {...register("fullName")} placeholder="Nom complet" />
                     {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName.message}</p>}
                     
@@ -138,55 +144,67 @@ export default function RegisterPage() {
                     {errors.birthdate && <p className="text-red-500 text-sm">{errors.birthdate.message}</p>}
                     
                     <Button type="submit" className="w-full">S'inscrire en tant que candidat</Button>
+                  </form> */}
+                  <form onSubmit={handleSubmit(onSubmit)} className="">
+                    <Label className="mt-5">Nom complet</Label>
+                    <Input {...register("fullName")} placeholder="Nom complet" />
+                    {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName.message}</p>}
+
+                    <Label className="mt-5">Email</Label>
+                    <Input {...register("email")} type="email" placeholder="Email" />
+                    {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+
+                    <Label className="mt-5">Mot de passe</Label>
+                    <Input {...register("password")} type="password" placeholder="Mot de passe" />
+                    {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+
+                    <Label className="mt-5">Téléphone</Label>
+                    <Input {...register("phone")} type="tel" placeholder="Téléphone" />
+                    {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
+
+                    <Label className="mt-5">Ville</Label>
+                    <Input {...register("city")} placeholder="Ville" />
+                    {errors.city && <p className="text-red-500 text-sm">{errors.city.message}</p>}
+
+                    <Label className="mt-5">Date de naissance</Label>
+                    <Input {...register("birthdate")} type="date" />
+                    {errors.birthdate && <p className="text-red-500 text-sm">{errors.birthdate.message}</p>}
+
+                    <Button type="submit" className="w-full">S'inscrire</Button>
                   </form>
                 </TabsContent>
-                <TabsContent value="recruiter">
+                <TabsContent value="RECRUITER">
                   <Progress value={step === 1 ? 50 : 100} className="mb-4" />
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     {step === 1 ? (
                       <>
-                        <Input {...register("fullName")} name="fullName" placeholder="Nom complet" />
-                        <Input {...register("email")} name="email" placeholder="Email" type="email" />
-                        <Input {...register("password")} name="password" placeholder="Mot de passe" type="password" />
-                        <Input {...register("phone")} name="phone" placeholder="Téléphone" type="tel" />
-                        <Input {...register("city")} name="city" placeholder="Ville" />
-                        <Input {...register("birthdate")} name="birthdate" placeholder="Date de naissance" type="date" />
-                        
+                        <Label>Nom complet</Label>
+                        <Input {...register("fullName")} placeholder="Nom complet" />
+                        <Label>Email</Label>
+                        <Input {...register("email")} type="email" placeholder="Email" />
+                        <Label>Mot de passe</Label>
+                        <Input {...register("password")} type="password" placeholder="Mot de passe" />
+                        <Label>Téléphone</Label>
+                        <Input {...register("phone")} type="tel" placeholder="Téléphone" />
+                        <Label>Ville</Label>
+                        <Input {...register("city")} placeholder="Ville" />
+                        <Label>Date de naissance</Label>
+                        <Input {...register("birthdate")} type="date" />
+
                         <Button type="button" onClick={handleNextStep} className="w-full">Suivant</Button>
                       </>
                     ) : (
                       <>
-                        {/* <div className="flex flex-col items-center mb-4">
-                  <Avatar className="w-24 h-24 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                    <AvatarImage src={profileImage || ""} alt="Profile" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    ref={fileInputRef}
-                    onChange={handleImageUpload}
-                    name="logo"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="mt-2"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    Choisir une image
-                  </Button>
-                </div> */}
+                   
+                        {/* <Input {...register("companyName")} placeholder="Nom de l'entreprise" /> */}
+                        {/* {errors.companyName && <p className="text-red-500 text-sm">{errors.companyName.message}</p>} */}
+                        
+                        <Label>Nom de l&apos;entreprise</Label>
                         <Input {...register("companyName")} placeholder="Nom de l'entreprise" />
-                        {errors.companyName && <p className="text-red-500 text-sm">{errors.companyName.message}</p>}
-                        
+                        <Label>Localisation</Label>
                         <Input {...register("companyLocation")} placeholder="Localisation" />
-                        {errors.companyLocation && <p className="text-red-500 text-sm">{errors.companyLocation.message}</p>}
-                        
+                        <Label>Description</Label>
                         <Textarea {...register("description")} placeholder="Description" />
-                        {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
                         
                         <Button type="submit" className="w-full">S&apos;inscrire en tant que recruteur</Button>
                       </>

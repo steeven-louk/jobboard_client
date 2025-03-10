@@ -49,6 +49,7 @@ export default function Jobs() {
     intermediaire: false,
     senior: false,
   });
+
   useEffect(() => {
     setSearchTerm(initialSearchTerm);
     setTimeout(() => {
@@ -114,22 +115,22 @@ export default function Jobs() {
 
   const handleSortChange = (value: string) => {
     setSortBy(value);
-    // setCurrentPage(1)
+    setCurrentPage(1)
   };
   const handleContractTypeChange = (type: keyof typeof contractTypes) => {
     setContractTypes((prev) => ({ ...prev, [type]: !prev[type] }));
-    // setCurrentPage(1)
+    setCurrentPage(1)
   };
 
   const handleExperienceLevelChange = (
     level: keyof typeof experienceLevels
   ) => {
     setExperienceLevels((prev) => ({ ...prev, [level]: !prev[level] }));
-    // setCurrentPage(1)
+    setCurrentPage(1)
   };
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    // setCurrentPage(1)
+    setCurrentPage(1)
   };
 
   const clearFilters = () => {
@@ -145,7 +146,7 @@ export default function Jobs() {
       intermediaire: false,
       senior: false,
     });
-    // setCurrentPage(1)
+    setCurrentPage(1)
     setSearchTerm("");
   };
 
@@ -157,6 +158,7 @@ export default function Jobs() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" })
     
   };
   return (
@@ -289,6 +291,7 @@ export default function Jobs() {
                     size="sm"
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
+                    aria-label="Page suivante"
                   >
                     Suivant
                     <ChevronRight className="h-4 w-4 ml-2" />

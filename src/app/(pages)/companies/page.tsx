@@ -1,5 +1,6 @@
 "use client"
 import { CompanyCard } from "@/app/components/company-card"
+import { Pagination } from "@/app/components/pagination"
 import { CompanyCardSkeleton } from "@/app/components/skeletons/company-card-skeleton"
 import { getCompanies } from "@/app/services/companyService"
 import { Button } from "@/components/ui/button"
@@ -18,6 +19,8 @@ import { toast } from "sonner"
 export default function CompaniesPage() {
     const [Companies, setCompanies] = useState();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const JOBS_PER_PAGE = 6;
 
     const companie_url ="http://localhost:5800/api/company/all-companies"
 
@@ -41,9 +44,18 @@ export default function CompaniesPage() {
         };
         getAllCompanies();
     }, []);
-// if(Companies?.length <=0){
-//   <p>Aucun job trouvé</p>
-// }
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" })
+      
+    };
+
+    const totalPages = Math.ceil(Companies?.length / JOBS_PER_PAGE);
+    const paginatedJobs = Companies?.slice(
+      (currentPage - 1) * JOBS_PER_PAGE,
+      currentPage * JOBS_PER_PAGE
+    );
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -56,11 +68,12 @@ export default function CompaniesPage() {
         {isLoading ?  [...Array(6)].map((_, index) => 
         <CompanyCardSkeleton key={index} />)
       :
-        Companies?.map((company) => (
+      paginatedJobs?.map((company) => (
           <CompanyCard key={company.id} company={company} />
         ))}
         {Companies?.length === 0 && <p>Aucun job trouvé</p>}
       </div>
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={()=>handlePageChange } />
     </div>
   )
 }

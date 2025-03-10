@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react';
 import { getFavoris } from '@/app/services/favorisService';
 import { JobCardSkeleton } from '@/app/components/skeletons/job-card-skeleton';
 import { toast } from 'sonner';
+import ProtectedRoute from '@/app/components/protectedRoutes';
 // import { setTimeout } from 'timers/promises';
 
 
@@ -37,6 +38,8 @@ const Bookmark = () => {
         handleGetBookmark();
     }, [])
     return (
+        <ProtectedRoute>
+
         <div>
                         <HeaderComponent pageName="Bookmark" />
             
@@ -54,6 +57,7 @@ const Bookmark = () => {
                 
             </div>
         </div>
+        </ProtectedRoute>
     )
 }
 

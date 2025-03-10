@@ -1,4 +1,5 @@
 import { HeaderComponent } from '@/app/components/headerComponent'
+import ProtectedRoute from '@/app/components/protectedRoutes'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card'
 import { Pen, Trash2 } from 'lucide-react'
@@ -9,6 +10,8 @@ import React from 'react'
 
 const Settings = () => {
   return (
+    <ProtectedRoute>
+
     <>
         <HeaderComponent pageName={'Settings'} />
     <div className='setting container mx-auto my-5 px-4'>
@@ -53,6 +56,7 @@ const Settings = () => {
         </div>
     </div>
     </>
+    </ProtectedRoute>
   )
 }
 

@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation"
 import { useSession } from 'next-auth/react';
 import { getCompanyApplyJobs, getCompanyJobs } from "@/app/services/companyService"
 import { toast } from "sonner"
+import ProtectedRoute from "@/app/components/protectedRoutes"
 
 
 export default function RecruiterDashboard() {
@@ -68,6 +69,8 @@ export default function RecruiterDashboard() {
 //   };
 
   return (
+    <ProtectedRoute requiredRole="RECRUITER">
+
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Tableau de bord recruteur</h1>
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -132,6 +135,7 @@ export default function RecruiterDashboard() {
         </TabsContent>
       </Tabs>
     </div>
+    </ProtectedRoute>
   )
 }
 

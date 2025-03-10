@@ -9,29 +9,26 @@ export async function middleware(request: NextRequest) {
 console.log("tokkkkken", token)
   const userRole = session?.user?.role;
   // Check if the user is authenticated
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url))
-  }
+
 
   // Routes that require recruiter role
-  const recruiterRoutes = ["/recruiter", "/companies/jobs/new", "/companies/edit"]
+  const recruiterRoutes = ["/recruiter/*", "/companies/jobs/new", "/companies/edit"]
 
   // Routes that require candidate role
-  const candidateRoutes = ["/candidate", "/applications"]
+  // const candidateRoutes = ["/candidate", "/applications"]
 
-  const path = request.nextUrl.pathname
+  // const path = request.nextUrl.pathname
 
-  if (recruiterRoutes.some((route) => path.startsWith(route))) {
-    if (userRole !== "recruiter") {
-      return NextResponse.redirect(new URL("/unauthorized", request.url))
+  if (!token) {
+    return NextResponse.redirect(new URL("/auth/login", request.url))
+  } else{
+    if (recruiterRoutes.includes(request.nextUrl.pathname) && token.role !== "RECRUITER") {
+      // if (userRole !== "recruiter") {
+        return NextResponse.redirect(new URL("/", request.url))
+      // }
     }
   }
 
-  if (candidateRoutes.some((route) => path.startsWith(route))) {
-    if (userRole !== "user") {
-      return NextResponse.redirect(new URL("/unauthorized", request.url))
-    }
-  }
 
   return NextResponse.next()
 }
@@ -44,6 +41,8 @@ export const config = {
     "/companies/edit/:path*",
     "/candidate/:path*",
     "/applications/:path*",
+    "/profil/",
+    "/bookmark/:path*",
   ],
 }
 

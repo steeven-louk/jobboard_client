@@ -17,6 +17,7 @@ import { handleDeleteExperience } from '@/app/services/experienceService'
 import { handleDeleteFormation } from '@/app/services/diplomeService'
 import Image from 'next/image'
 import { toast } from 'sonner'
+import ProtectedRoute from '@/app/components/protectedRoutes'
 
 interface profilDetail{
     sexe: boolean
@@ -86,6 +87,8 @@ interface profilDetail{
 
  return (
         <>
+        <ProtectedRoute >
+
             <HeaderComponent pageName={'Profil'} />
             <div className="container mx-auto px-4">
                 <Card className='p-2 md:p-4 my-5'>
@@ -270,6 +273,7 @@ interface profilDetail{
 </>
                 }
             </div>
+        </ProtectedRoute>
         </>
     )
 }

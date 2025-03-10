@@ -19,6 +19,7 @@ import { Card, CardFooter } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { createJob } from "@/app/services/jobService";
+import ProtectedRoute from "@/app/components/protectedRoutes";
 
 
 interface jobType{
@@ -81,12 +82,6 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
       const response = await createJob(jobData);
       console.log("responseAjout", response)
 
-    //   if (!response.st) {
-    //     throw new Error("Erreur lors de la soumission de l'offre.");
-    //   }
-
-    //   console.log("Offre d'emploi ajoutée avec succès !");
-    //   router.push(`/companies/${params.id}`);
     } catch (error) {
       console.error("Erreur:", error);
     }
@@ -98,11 +93,11 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
   }
 
   return (
+    <ProtectedRoute requiredRole="RECRUITER">
+
     <div className="container  mx-auto px-4 py-8 ">
       <h1 className="text-3xl font-bold mb-6 text-center">Ajouter une nouvelle offre d&apos;emploi</h1>
 
-      {/* <Card className="container p-3"> */}
-        {/* <CardContent className=""> */}
         <form onSubmit={handleSubmit} className="shadow-md shadow-black rounded-md p-4 space-y-4 max-w-3xl mx-auto">
         {step === 1 && (
           <>
@@ -166,7 +161,7 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
 
             
             <div>
-              <Label htmlFor="duration">Durée (en mois)</Label>
+              <Label htmlFor="duration">Durée (en mois/années)</Label>
               <Input
                 id="duration"
                 name="duration"
@@ -174,6 +169,7 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
                 value={jobData.duration}
                 onChange={handleInputChange}
                 required
+                placeholder="exemple: 18mois ou 2ans"
               />
             </div>
             <div>
@@ -239,7 +235,7 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
                   <div key={index} className="relative">
                     <RadioGroupItem value={offer.title} id={`offer-${index}`} className="sr-only" />
                     <Label htmlFor={`offer-${index}`} className="flex flex-col cursor-pointer">
-                      <Card className={cn(offer.value ===offer.duration ? "border-green-500 bg-green-500":"hover:bg-secondary/50","p-4 border-2 transition-all")}>
+                      <Card className={cn(offer?.value ===offer.duration ? "border-green-500 bg-green-500":"hover:bg-secondary/50","p-4 border-2 transition-all")}>
                         <div className="flex justify-between items-center">
                           <div>
                             <p className="font-semibold text-lg">
@@ -255,11 +251,7 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
                         </div>
                         </div>
                       </Card>
-                      {/* <div className="font-semibold">{offer.title}</div>
-                      <div className="text-sm text-gray-500">{offer.description}</div>
-                      <div className="text-sm">
-                        Prix: {offer.price}€ - Durée: {offer.duration} jours
-                      </div> */}
+                     
                     </Label>
                   </div>
                 ))}
@@ -290,5 +282,6 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
         {/* </CardContent> */}
       {/* </Card> */}
     </div>
+    </ProtectedRoute>
   );
 }

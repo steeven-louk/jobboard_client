@@ -60,7 +60,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
     };
     
     
-    console.log("jobDetail",getJobDetail)
+    console.log("jobDetail",path)
 
     useEffect(() => {
         if(!id) return;

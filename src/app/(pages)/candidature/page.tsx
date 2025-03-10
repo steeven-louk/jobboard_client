@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react';
 import { getUserApplications } from '@/app/services/applicationService';
 import { toast } from 'sonner';
+import ProtectedRoute from '@/app/components/protectedRoutes';
 
 
 const Candidature = () => {
@@ -35,6 +36,8 @@ const Candidature = () => {
         handleGetApplication();
     }, [])
     return (
+        <ProtectedRoute requiredRole="USER">
+            
         <div>
             <HeaderComponent pageName="Candidatures"/>
             <div className="container mx-auto">
@@ -47,6 +50,7 @@ const Candidature = () => {
                                 ):(<p>Aucune candidature</p>)}
             </div>
         </div>
+        </ProtectedRoute>
     )
 }
 

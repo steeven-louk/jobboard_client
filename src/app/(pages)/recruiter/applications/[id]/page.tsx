@@ -13,6 +13,7 @@ import { FileText, Paperclip } from "lucide-react"
 import axios from "axios";
 import { useSession } from 'next-auth/react';
 import { changeStatus } from "@/app/services/applicationService";
+import ProtectedRoute from "@/app/components/protectedRoutes";
 
 
 interface Application {
@@ -75,6 +76,8 @@ const applications = searchParams.get("data");
 
 
   return (
+    <ProtectedRoute requiredRole="RECRUITER">
+
     <div className="container mx-auto px-4 py-8">
       <Button variant="outline" onClick={() => router.back()} className="mb-4">
         &larr; Retour
@@ -167,5 +170,6 @@ const applications = searchParams.get("data");
         </Card>
       </div>
     </div>
+    </ProtectedRoute>
   )
 }

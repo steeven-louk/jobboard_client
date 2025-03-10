@@ -14,6 +14,7 @@ import { getCompanyDetail, updateCompany } from "@/app/services/companyService"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { CompanyEditForm } from "@/app/components/company-edit-form"
 import { toast } from "sonner"
+import { Pagination } from "@/app/components/pagination"
 
 // const mockJobs = [
 //   {
@@ -56,6 +57,8 @@ export default function CompanyProfilePage({ params }: { params: Promise<{ id: s
 
 const [company, setCompany] = useState<companyDetail|null>(null);
 // const [company, setCompany] = useState();
+    const [currentPage, setCurrentPage] = useState(1);
+    const JOBS_PER_PAGE = 4;
 const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 // const companie_detail_url =`http://localhost:5800/api/company/company-detail/${parseInt(id)}`
 // const companyJobUrl ="http://localhost:5800/api/company/company-job";
@@ -92,8 +95,20 @@ const handleCompanyUpdate =async (updatedCompany) => {
   console.log("Company updated:", updatedCompany)
 }
 
+const handlePageChange = (page: number) => {
+  setCurrentPage(page);
+  window.scrollTo({ top: 0, behavior: "smooth" })
+  
+};
+const totalPages = Math.ceil(company?.jobs?.length / JOBS_PER_PAGE);
+const paginatedJobs = company?.jobs?.slice(
+  (currentPage - 1) * JOBS_PER_PAGE,
+  currentPage * JOBS_PER_PAGE
+);
+// console.log("pagination", company)
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto md:px-4 py-8">
       <div className="flex items-center mb-6">
         <Image
           src={company?.logo || "/placeholder.svg"}
@@ -104,7 +119,7 @@ const handleCompanyUpdate =async (updatedCompany) => {
         />
         <h1 className="text-3xl font-bold ml-4">{company?.name}</h1>
       </div>
-      <div className="grid grid-cols-1 flex-col-reverse md:flex-none md:grid-cols-3 gap-8">
+      <div className="md:grid flex flex-col-reverse px-2 md:flex-none md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
           <Card className="mb-8">
             <CardHeader>
@@ -112,7 +127,7 @@ const handleCompanyUpdate =async (updatedCompany) => {
             </CardHeader>
             <CardContent>
               <p className="mb-4">{company?.description}</p>
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <p>
                   <strong>Domaine :</strong> {company?.domaine || "non mentionner"}
                 </p>
@@ -122,7 +137,7 @@ const handleCompanyUpdate =async (updatedCompany) => {
                 <p>
                   <strong>Taille de l&apos;entreprise :</strong> {company?.employeeCount || 215} employés
                 </p>
-              </div>
+              </div> */}
             </CardContent>
           </Card>
 
@@ -132,15 +147,17 @@ const handleCompanyUpdate =async (updatedCompany) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {company?.jobs?.map((job) => (
+                {paginatedJobs?.map((job) => (
                   <JobCard key={job.id} job={job} />
                 ))}
               </div>
               <span>{company?.jobs.length <=0 && "aucun job"}</span>
             </CardContent>
           </Card>
+                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange } />
+          
         </div>
-        <div>
+        <div className="">
           <Card>
             <CardContent>
             <div className="space-y-2 py-2">
@@ -157,7 +174,7 @@ const handleCompanyUpdate =async (updatedCompany) => {
             </CardContent>
           </Card>
           {userRole ==="RECRUITER" && (
-            <Card className="fixed">
+            <Card className="mt-3 md:fixed">
               <CardHeader>
                 <CardTitle>Actions du recruteur</CardTitle>
               </CardHeader>
@@ -173,7 +190,7 @@ const handleCompanyUpdate =async (updatedCompany) => {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
+                    <DialogHeader className="">
                       <DialogTitle>Modifier le profil de l&apos;entreprise</DialogTitle>
                     </DialogHeader>
                     <CompanyEditForm

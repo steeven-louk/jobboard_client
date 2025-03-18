@@ -22,7 +22,7 @@ export default function CompaniesPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const JOBS_PER_PAGE = 6;
 
-    const companie_url ="http://localhost:5800/api/company/all-companies"
+    // const companie_url ="http://localhost:5800/api/company/all-companies"
 
     useEffect(() => {
         const getAllCompanies =async()=>{

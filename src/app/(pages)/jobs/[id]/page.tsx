@@ -44,11 +44,13 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
       try {
         const response = await toggleFavorite(id);
         setIsInFavorie(response)
-        // if (response.status === 200) {
-        //   setIsInFavorie(false);
-        // } else if (response.status === 201) {
-        //   setIsInFavorie(true);
-        // }
+        if(isFavorite){
+
+            toast("Favorie supprimé avec succes")
+        }else{
+            toast("Favorie ajouter avec succes")
+
+        }
     
         console.log(response);
       } catch (error) {
@@ -140,7 +142,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
                             <CardDescription className='my-3'>Intéressé(e) par ce poste de {getJobDetail?.title} chez {getJobDetail?.company?.name} ?</CardDescription>
                             <div className="btn-group flex md:flex-col gap-4 mx-auto justify-center items-center">
                              {userRole ==="USER" &&  <DrawerForm jobId={id} companyName={getJobDetail?.company.name} />}
-                                <Button onClick={addToFavorie} variant={'outline'} className={`border p-2 px-4 rounded-md transition font-semibold  ${isFavorite ? "bg-red-500 fill-red-500 text-white" : "bg-green-400 text-white"} `}>
+                                <Button onClick={addToFavorie} variant={isFavorite?'destructive':'outline'} className={`border p-2 px-4 rounded-md transition font-semibold `}>
                                 {isFavorite ? "Retirer l'offre des favoris" : "Ajouter l'offre aux favoris"}
                                 </Button>
                             </div>

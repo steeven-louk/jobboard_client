@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 
+
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -12,7 +13,8 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
-          const response = await axios.post("http://localhost:5800/api/auth/login", {
+          // const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+            const response = await axios.post(`http://localhost:5800/api/auth/login`, {
             email: credentials.email,
             password: credentials.password
           });
@@ -31,7 +33,7 @@ export const authOptions = {
           toast("Erreur", {
                         description: "Email ou mot de passe incorrect",
                       })
-          throw new Error("Email ou mot de passe incorrect");
+          throw new Error("Email ou mot de passe incorrect",error);
         }
         return null;
       }

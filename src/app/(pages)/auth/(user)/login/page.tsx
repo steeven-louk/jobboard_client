@@ -13,11 +13,15 @@ import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import axios from "axios"
 import {signIn} from "next-auth/react"
+import { toast } from "sonner"
+import { Loader2 } from "lucide-react"
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [role, setRole] = useState("candidate")
+  const [loading, setLoading] = useState<boolean>(false)
+
   const router = useRouter()
 
   const URL ="http://localhost:5800/api/auth/login"
@@ -25,6 +29,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       setError("");
+      setLoading(true)
     try {
         // if(!email || !password){
         //     console.log("email ou mot de passe incorrect");
@@ -36,8 +41,12 @@ export default function LoginPage() {
         })
         if (result?.error) {
           setError("Identifiants incorrects");
+      setLoading(false)
+
         } else {
           router.push("/");
+      setLoading(false)
+
         }
         // const login = await axios.post(URL,{
         //     email,
@@ -66,8 +75,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen container mx-auto">
-      <div className=" flex flex-1 flex-col  justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+    <div className="flex min-h-[calc(100vh -25rem)] md:min-h-screen container mx-auto">
+      <div className=" flex flex-1 flex-col  justify-center px-4 md:py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto  w-full max-w-sm lg:w-96">
           <Card className="shadow-md shadow-black">
             <CardHeader>
@@ -91,6 +100,7 @@ export default function LoginPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        disabled={loading}
                       />
                     </div>
                     <div>
@@ -101,10 +111,18 @@ export default function LoginPage() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        disabled={loading}
                       />
                     </div>
-                    <Button type="submit" className="w-full">
-                      Se connecter en tant que candidat
+                    <Button disabled={loading} type="submit" className="w-full">
+                      {loading ? (
+                        <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                        Connexion en cours...
+                        </>
+                      ):(
+                        "Se connecter en tant que candidat"
+                      )}
                     </Button>
                   </form>
                 </TabsContent>
@@ -118,6 +136,8 @@ export default function LoginPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        disabled={loading}
+
                       />
                     </div>
                     <div>
@@ -128,10 +148,19 @@ export default function LoginPage() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        disabled={loading}
                       />
                     </div>
-                    <Button type="submit" className="w-full">
-                      Se connecter en tant que recruteur
+                    <Button disabled={loading} type="submit" className="w-full">
+                    {loading ? (
+                        <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                        Connexion en cours...
+                        </>
+                      ):(
+                        "Se connecter en tant que recruteur"
+                      )}
+                      
                     </Button>
                   </form>
                 </TabsContent>

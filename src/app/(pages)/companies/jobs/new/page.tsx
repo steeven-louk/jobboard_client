@@ -20,6 +20,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { createJob } from "@/app/services/jobService";
 import ProtectedRoute from "@/app/components/protectedRoutes";
+import { loadStripe } from "@stripe/stripe-js";
+import api from "@/app/services/api";
 
 
 interface jobType{
@@ -32,26 +34,23 @@ interface jobType{
     requirement: string
     duration: string
     expiration_date: Date | string
-    selectedOffer: string
+    selectedOffer: string | null
 }
 
 interface Offer {
-  title: string
+  id: string
   description: string
   price: number
   duration: number
 }
 
-const offerTypes: Offer[] = [
-  { title: "Offre Basic", description: "Visibilité standard", price: 50, duration: 30 },
-  { title: "Offre Premium", description: "Visibilité accrue", price: 100, duration: 60 },
-  { title: "Offre Gold", description: "Visibilité maximale", price: 200, duration: 90 },
-]
+
 export default function NewJobPage({ params }: { params: { id: string } }) {
-  const router = useRouter();
+  // const router = useRouter();
   const [step, setStep] = useState(1);
      const {data:session} = useSession()
-     
+     const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
      const AUTH_TOKEN:string = session?.user?.token;
   const [jobData, setJobData] = useState<jobType>({
     title: "",
@@ -63,8 +62,14 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
     requirement: "",
     duration: "",
     expiration_date: "",
-    selectedOffer: offerTypes[0],
+    selectedOffer: null,
   });
+
+  const offerTypes: Offer[] = [
+    { id: "Offre Basic", description: "Visibilité standard", price: 50, duration: 30 },
+    { id: "Offre Premium", description: "Visibilité accrue", price: 100, duration: 60 },
+    { id: "Offre Gold", description: "Visibilité maximale", price: 200, duration: 90 },
+  ]
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -78,17 +83,32 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const response = await createJob(jobData);
-      console.log("responseAjout", response)
+    if (!jobData.selectedOffer) {
+      alert("Veuillez choisir une offre avant de publier.");
+      return;
+    }
 
+    try {
+      // const response = await createJob(jobData);
+      // console.log("responseAjout", response)
+      const stripe = await stripePromise;
+
+      const response = await api.post("/payment/create-checkout-session", {
+          jobData,
+          offerId: jobData?.selectedOffer?.id,
+          amount: jobData.selectedOffer?.price,
+      });
+
+      const session =  response;
+      await stripe?.redirectToCheckout({ sessionId: session.data.sessionId });
+     
     } catch (error) {
       console.error("Erreur:", error);
     }
   };
   
   const handleOfferChange = (value: string) => {
-    const selectedOffer = offerTypes.find((offer) => offer.title === value) || offerTypes[0]
+    const selectedOffer = offerTypes.find((offer) => offer.id === value) || offerTypes[0]
     setJobData((prev) => ({ ...prev, selectedOffer }))
   }
 
@@ -230,10 +250,10 @@ export default function NewJobPage({ params }: { params: { id: string } }) {
           <>
             <div className="space-y-4">
               <Label className="text-xl font-semibold">Choisissez votre offre de publication</Label>
-              <RadioGroup onValueChange={handleOfferChange} defaultValue={offerTypes[0].title}>
+              <RadioGroup onValueChange={handleOfferChange} defaultValue={offerTypes[0].id}>
                 {offerTypes.map((offer, index) => (
                   <div key={index} className="relative">
-                    <RadioGroupItem value={offer.title} id={`offer-${index}`} className="sr-only" />
+                    <RadioGroupItem value={offer.id} id={`offer-${index}`} className="sr-only" />
                     <Label htmlFor={`offer-${index}`} className="flex flex-col cursor-pointer">
                       <Card className={cn(offer?.value ===offer.duration ? "border-green-500 bg-green-500":"hover:bg-secondary/50","p-4 border-2 transition-all")}>
                         <div className="flex justify-between items-center">

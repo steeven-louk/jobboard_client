@@ -23,18 +23,18 @@ export default function SearchBar({ onSearch, initialSearchTerm = "" }: SearchBa
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex shadow-md shadow-black rounded-md search-box w-full justify-center items-center">
+    <form onSubmit={handleSubmit} className="flex shadow-md flex-col md:flex-row shadow-black rounded-md search-box w-full justify-center items-center">
     <div className=' w-full bg-white inline-flex gap-3 items-center p-4 rounded-md rounded-r-none'>
-        <Search className='text-gray-600'/>
+        <Search className='text-gray-600 hidden md:block'/>
         <Input type="text" 
-          className='w-full outline-none focus:outline-none  p-2 border-none text-black placeholder-slate-400'
+          className='w-full focus:outline-none focus:ring-0 shadow-none flex-grow p-1 border border-white focus:border-transparent text-black placeholder-slate-400'
           placeholder='cherchez un job par intitulé de poste, mot-clé ou entreprise' 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           />
-        <X onClick={()=>setSearchTerm("")} className=' text-black cursor-pointer'/>
+        <X onClick={()=>setSearchTerm("")} className=' text-black cursor-pointer hidden md:block'/>
         </div>
-        <Button type="submit" className='inline-flex font-bold items-center gap-2 border h-[4.25rem]  px-2 rounded-r-md rounded-l-none bg-[#309689]'>
+        <Button type="submit" className='inline-flex font-bold items-center gap-2 mb-2 md:mb-0 border h-[2.50rem] md:h-[4.25rem]  md:px-2 rounded-r-md md:rounded-l-none bg-[#309689]'>
           <Search className='h-4 w-4 mr-2'/>
           Trouver un job
         </Button>

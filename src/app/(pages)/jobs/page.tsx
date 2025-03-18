@@ -63,7 +63,7 @@ export default function Jobs() {
     const getAllJobs = async () => {
      try {
       const data = await getAllJob();
-      setJobs(data);
+        setJobs(data);
           setTimeout(() => {
             setIsLoading(false)
           }, 1500)
@@ -151,7 +151,7 @@ export default function Jobs() {
   };
 
   const totalPages = Math.ceil(filterJob?.length / JOBS_PER_PAGE);
-  const paginatedJobs = filterJob.slice(
+  const paginatedJobs = filterJob?.slice(
     (currentPage - 1) * JOBS_PER_PAGE,
     currentPage * JOBS_PER_PAGE
   );

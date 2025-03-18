@@ -2,8 +2,9 @@ import axios from "axios";
 import { getSession } from "next-auth/react";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5800/api",
+  baseURL:"http://localhost:5800/api" || `${process.env.NEXT_PUBLIC_API_URL}/api`,
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 // Ajouter un intercepteur pour attacher le token à chaque requête

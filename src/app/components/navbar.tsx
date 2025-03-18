@@ -149,12 +149,12 @@ useEffect(() => {
                   ))}
                 </nav>
                   <Separator className='my-4'/>
-                <div className="flex flex-col gap-3">
+                {/* <div className="flex flex-col gap-3">
                   <Button asChild>
                     <Link href={''}>Employers</Link>
                   </Button>
-                  {/* {!status:string === "authenticated" && <Button className='rounded-md p-1 bg-[#309689] px-3 font-semibold' onClick={()=>signIn()}>Se connecter</Button>}  */}
-                </div>
+                  { {!status:string === "authenticated" && <Button className='rounded-md p-1 bg-[#309689] px-3 font-semibold' onClick={()=>signIn()}>Se connecter</Button>}  
+                </div> */}
               </SheetContent>
             </Sheet>
           </div>

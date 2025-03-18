@@ -14,12 +14,28 @@ export const getFavoris = async()=>{
     }
 }
 
+export const isInFavorite = async (jobId:number) => {
+  // if (!session) return alert("Vous devez être connecté pour ajouter aux favoris");
+  try {
+    const res = await api.get(`/user/favories/check?jobId=${jobId}`);
+    if(res.status === 200){
+        return res.data.isFavorite;
+    }
+  } catch (error) {
+    toast("Erreur", {
+      description: "erreur lors de la verification du favoris",
+    });
+    console.error("erreur lors de la verification du favoris",error);
+  }
+};
+
 export const toggleFavorite = async (jobId:number) => {
     // if (!session) return alert("Vous devez être connecté pour ajouter aux favoris");
     try {
       const res = await api.post(`/job/add_favorie/${jobId}`);
-      if(res.status === 200){
+      if(res.status === 200 || res.status === 201){
         await getFavoris();
+        // await isInFavorite(jobId)
         return res.data.isFavorite;
       }
     } catch (error) {
@@ -30,17 +46,17 @@ export const toggleFavorite = async (jobId:number) => {
     }
   };
 
-  export const isInFavorite = async (jobId:number) => {
-    // if (!session) return alert("Vous devez être connecté pour ajouter aux favoris");
-    try {
-      const res = await api.post(`/user/favories/check?jobId=${jobId}`);
-      if(res.status === 200){
-          return res.data.isFavorite;
-      }
-    } catch (error) {
-      toast("Erreur", {
-        description: "erreur lors de la verification du favoris",
-      });
-      console.error("erreur lors de la verification du favoris",error);
-    }
-  };
+  // export const isInFavorite = async (jobId:number) => {
+  //   // if (!session) return alert("Vous devez être connecté pour ajouter aux favoris");
+  //   try {
+  //     const res = await api.get(`/user/favories/check?jobId=${jobId}`);
+  //     if(res.status === 200){
+  //         return res.data.isFavorite;
+  //     }
+  //   } catch (error) {
+  //     toast("Erreur", {
+  //       description: "erreur lors de la verification du favoris",
+  //     });
+  //     console.error("erreur lors de la verification du favoris",error);
+  //   }
+  // };

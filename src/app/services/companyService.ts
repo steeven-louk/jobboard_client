@@ -7,7 +7,6 @@ export const getCompanies = async () => {
         const response = await api.get("/company/all-companies");
         if (response.status === 200) {
             const { data } = response;
-            // console.log("companyyy", data);
             return data?.companies;
         }
     } catch (error) {
@@ -27,7 +26,6 @@ export const getCompanyDetail = async (id: string) => {
         const response = await api.get(`/company/company-detail/${companyId}`);
         if (response.status === 200) {
             const { data } = response;
-            // console.log("companyyy", data);
             return data?.company;
         }
     } catch (error) {
@@ -39,9 +37,8 @@ export const getCompanyDetail = async (id: string) => {
     }
 };
 
-// const { data: session } = useSession();
 export const updateCompany = async (id: string,userId:string, data: { name?: string;description?:string;domaine?:string;location?:string; logo?: File }) => {
-    //   const userId: string = session?.user?.id || "";
+
     try {
         const companyId = parseInt(id);
         if (isNaN(companyId)) throw new Error("ID invalide");
@@ -138,102 +135,3 @@ export const getCompanyApplyJobs = async () => {
         return null;
     }
 };
-
-
-// import api from "./api";
-
-
-// export const getCompanies =async()=>{
-//     try {
-//         const response = await api.get("/company/all-companies");
-//         if(response.status ===200){
-//             const {data} = response
-//             console.log("companyyy", data);
-//             return data?.companies
-
-//         }
-//     } catch (error) {
-//         console.log("erreur lors de la recuperation des company",error)
-//     }
-// }
-
-// export const getCompanyDetail =async(id: string)=>{
-//     try {
-//         const response = await api.get(`/company/company-detail/${parseInt(id)}`);
-//         if(response.status ===200){
-//             const {data} = response
-//             console.log("companyyy", data);
-//             return data?.company
-
-//         }
-//     } catch (error) {
-//         console.log("erreur lors de la recuperation des detail company",error)
-//     }
-// }
-
-// export const updateCompany =async(id:string, data)=>{
-//     try {
-//         const response = await api.put(`/company/update-company/${parseInt(id)}`,{data});
-//         await handleUpload("company_logo","cm7kl40fz0006jnq8eyvtwjhn",data.logo);
-//         if(response.status ===200){
-//             const {data} = response
-//             console.log("companyyy", data);
-//             return data?.company;
-
-//         }
-//     } catch (error) {
-//         console.log("erreur lors de la recuperation des detail company",error)
-//     }
-// }
-
-// const handleUpload = async (type:string,userId:string,file:string) => {
-//     if (!file) return;
-
-//     const formData = new FormData();
-//     formData.append("file", file);
-//     try {
-//         console.log("formadataaaa", formData)
-//        const formddd =await api.post(`/api/upload/${type}/${userId}`, {formData}
-//     //     ,
-//     //      {
-//     //     headers: { "Content-Type": "multipart/form-data" },
-//     //     // onUploadProgress: (progressEvent) => {
-//     //     //   setUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
-//     //     // },
-//     //   }
-//     );
-//     return console.log(formddd);
-
-
-//     //   setUploadedUrl(response.data.url);
-//     //   setPreview(response.data.url); // Met à jour l'aperçu avec l'URL
-//     } catch (error) {
-//       console.error("Erreur d'upload", error);
-//     }
-//   };
-
-// export const getCompanyJobs =async()=>{
-//     try {
-//         const response =await api.get("/company/company-job");
-//         if(response.status === 200){
-//             const {data} = response
-//             return data?.jobs;
-//             // console.log("companyJob",data.jobs);
-//         }
-//     } catch (error) {
-//         console.log("erreur lors de la recuperation des données", error);
-//     }
-// }
-
-// export const getCompanyApplyJobs =async()=>{
-//     try {
-//         const response =await api.get("/company/company-applyJob");
-//         if(response.status === 200){
-//             const {data} = response
-//             return data?.applyJobs;
-//             // console.log("companyJob",data.jobs);
-//         }
-//     } catch (error) {
-//         console.log("erreur lors de la recuperation des données", error);
-//     }
-// }

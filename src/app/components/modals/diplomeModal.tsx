@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,11 +12,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
 import { PenIcon, PlusIcon } from "lucide-react";
-// import { Checkbox } from "@/components/ui/checkbox";
-import axios from "axios";
-import { useSession } from 'next-auth/react';
-import { handleAddFormation, handleUpdateFormation } from "@/app/services/diplomeService";
+
+import {
+  handleAddFormation,
+  handleUpdateFormation,
+} from "@/app/services/diplomeService";
 import { toast } from "sonner";
 
 interface Diplome {
@@ -35,11 +38,6 @@ interface Props {
 }
 
 export default function DiplomeModal({ diplome }: Props) {
-  // const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
-  const BASE_URL = "http://localhost:5800/api/user/profil/diplome";
-  const {data:session} = useSession()
-  
-  const AUTH_TOKEN:string = session?.user?.token;
   // Définir les valeurs par défaut si aucune expérience n'est fournie (mode ajout)
   const [formData, setFormData] = useState<Diplome>(
     diplome || {
@@ -58,39 +56,33 @@ export default function DiplomeModal({ diplome }: Props) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
-//   function handleCheckboxChange(checked: boolean) {
-//     setFormData((prev) => ({ ...prev, en_cours: checked }));
-//   }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       if (diplome) {
         // Mise à jour
-        const response = await handleUpdateFormation(diplome?.id, formData)
-        toast("Formation mise à jour")
-        if(response?.status === 200){
-                  console.log("Formation mise à jour :", response);
-        
-                  toast("Formation mise à jour");
-                }
-        
+        const response = await handleUpdateFormation(diplome?.id, formData);
+        toast("Formation mise à jour");
+        if (response?.status === 200) {
+          console.log("Formation mise à jour :", response);
+
+          toast("Formation mise à jour");
+        }
+
         console.log("Formation mise à jour :", response?.data);
       } else {
         // Ajout
         const response = await handleAddFormation(formData);
-        if(response?.status === 201){
-          
-          toast("Nouvelle formation ajoutée")
+        if (response?.status === 201) {
+          toast("Nouvelle formation ajoutée");
           console.log("Nouvelle formation ajoutée :", response?.data);
         }
-
       }
     } catch (error) {
       toast("Erreur", {
         description: "Erreur lors de l'opération",
-      })
+      });
       console.error("Erreur lors de l'opération", error);
     }
   };
@@ -126,7 +118,11 @@ export default function DiplomeModal({ diplome }: Props) {
               { label: "Date de debut", name: "date_debut", type: "date" },
               { label: "Date de fin", name: "date_fin", type: "date" },
               { label: "Description", name: "description" },
-              { label: "Compétence", name: "competence", placeholder:"separé vos competences d'une virgule" },
+              {
+                label: "Compétence",
+                name: "competence",
+                placeholder: "separé vos competences d'une virgule",
+              },
             ].map(({ label, name, type = "text" }) => (
               <div key={name} className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor={name} className="text-right">
@@ -142,10 +138,14 @@ export default function DiplomeModal({ diplome }: Props) {
                 />
               </div>
             ))}
-
           </div>
           <DialogFooter>
-            <Button className="max-w-44 w-full font-semibold uppercase" type="submit">{diplome ? "Modifier" : "Ajouter"}</Button>
+            <Button
+              className="max-w-44 w-full font-semibold uppercase"
+              type="submit"
+            >
+              {diplome ? "Modifier" : "Ajouter"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

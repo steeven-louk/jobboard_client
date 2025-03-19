@@ -14,7 +14,7 @@ export const authOptions = {
       async authorize(credentials) {
         try {
           // const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-            const response = await axios.post(`http://localhost:5800/api/auth/login`, {
+          const response = await axios.post(`http://localhost:5800/api/auth/login`, {
             email: credentials.email,
             password: credentials.password
           });
@@ -25,15 +25,15 @@ export const authOptions = {
               name: response.data.user.fullName,
               email: response.data.user.email,
               role: response.data.user.role,
-              companyId:response.data.user.companyId,
+              companyId: response.data.user.companyId,
               token: response.data.token,
             };
           }
         } catch (error) {
           toast("Erreur", {
-                        description: "Email ou mot de passe incorrect",
-                      })
-          throw new Error("Email ou mot de passe incorrect",error);
+            description: "Email ou mot de passe incorrect",
+          })
+          throw new Error("Email ou mot de passe incorrect", error);
         }
         return null;
       }

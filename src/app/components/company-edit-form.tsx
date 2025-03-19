@@ -1,58 +1,67 @@
-"use client"
+"use client";
+import { useState } from "react";
 
-import type React from "react"
-
-import { useState } from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CompanyEditFormProps {
   company: {
-    name: string
-    logo: string
-    domaine: string
-    location: string
-    employeeCount: string
-    description: string
-  }
-  onSubmit: (data: CompanyEditFormProps["company"]) => void
-  onCancel: () => void
+    name: string;
+    logo: string;
+    domaine: string;
+    location: string;
+    employeeCount: string;
+    description: string;
+  };
+  onSubmit: (data: CompanyEditFormProps["company"]) => void;
+  onCancel: () => void;
 }
 
-export function CompanyEditForm({ company, onSubmit, onCancel }: CompanyEditFormProps) {
-  const [formData, setFormData] = useState(company)
-  const [previewLogo, setPreviewLogo] = useState(company.logo)
+export function CompanyEditForm({
+  company,
+  onSubmit,
+  onCancel,
+}: CompanyEditFormProps) {
+  const [formData, setFormData] = useState(company);
+  const [previewLogo, setPreviewLogo] = useState(company.logo);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-        // console.log("fillle company", file);
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewLogo(reader.result as string)
-        setFormData((prev) => ({ ...prev, logo: reader.result as string }))
-      }
-      reader.readAsDataURL(file)
+        setPreviewLogo(reader.result as string);
+        setFormData((prev) => ({ ...prev, logo: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSubmit(formData)
-  }
+    e.preventDefault();
+    onSubmit(formData);
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -66,34 +75,67 @@ export function CompanyEditForm({ company, onSubmit, onCancel }: CompanyEditForm
         />
         <div>
           <Label htmlFor="logo">Logo de l&apos;entreprise</Label>
-          <Input id="logo" name="logo" type="file" accept="image/*" onChange={handleLogoChange} className="mt-2" />
+          <Input
+            id="logo"
+            name="logo"
+            type="file"
+            accept="image/*"
+            onChange={handleLogoChange}
+            className="mt-2"
+          />
         </div>
       </div>
       <div>
         <Label htmlFor="name">Nom de l&apos;entreprise</Label>
-        <Input id="name" className="mt-3" name="name" value={formData.name} onChange={handleChange} required />
+        <Input
+          id="name"
+          className="mt-3"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div>
         <Label htmlFor="domaine">Domaine</Label>
-        <Input id="domaine" className="mt-3" name="domaine" value={formData.domaine} onChange={handleChange} required />
+        <Input
+          id="domaine"
+          className="mt-3"
+          name="domaine"
+          value={formData.domaine}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div>
         <Label htmlFor="location">Localisation</Label>
-        <Input id="location" className="mt-3" name="location" value={formData.location} onChange={handleChange} required />
+        <Input
+          id="location"
+          className="mt-3"
+          name="location"
+          value={formData.location}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div>
         <Label htmlFor="employeeCount">Nombre d&apos;employés</Label>
-        <Select required onValueChange={(value) => handleSelectChange("employeeCount", value)}  name="employeeCount" value={formData.employeeCount} >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Sélectionnez votre nombre d'employées" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0-10">0 - 10</SelectItem>
-                        <SelectItem value="10-50">10 - 50</SelectItem>
-                        <SelectItem value="50-100">50 - 100</SelectItem>
-                        <SelectItem value="100-120">100 - 120</SelectItem>
-                      </SelectContent>
-                    </Select>
+        <Select
+          required
+          onValueChange={(value) => handleSelectChange("employeeCount", value)}
+          name="employeeCount"
+          value={formData.employeeCount}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Sélectionnez votre nombre d'employées" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="0-10">0 - 10</SelectItem>
+            <SelectItem value="10-50">10 - 50</SelectItem>
+            <SelectItem value="50-100">50 - 100</SelectItem>
+            <SelectItem value="100-120">100 - 120</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <div>
         <Label htmlFor="description">Description</Label>
@@ -104,7 +146,7 @@ export function CompanyEditForm({ company, onSubmit, onCancel }: CompanyEditForm
           onChange={handleChange}
           rows={4}
           required
-           className="mt-3"
+          className="mt-3"
         />
       </div>
       <div className="flex justify-end space-x-2">
@@ -114,5 +156,5 @@ export function CompanyEditForm({ company, onSubmit, onCancel }: CompanyEditForm
         <Button type="submit">Enregistrer</Button>
       </div>
     </form>
-  )
+  );
 }

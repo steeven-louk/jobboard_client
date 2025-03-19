@@ -1,50 +1,53 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
 interface PaginationProps {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
-export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
-  // Generate page numbers to display
+export function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: PaginationProps) {
   const generatePagination = () => {
-    // Always show first and last page
-    // Show 2 pages before and after current page
-    // Use ellipsis (...) for skipped pages
-
-    const pages = []
+    const pages = [];
 
     // Always add page 1
-    pages.push(1)
+    pages.push(1);
 
     if (currentPage > 3) {
-      pages.push("ellipsis-start")
+      pages.push("ellipsis-start");
     }
 
     // Add pages around current page
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-      pages.push(i)
+    for (
+      let i = Math.max(2, currentPage - 1);
+      i <= Math.min(totalPages - 1, currentPage + 1);
+      i++
+    ) {
+      pages.push(i);
     }
 
     if (currentPage < totalPages - 2) {
-      pages.push("ellipsis-end")
+      pages.push("ellipsis-end");
     }
 
     // Always add last page if more than 1 page
     if (totalPages > 1) {
-      pages.push(totalPages)
+      pages.push(totalPages);
     }
 
-    return pages
-  }
+    return pages;
+  };
 
-  const pages = generatePagination()
-console.log(currentPage)
-  if (totalPages <= 1) return null
+  const pages = generatePagination();
+
+  if (totalPages <= 1) return null;
 
   return (
     <div className="flex items-center justify-center space-x-2 mt-8">
@@ -61,10 +64,16 @@ console.log(currentPage)
       {pages.map((page, i) => {
         if (page === "ellipsis-start" || page === "ellipsis-end") {
           return (
-            <Button key={`ellipsis-${i}`} variant="outline" size="icon" disabled className="cursor-default">
+            <Button
+              key={`ellipsis-${i}`}
+              variant="outline"
+              size="icon"
+              disabled
+              className="cursor-default"
+            >
               <MoreHorizontal className="h-4 w-4" />
             </Button>
-          )
+          );
         }
 
         return (
@@ -77,45 +86,18 @@ console.log(currentPage)
           >
             {page}
           </Button>
-        )
+        );
       })}
 
       <Button
         variant="outline"
         size="icon"
-        onClick={()=>onPageChange(currentPage + 1)}
+        onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         aria-label="Page suivante"
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
-      {/* {totalPages > 1 && (
-                      <div className="flex justify-between items-center mt-8">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onPageChange(currentPage -1)}
-                          disabled={currentPage === 1}
-                        >
-                          <ChevronLeft className="h-4 w-4 mr-2" />
-                          Précédent
-                        </Button>
-                        <span>
-                          Page {currentPage} sur {totalPages}
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onPageChange(currentPage +1)}
-                          disabled={currentPage === totalPages}
-                          aria-label="Page suivante"
-                        >
-                          Suivant
-                          <ChevronRight className="h-4 w-4 ml-2" />
-                        </Button>
-                      </div>
-                    )} */}
     </div>
-  )
+  );
 }
-

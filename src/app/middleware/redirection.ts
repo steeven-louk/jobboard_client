@@ -5,7 +5,7 @@ export const RedirectionRoute =()=>{
     if (status === "unauthenticated"){
         alert("Veuillez vous connectez")
     }
-    if(session.user.role ==="RECRUITER"){
+    if(session?.user?.role ==="RECRUITER"){
         alert("Vous n'etes pas recruteur")
     }
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,11 +12,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PenIcon, PlusIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import axios from "axios";
-import { useSession } from 'next-auth/react';
-import { handleAddExperience, handleUpdateExperience } from "@/app/services/experienceService";
+
+import { PenIcon, PlusIcon } from "lucide-react";
+
+import {
+  handleAddExperience,
+  handleUpdateExperience,
+} from "@/app/services/experienceService";
 import { toast } from "sonner";
 
 interface Experience {
@@ -36,12 +40,6 @@ interface Props {
 }
 
 export default function ExperienceModal({ experience }: Props) {
-  // const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3Mzg0NDE3ODksImV4cCI6MTczODcwMDk4OX0.mVzwrxHTH3oCkrsVUPzLP3uJ6EfLYXWXem065oC30tE";
-  const BASE_URL = "http://localhost:5800/api/user/profil/experience";
-
-    const {data:session} = useSession()
-    
-    const AUTH_TOKEN:string = session?.user?.token;
   // Définir les valeurs par défaut si aucune expérience n'est fournie (mode ajout)
   const [formData, setFormData] = useState<Experience>(
     experience || {
@@ -71,26 +69,24 @@ export default function ExperienceModal({ experience }: Props) {
     try {
       if (experience) {
         // Mise à jour
-        const response = await handleUpdateExperience(experience?.id,formData)
-        if(response?.status === 200){
+        const response = await handleUpdateExperience(experience?.id, formData);
+        if (response?.status === 200) {
           console.log("Expérience mise à jour :", response);
 
           toast("Expérience mise à jour");
         }
-
       } else {
         // Ajout
         const response = await handleAddExperience(formData);
-        if(response?.status === 201){
-
+        if (response?.status === 201) {
           toast("Nouvelle expérience ajoutée");
           console.log("Nouvelle expérience ajoutée :", response?.data);
         }
       }
     } catch (error) {
       toast("Erreur", {
-              description: "Erreur lors de l'opération",
-            })
+        description: "Erreur lors de l'opération",
+      });
       console.error("Erreur lors de l'opération", error);
     }
   };
@@ -126,7 +122,11 @@ export default function ExperienceModal({ experience }: Props) {
               { label: "Date de debut", name: "date_debut", type: "date" },
               { label: "Date de fin", name: "date_fin", type: "date" },
               { label: "Description", name: "description" },
-              { label: "Compétence", name: "competence", placeholder:"separé vos competences d'une virgule" },
+              {
+                label: "Compétence",
+                name: "competence",
+                placeholder: "separé vos competences d'une virgule",
+              },
             ].map(({ label, name, type = "text" }) => (
               <div key={name} className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor={name} className="text-right">
@@ -154,7 +154,12 @@ export default function ExperienceModal({ experience }: Props) {
             </div>
           </div>
           <DialogFooter className="">
-            <Button className="max-w-44 w-full font-semibold uppercase" type="submit">{experience ? "Modifier" : "Ajouter"}</Button>
+            <Button
+              className="max-w-44 w-full font-semibold uppercase"
+              type="submit"
+            >
+              {experience ? "Modifier" : "Ajouter"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

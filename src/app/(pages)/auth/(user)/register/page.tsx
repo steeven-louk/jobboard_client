@@ -22,8 +22,6 @@ import { Label } from "@/components/ui/label";
 export default function RegisterPage() {
   const [role, setRole] = useState<"USER" | "RECRUITER">("USER");
   const [step, setStep] = useState(1);
-  // const [profileImage, setProfileImage] = useState<string | null>(null)
-  // const fileInputRef = useRef<HTMLInputElement>(null)
 
   const router = useRouter();
   const URL = "http://localhost:5800/api/auth/";
@@ -41,7 +39,6 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
     password: z.string().min(6, "Mot de passe trop court"),
     phone: z.string().min(9, "Numéro de téléphone incorrect"),
     city: z.string().min(2, "Ville requise"),
-    // birthdate: z.string().min(10, "Date de naissance requise"),
     birthdate: z.string().refine((dateStr) => {
       const birthDate = new Date(dateStr);
       return birthDate <= minDateForCandidate;
@@ -89,7 +86,7 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
     setStep(2);
   };
 
-  const onSubmit = async (data:any) => {
+  const onSubmit = async (data) => {
     try {
       const endpoint = role === "USER" ? `${URL}register` : `${URL}register-recruiter`;
       const response = await axios.post(endpoint, { ...data, role });
@@ -124,27 +121,7 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
                   <TabsTrigger value="RECRUITER">Recruteur</TabsTrigger>
                 </TabsList>
                 <TabsContent value="USER">
-                  {/* <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <Input {...register("fullName")} placeholder="Nom complet" />
-                    {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName.message}</p>}
-                    
-                    <Input {...register("email")} placeholder="Email" type="email" />
-                    {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-                    
-                    <Input {...register("password")} placeholder="Mot de passe" type="password" />
-                    {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-                    
-                    <Input {...register("phone")} placeholder="Téléphone" type="tel" />
-                    {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
-                    
-                    <Input {...register("city")} placeholder="Ville" />
-                    {errors.city && <p className="text-red-500 text-sm">{errors.city.message}</p>}
-                    
-                    <Input {...register("birthdate")} placeholder="Date de naissance" type="date" />
-                    {errors.birthdate && <p className="text-red-500 text-sm">{errors.birthdate.message}</p>}
-                    
-                    <Button type="submit" className="w-full">S'inscrire en tant que candidat</Button>
-                  </form> */}
+                
                   <form onSubmit={handleSubmit(onSubmit)} className="">
                     <Label className="mt-5">Nom complet</Label>
                     <Input {...register("fullName")} placeholder="Nom complet" />
@@ -196,9 +173,6 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
                     ) : (
                       <>
                    
-                        {/* <Input {...register("companyName")} placeholder="Nom de l'entreprise" /> */}
-                        {/* {errors.companyName && <p className="text-red-500 text-sm">{errors.companyName.message}</p>} */}
-                        
                         <Label>Nom de l&apos;entreprise</Label>
                         <Input {...register("companyName")} placeholder="Nom de l'entreprise" />
                         <Label>Localisation</Label>

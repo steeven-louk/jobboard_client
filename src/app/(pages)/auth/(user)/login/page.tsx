@@ -1,78 +1,62 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-// import { signIn } from "next-auth/react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import axios from "axios"
-import {signIn} from "next-auth/react"
-import { toast } from "sonner"
-import { Loader2 } from "lucide-react"
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [role, setRole] = useState("candidate")
-  const [loading, setLoading] = useState<boolean>(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [role, setRole] = useState("candidate");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const router = useRouter()
-
-  const URL ="http://localhost:5800/api/auth/login"
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setError("");
-      setLoading(true)
+    e.preventDefault();
+    setError("");
+    setLoading(true);
     try {
-        // if(!email || !password){
-        //     console.log("email ou mot de passe incorrect");
-        // }
-        const result = await signIn("credentials",{
-          email,
-          password,
-          redirect:false
-        })
-        if (result?.error) {
-          setError("Identifiants incorrects");
-      setLoading(false)
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      if (result?.error) {
+        setError("Identifiants incorrects");
+        setLoading(false);
+      } else {
+        router.push("/");
+        setLoading(false);
+      }
 
-        } else {
-          router.push("/");
-      setLoading(false)
-
-        }
-        // const login = await axios.post(URL,{
-        //     email,
-        //     password
-        // });
-        // if(login.status ===200){
-        //     console.log(login)
-        //     router.push("/")
-        //     localStorage.setItem("token",JSON.stringify(login.data.token))
-        // }
-    // Ici, vous implémenteriez la logique de connexion
-    console.log("Tentative de connexion avec:", { email, password, role })
-    // Après une connexion réussie, redirigez l'utilisateur
-    // router.push("/dashboard")
+      console.log("Tentative de connexion avec:", { email, password, role });
     } catch (error) {
       toast("Erreur", {
-                description: "Erreur lors de la connexion",
-              })
-        console.log("erreur lors de la connexion", error);
+        description: "Erreur lors de la connexion",
+      });
+      console.log("erreur lors de la connexion", error);
     }
-  }
-
-  const handleGoogleSignIn = () => {
-    // signIn("google", { callbackUrl: "/dashboard" })
-    console.log("sign in with google")
-  }
+  };
 
   return (
     <div className="flex min-h-[calc(100vh -25rem)] md:min-h-screen container mx-auto">
@@ -81,7 +65,9 @@ export default function LoginPage() {
           <Card className="shadow-md shadow-black">
             <CardHeader>
               <CardTitle>Connexion</CardTitle>
-              <CardDescription>Connectez-vous à votre compte JobBoard</CardDescription>
+              <CardDescription>
+                Connectez-vous à votre compte JobBoard
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs value={role} onValueChange={setRole} className="w-full">
@@ -117,10 +103,10 @@ export default function LoginPage() {
                     <Button disabled={loading} type="submit" className="w-full">
                       {loading ? (
                         <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
-                        Connexion en cours...
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Connexion en cours...
                         </>
-                      ):(
+                      ) : (
                         "Se connecter en tant que candidat"
                       )}
                     </Button>
@@ -129,7 +115,9 @@ export default function LoginPage() {
                 <TabsContent value="recruiter">
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                      <Label htmlFor="email-recruiter">Adresse e-mail professionnelle</Label>
+                      <Label htmlFor="email-recruiter">
+                        Adresse e-mail professionnelle
+                      </Label>
                       <Input
                         id="email-recruiter"
                         type="email"
@@ -137,7 +125,6 @@ export default function LoginPage() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         disabled={loading}
-
                       />
                     </div>
                     <div>
@@ -152,30 +139,27 @@ export default function LoginPage() {
                       />
                     </div>
                     <Button disabled={loading} type="submit" className="w-full">
-                    {loading ? (
+                      {loading ? (
                         <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
-                        Connexion en cours...
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Connexion en cours...
                         </>
-                      ):(
+                      ) : (
                         "Se connecter en tant que recruteur"
                       )}
-                      
                     </Button>
                   </form>
                 </TabsContent>
               </Tabs>
               <Separator className="my-4" />
-              <Button onClick={handleGoogleSignIn} variant="outline" className="w-full">
-                
-                <Image src="/google-logo.svg" alt="Google logo" width={20} height={20} className="mr-2" />
-                Se connecter avec Google
-              </Button>
             </CardContent>
             <CardFooter>
               <p className="text-center text-sm text-gray-600">
                 Pas encore de compte ?{" "}
-                <Link href="/auth/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                <Link
+                  href="/auth/register"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
                   S&apos;inscrire
                 </Link>
               </p>
@@ -184,9 +168,14 @@ export default function LoginPage() {
         </div>
       </div>
       <div className="p-2 relative hidden flex-1 lg:block">
-        <Image src={"/assets/bg-auth.webp"} alt="Image de connexion" layout="fill" objectFit="cover" className="w-full rounded-md" />
+        <Image
+          src={"/assets/bg-auth.webp"}
+          alt="Image de connexion"
+          layout="fill"
+          objectFit="cover"
+          className="w-full rounded-md"
+        />
       </div>
     </div>
-  )
+  );
 }
-

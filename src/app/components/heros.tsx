@@ -1,8 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Search, X } from 'lucide-react'
 import React from 'react'
-import SearchBar from './searchBar'
+
 import { HomeSearchBar } from './home-search-bar'
 
 

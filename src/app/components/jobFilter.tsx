@@ -55,7 +55,7 @@ export function JobFilters({
             </div>
           </div>
           <div>
-            <h3 className="font-semibold mb-2">Niveau d'expérience</h3>
+            <h3 className="font-semibold mb-2">Niveau d&apos;expérience</h3>
             <div className="space-y-2">
               {Object.entries(experienceLevels).map(([level, checked]) => (
                 <div key={level} className="flex items-center space-x-2">

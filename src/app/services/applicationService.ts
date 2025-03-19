@@ -80,42 +80,9 @@ export const applyToJob = async (jobId: number, CV: File | string | null, LM: st
     toast.success("Candidature envoyée avec succès !");
     return response;
 
-  } catch (error: any) {
+  } catch (error) {
     console.error("❌ Erreur de candidature:", error.response?.data || error.message);
     toast.error("Erreur lors de la candidature. Veuillez réessayer.");
     throw new Error(error.response?.data?.message || "Erreur de candidature.");
   }
 };
-
-
-// export const applyToJob = async ( jobId:number, CV:File | string | null, LM:string) => {
-//     try {
-//       const userId = "cm84lf7to0006jnx0uib57z1q"
-//       if (CV && CV instanceof File) {
-//           const uploadResponse = await handleUpload("CV", userId, CV);
-//           console.log("uploadResppnse", uploadResponse)
-//           if (!uploadResponse || !uploadResponse.fileUrl) {
-//               toast("Erreur", {
-//                   description: "L'upload du CV a échoué. Annulation de l'ajout'.",
-//                 })
-//               console.error("L'upload du CV a échoué. Annulation de la mise à jour.");
-//               return null; // Ne pas continuer si l'upload échoue
-//           }
-//           CV = uploadResponse.fileUrl; // Met à jour `data.logo` avec l'URL du fichier
-//           console.log("cvvvvResponse", CV);
-//         }
-
-//       const response = await api.post(`/user/apply_job/${jobId}`, {
-//         // userId,
-//         jobId:jobId,
-//         coverLetter:LM,
-//         cv_url:CV
-//       });
-//       return response;
-//     } catch (error) {
-//       toast("Erreur", {
-//         description: "Erreur de candidature",
-//       })
-//       throw error.response?.data || "Erreur de candidature";
-//     }
-//   };

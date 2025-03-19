@@ -27,7 +27,7 @@ export default function SearchBar({ onSearch, initialSearchTerm = "" }: SearchBa
     <div className=' w-full bg-white inline-flex gap-3 items-center p-4 rounded-md rounded-r-none'>
         <Search className='text-gray-600 hidden md:block'/>
         <Input type="text" 
-          className='w-full focus:outline-none focus:ring-0 shadow-none flex-grow p-1 border border-white focus:border-transparent text-black placeholder-slate-400'
+          className='w-full text-xl focus:outline-none focus:ring-0 shadow-none flex-grow p-1 border border-white focus:border-transparent text-black placeholder-slate-400'
           placeholder='cherchez un job par intitulé de poste, mot-clé ou entreprise' 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

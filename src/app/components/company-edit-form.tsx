@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface CompanyEditFormProps {
   company: {
@@ -44,6 +45,10 @@ export function CompanyEditForm({ company, onSubmit, onCancel }: CompanyEditForm
     }
   }
 
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit(formData)
@@ -61,31 +66,35 @@ export function CompanyEditForm({ company, onSubmit, onCancel }: CompanyEditForm
         />
         <div>
           <Label htmlFor="logo">Logo de l&apos;entreprise</Label>
-          <Input id="logo" name="logo" type="file" accept="image/*" onChange={handleLogoChange} className="mt-1" />
+          <Input id="logo" name="logo" type="file" accept="image/*" onChange={handleLogoChange} className="mt-2" />
         </div>
       </div>
       <div>
         <Label htmlFor="name">Nom de l&apos;entreprise</Label>
-        <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
+        <Input id="name" className="mt-3" name="name" value={formData.name} onChange={handleChange} required />
       </div>
       <div>
         <Label htmlFor="domaine">Domaine</Label>
-        <Input id="domaine" name="domaine" value={formData.domaine} onChange={handleChange} required />
+        <Input id="domaine" className="mt-3" name="domaine" value={formData.domaine} onChange={handleChange} required />
       </div>
       <div>
         <Label htmlFor="location">Localisation</Label>
-        <Input id="location" name="location" value={formData.location} onChange={handleChange} required />
+        <Input id="location" className="mt-3" name="location" value={formData.location} onChange={handleChange} required />
       </div>
-      {/* <div>
+      <div>
         <Label htmlFor="employeeCount">Nombre d&apos;employés</Label>
-        <Input
-          id="employeeCount"
-          name="employeeCount"
-          value={formData.employeeCount}
-          onChange={handleChange}
-          required
-        />
-      </div> */}
+        <Select required onValueChange={(value) => handleSelectChange("employeeCount", value)}  name="employeeCount" value={formData.employeeCount} >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Sélectionnez votre nombre d'employées" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0-10">0 - 10</SelectItem>
+                        <SelectItem value="10-50">10 - 50</SelectItem>
+                        <SelectItem value="50-100">50 - 100</SelectItem>
+                        <SelectItem value="100-120">100 - 120</SelectItem>
+                      </SelectContent>
+                    </Select>
+      </div>
       <div>
         <Label htmlFor="description">Description</Label>
         <Textarea
@@ -95,7 +104,7 @@ export function CompanyEditForm({ company, onSubmit, onCancel }: CompanyEditForm
           onChange={handleChange}
           rows={4}
           required
-          
+           className="mt-3"
         />
       </div>
       <div className="flex justify-end space-x-2">

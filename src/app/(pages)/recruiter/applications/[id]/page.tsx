@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 // import { useRouter } from "next/navigation"
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -12,8 +12,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FileText, Paperclip } from "lucide-react"
 import axios from "axios";
 import { useSession } from 'next-auth/react';
-import { changeStatus } from "@/app/services/applicationService";
+import { changeStatus, getApplication } from "@/app/services/applicationService";
 import ProtectedRoute from "@/app/components/protectedRoutes";
+import Image from "next/image";
 
 
 interface Application {
@@ -28,8 +29,9 @@ interface Application {
     coverLetter: string
   }
 
-export default function ApplicationDetailPage() {
-//   const [status, setStatus] = useState()
+export default function ApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const {id} = use(params)
+  
   const [application, setApplication] = useState<Application | null>(null)
   const [jobTitle, setJobTitle] = useState<string | null>(null)
 
@@ -40,19 +42,20 @@ export default function ApplicationDetailPage() {
     
     const AUTH_TOKEN:string = session?.user?.token;
 
+
+
   useEffect(() => {
-const applications = searchParams.get("data");
-
-    const applicationData = applications ? JSON.parse(applications) : null;
-
-    const job_title = searchParams.get("jobTitle")
-    if (applicationData) {
-      setApplication(applicationData)
+    const handleGetApplication =async()=>{
+      try {
+        const data = await getApplication(id);
+        setApplication(data);
+      } catch (error) {
+        console.log(error);
+        throw  error
+      }
     }
-    if(job_title){
-        setJobTitle(job_title)
-    }
-  }, [searchParams])
+    handleGetApplication();
+  }, [id])
 
   const handleStatusChange = async (newStatus: string) => {
     if (application) {
@@ -95,8 +98,10 @@ const applications = searchParams.get("data");
                 <TabsTrigger value="resume">CV</TabsTrigger>
                 <TabsTrigger value="coverLetter">Lettre de motivation</TabsTrigger>
               </TabsList>
-              <TabsContent value="profile">
+              <TabsContent value="profile" className="flex flex-wrap-reverse md:justify-between">
+             
                 <div className="space-y-4">
+                 
                   <div>
                     <Label>Nom</Label>
                     <p>{application?.user.fullName}</p>
@@ -114,6 +119,9 @@ const applications = searchParams.get("data");
                     <p>{new Date(application.createdAt).toLocaleDateString()}</p>
                   </div>
                 </div>
+                <div className="img my-auto">
+                    <Image src={application?.user.picture} width={170} height={170} className="object-cover rounded-md" alt={application?.user.fullName}/>
+                  </div>
               </TabsContent>
               <TabsContent value="resume">
                 <div className="space-y-4">

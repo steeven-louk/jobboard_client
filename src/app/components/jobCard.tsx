@@ -10,6 +10,7 @@ import { formatedRelativeTime } from '../utils/formatRelativeTime'
 
 import { useSession } from 'next-auth/react';
 import { isInFavorite, toggleFavorite } from '../services/favorisService'
+import Image from 'next/image'
 
 interface jobCard{
     company: {
@@ -35,17 +36,17 @@ export const JobCard = ({path,job}:{path: string; job: jobCard}) => {
       const {data:session} = useSession()
       const userRole = session?.user?.role;
     const [isFavorite, setIsInFavorie] = useState<boolean>(false);
-console.log("jobbbb", job)
+// console.log("jobbbb", job)
     const addToFavorie = async () => {
 
       if (!session) return alert("Vous devez être connecté pour ajouter aux favoris");
       try {
         // const check =async()=>{
-          if (session) {
-           const response = await isInFavorite(job?.id);
-           setIsInFavorie(response);
+          // if (session) {
+           const checkResponse = await isInFavorite(job?.id);
+           setIsInFavorie(checkResponse);
         // }
-      }
+      // }
         const response = await toggleFavorite(job?.id);
         setIsInFavorie(response)
         console.log(response);
@@ -54,17 +55,17 @@ console.log("jobbbb", job)
       }
     };
 
-          useEffect(() => {
-              if(!session) return;
-                const check =async()=>{
-                    if (session) {
-                     const response = await isInFavorite(job?.id);
-                     setIsInFavorie(response);
-                  }
-                }
+          // useEffect(() => {
+          //     if(!session) return;
+          //       const check =async()=>{
+          //           if (session) {
+          //            const response = await isInFavorite(job?.id);
+          //            setIsInFavorie(response);
+          //         }
+          //       }
              
-                  check();
-          }, [job?.id, session]);
+          //         check();
+          // }, [job?.id, session]);
 
       return (
         <Card className='card shadow-md hover:shadow-slate-400 transition-shadow p-3 shadow-slate-700 rounded-md my-5'>

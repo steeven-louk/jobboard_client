@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { PenIcon } from "lucide-react";
 // import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { ScrollArea } from "@/components/ui/scroll-area";
 // import { handleUpload } from "@/app/services/companyService";
 
 interface Profil {
@@ -98,13 +99,15 @@ export default function ProfilModal({ profil, onClose, onSubmit }: ProfilEditFor
           <span className="md:block hidden">Modifier</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[555px]">
+      <DialogContent className="max-w-[555px] w-full">
         <DialogHeader>
           <DialogTitle>Modifier votre profil</DialogTitle>
           <DialogDescription>
             Modifiez les détails de votre profil et enregistrez vos changements.
           </DialogDescription>
         </DialogHeader>
+        <ScrollArea  className='h-[43rem] md:h-[36rem]'>
+
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             {[
@@ -162,9 +165,10 @@ export default function ProfilModal({ profil, onClose, onSubmit }: ProfilEditFor
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Enregistrer</Button>
+            <Button className="max-w-44 w-full uppercase tracking-wide" type="submit">Enregistrer</Button>
           </DialogFooter>
         </form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

@@ -24,7 +24,8 @@ interface Diplome {
   level: string;
   location: string;
   school: string;
-  date: string;
+  date_debut: string;
+  date_fin: string;
   description: string;
   competence: string;
 }
@@ -46,7 +47,8 @@ export default function DiplomeModal({ diplome }: Props) {
       level: "",
       school: "",
       location: "",
-      date: "",
+      date_debut: "",
+      date_fin: "",
       description: "",
       competence: "",
     }
@@ -68,13 +70,22 @@ export default function DiplomeModal({ diplome }: Props) {
         // Mise à jour
         const response = await handleUpdateFormation(diplome?.id, formData)
         toast("Formation mise à jour")
-
+        if(response?.status === 200){
+                  console.log("Formation mise à jour :", response);
+        
+                  toast("Formation mise à jour");
+                }
+        
         console.log("Formation mise à jour :", response?.data);
       } else {
         // Ajout
         const response = await handleAddFormation(formData);
-        toast("Nouvelle formation ajoutée")
-        console.log("Nouvelle formation ajoutée :", response?.data);
+        if(response?.status === 201){
+          
+          toast("Nouvelle formation ajoutée")
+          console.log("Nouvelle formation ajoutée :", response?.data);
+        }
+
       }
     } catch (error) {
       toast("Erreur", {
@@ -94,7 +105,7 @@ export default function DiplomeModal({ diplome }: Props) {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-[425px] md:max-w-[35em]">
         <DialogHeader>
           <DialogTitle>
             {diplome ? "Modifier la formation" : "Ajouter une formation"}
@@ -109,12 +120,13 @@ export default function DiplomeModal({ diplome }: Props) {
           <div className="grid gap-4 py-4">
             {[
               { label: "Titre", name: "title" },
-              { label: "Level", name: "level" },
-              { label: "School", name: "school" },
+              { label: "Niveau", name: "level" },
+              { label: "Etablissement", name: "school" },
               { label: "Localisation", name: "location" },
-              { label: "Date", name: "date", type: "date" },
+              { label: "Date de debut", name: "date_debut", type: "date" },
+              { label: "Date de fin", name: "date_fin", type: "date" },
               { label: "Description", name: "description" },
-              { label: "Compétence", name: "competence" },
+              { label: "Compétence", name: "competence", placeholder:"separé vos competences d'une virgule" },
             ].map(({ label, name, type = "text" }) => (
               <div key={name} className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor={name} className="text-right">
@@ -130,19 +142,10 @@ export default function DiplomeModal({ diplome }: Props) {
                 />
               </div>
             ))}
-            {/* <div className="grid grid-cols-4 items-center gap-4">
-              <div className="flex space-x-2">
-                <Checkbox
-                  id="en_cours"
-                  checked={formData.en_cours}
-                  onCheckedChange={handleCheckboxChange}
-                />
-                <Label htmlFor="en_cours">En cours</Label>
-              </div>
-            </div> */}
+
           </div>
           <DialogFooter>
-            <Button type="submit">{diplome ? "Enregistrer" : "Ajouter"}</Button>
+            <Button className="max-w-44 w-full font-semibold uppercase" type="submit">{diplome ? "Modifier" : "Ajouter"}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

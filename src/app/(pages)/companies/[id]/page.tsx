@@ -46,6 +46,7 @@ interface companyDetail{
   employeeCount:string
   domaine: string
   logo: string
+
 }
 export default function CompanyProfilePage({ params }: { params: Promise<{ id: string }> }) {
   // Dans une vraie application, vous feriez un appel API ici pour récupérer les données de l'entreprise
@@ -79,12 +80,14 @@ useEffect(() => {
     getCompanyDetails();
 }, [id]);
 
+// userRole ==="RECRUITER" && {<>
 const handleCompanyUpdate =async (updatedCompany) => {
   setCompany(updatedCompany);
   try {
     const response = await updateCompany(id,userId, company);
+
     setIsEditModalOpen(false)
-    console.log("response", response);
+    console.log("response for update campany", response);
   } catch (error) {
     toast("Erreur", {
             description: "Erreur lors de la modification de la company",
@@ -94,7 +97,7 @@ const handleCompanyUpdate =async (updatedCompany) => {
   toast("Company mis à jour")
   console.log("Company updated:", updatedCompany)
 }
-
+// </>}
 const handlePageChange = (page: number) => {
   setCurrentPage(page);
   window.scrollTo({ top: 0, behavior: "smooth" })
@@ -148,7 +151,7 @@ const paginatedJobs = company?.jobs?.slice(
             <CardContent>
               <div className="space-y-4">
                 {paginatedJobs?.map((job) => (
-                  <JobCard key={job.id} job={job} />
+                  <JobCard key={job.id} job={job} path={""} />
                 ))}
               </div>
               <span>{company?.jobs.length <=0 && "aucun job"}</span>
@@ -168,7 +171,7 @@ const paginatedJobs = company?.jobs?.slice(
                   <strong>Localisation :</strong> {company?.location}
                 </p>
                 <p>
-                  <strong>Taille de l&apos;entreprise :</strong> {company?.employeeCount || 215} employés
+                  <strong>Taille de l&apos;entreprise :</strong> {company?.employeeCount || 0} employés
                 </p>
               </div>
             </CardContent>
@@ -189,7 +192,7 @@ const paginatedJobs = company?.jobs?.slice(
                       Modifier le profil de l&apos;entreprise
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
+                  <DialogContent className="max-w-[425px] md:max-w-[45rem] w-full">
                     <DialogHeader className="">
                       <DialogTitle>Modifier le profil de l&apos;entreprise</DialogTitle>
                     </DialogHeader>

@@ -141,7 +141,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
                             <CardTitle className="text-xl font-bold">Postuler</CardTitle>
                             <CardDescription className='my-3'>Intéressé(e) par ce poste de {getJobDetail?.title} chez {getJobDetail?.company?.name} ?</CardDescription>
                             <div className="btn-group flex md:flex-col gap-4 mx-auto justify-center items-center">
-                             {userRole ==="USER" &&  <DrawerForm jobId={id} companyName={getJobDetail?.company.name} />}
+                             {userRole ==="USER" &&  <DrawerForm jobId={id} jobTitle={getJobDetail?.title} companyName={getJobDetail?.company.name} />}
                                 <Button onClick={addToFavorie} variant={isFavorite?'destructive':'outline'} className={`border p-2 px-4 rounded-md transition font-semibold `}>
                                 {isFavorite ? "Retirer l'offre des favoris" : "Ajouter l'offre aux favoris"}
                                 </Button>

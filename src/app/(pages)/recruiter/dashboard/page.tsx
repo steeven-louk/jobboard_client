@@ -114,12 +114,7 @@ export default function RecruiterDashboard() {
                         <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                         {application?.status}
                         </span>
-                        <Link
-                          href={{
-                            pathname: `/recruiter/applications/${application.id}`,
-                            query: { data: JSON.stringify(application),jobTitle: job?.title },
-                          }}
-                        >
+                        <Link href={`/recruiter/applications/${application.id}`}>
                           <Button variant="outline" size="sm">
                             Voir détails
                           </Button>

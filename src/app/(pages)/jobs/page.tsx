@@ -38,74 +38,183 @@ export default function Jobs() {
   const [sortBy, setSortBy] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
+  // const [contractTypes, setContractTypes] = useState({
+  //   cdi: false,
+  //   cdd: false,
+  //   stage: false,
+  //   freelance: false,
+  // });
+  // const [experienceLevels, setExperienceLevels] = useState({
+  //   junior: false,
+  //   intermediaire: false,
+  //   senior: false,
+  // });
+
+  // useEffect(() => {
+  //   setSearchTerm(initialSearchTerm);
+  //   setTimeout(() => {
+  //     setIsLoading(false)
+  //   }, 1500)
+  // }, [initialSearchTerm]);
+
+  // // const URL: string = "http://localhost:5800/";
+
+  // useEffect(() => {
+  //   const getAllJobs = async () => {
+  //    try {
+  //     const data = await getAllJob();
+  //       setJobs(data);
+  //         setTimeout(() => {
+  //           setIsLoading(false)
+  //         }, 1500)
+  //     } catch (error) {
+  //       toast("Erreur", {
+  //                   description: "Erreur lors de la recuperation des jobs",
+  //                 })
+  //       console.error("Erreur lors de la récupération des jobs :", error);
+  //     }
+  //   };
+  //   getAllJobs();
+  // }, []);
+
+  // const filterJob = getJobs
+  //   ?.filter((job) => {
+  //     if (!searchTerm) return true;
+  //     if (searchTerm) {
+  //       const searchLower = searchTerm?.toLowerCase();
+  //       return (
+  //         job?.title?.toLowerCase()?.includes(searchLower) ||
+  //         job?.description?.toLowerCase().includes(searchLower) ||
+  //         job?.company?.toLowerCase().includes(searchLower)
+  //       );
+  //     }
+  //     // return true;
+  //   })
+  //   .filter((job) => {
+  //     if (Object.values(contractTypes).every((v) => !v)) return true;
+  //     return contractTypes[
+  //       job?.jobType.toLowerCase() as keyof typeof contractTypes
+  //     ];
+  //   })
+  //   .sort((a, b) => {
+  //     switch (sortBy) {
+  //       case "recent":
+  //         return (
+  //           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  //         );
+  //       case "salary-high":
+  //         return parseInt(b.salary) - parseInt(a.salary);
+  //       case "salary-low":
+  //         return parseInt(a.salary) - parseInt(b.salary);
+  //       case "company":
+  //         return a.company.localeCompare(b.company);
+  //       default:
+  //         return 0;
+  //     }
+  //   });
+
+  // const handleSortChange = (value: string) => {
+  //   setSortBy(value);
+  //   setCurrentPage(1)
+  // };
+  // const handleContractTypeChange = (type: keyof typeof contractTypes) => {
+  //   setContractTypes((prev) => ({ ...prev, [type]: !prev[type] }));
+  //   setCurrentPage(1)
+  // };
+
+  // const handleExperienceLevelChange = (
+  //   level: keyof typeof experienceLevels
+  // ) => {
+  //   setExperienceLevels((prev) => ({ ...prev, [level]: !prev[level] }));
+  //   setCurrentPage(1)
+  // };
+  // const handleSearch = (term: string) => {
+  //   setSearchTerm(term);
+  //   setCurrentPage(1)
+  // };
+
+  // const clearFilters = () => {
+  //   setSortBy("");
+  //   setContractTypes({
+  //     cdi: false,
+  //     cdd: false,
+  //     stage: false,
+  //     freelance: false,
+  //   });
+  //   setExperienceLevels({
+  //     junior: false,
+  //     intermediaire: false,
+  //     senior: false,
+  //   });
+  //   setCurrentPage(1)
+  //   setSearchTerm("");
+  // };
+
+  // const totalPages = Math.ceil(filterJob?.length / JOBS_PER_PAGE);
+  // const paginatedJobs = filterJob?.slice(
+  //   (currentPage - 1) * JOBS_PER_PAGE,
+  //   currentPage * JOBS_PER_PAGE
+  // );
+
+  
   const [contractTypes, setContractTypes] = useState({
     cdi: false,
     cdd: false,
     stage: false,
     freelance: false,
   });
+
   const [experienceLevels, setExperienceLevels] = useState({
     junior: false,
     intermediaire: false,
     senior: false,
   });
 
+  // ✅ Met à jour la recherche uniquement si `initialSearchTerm` change
   useEffect(() => {
     setSearchTerm(initialSearchTerm);
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 1500)
   }, [initialSearchTerm]);
 
-  // const URL: string = "http://localhost:5800/";
-
+  // ✅ Récupère les jobs et gère l'état de chargement
   useEffect(() => {
     const getAllJobs = async () => {
-     try {
-      const data = await getAllJob();
+      try {
+        setIsLoading(true);
+        const data = await getAllJob();
         setJobs(data);
-          setTimeout(() => {
-            setIsLoading(false)
-          }, 1500)
       } catch (error) {
-        toast("Erreur", {
-                    description: "Erreur lors de la recuperation des jobs",
-                  })
-        console.error("Erreur lors de la récupération des jobs :", error);
+        toast.error("Erreur lors de la récupération des jobs");
+        console.error("❌ Erreur récupération jobs:", error);
+      } finally {
+        setTimeout(() => setIsLoading(false), 500);
       }
     };
     getAllJobs();
   }, []);
 
-  const filterJob = getJobs
+  // ✅ Filtrage des jobs
+  const filteredJobs = getJobs
     ?.filter((job) => {
-      if (!searchTerm) return true;
-      if (searchTerm) {
-        const searchLower = searchTerm?.toLowerCase();
-        return (
-          job.title?.toLowerCase()?.includes(searchLower) ||
-          job.description?.toLowerCase().includes(searchLower) ||
-          job.company?.toLowerCase().includes(searchLower)
-        );
-      }
-      // return true;
+      if (!searchTerm.trim()) return true;
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        job?.title?.toLowerCase().includes(searchLower) ||
+        job?.description?.toLowerCase().includes(searchLower) ||
+        job?.company?.toLowerCase().includes(searchLower)
+      );
     })
     .filter((job) => {
       if (Object.values(contractTypes).every((v) => !v)) return true;
-      return contractTypes[
-        job?.jobType.toLowerCase() as keyof typeof contractTypes
-      ];
+      return contractTypes[job?.jobType?.toLowerCase() as keyof typeof contractTypes] || false;
     })
     .sort((a, b) => {
       switch (sortBy) {
         case "recent":
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         case "salary-high":
-          return parseInt(b.salary) - parseInt(a.salary);
+          return (parseInt(b.salary) || 0) - (parseInt(a.salary) || 0);
         case "salary-low":
-          return parseInt(a.salary) - parseInt(b.salary);
+          return (parseInt(a.salary) || 0) - (parseInt(b.salary) || 0);
         case "company":
           return a.company.localeCompare(b.company);
         default:
@@ -113,48 +222,40 @@ export default function Jobs() {
       }
     });
 
+  // ✅ Pagination
+  const totalPages = Math.ceil(filteredJobs.length / JOBS_PER_PAGE);
+  const paginatedJobs = filteredJobs.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
+
+  // ✅ Fonctions pour modifier les filtres et la recherche
   const handleSortChange = (value: string) => {
     setSortBy(value);
-    setCurrentPage(1)
-  };
-  const handleContractTypeChange = (type: keyof typeof contractTypes) => {
-    setContractTypes((prev) => ({ ...prev, [type]: !prev[type] }));
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
 
-  const handleExperienceLevelChange = (
-    level: keyof typeof experienceLevels
-  ) => {
-    setExperienceLevels((prev) => ({ ...prev, [level]: !prev[level] }));
-    setCurrentPage(1)
+  const handleContractTypeChange = (type: keyof typeof contractTypes) => {
+    setContractTypes((prev) => ({ ...prev, [type]: !prev[type] }));
+    setCurrentPage(1);
   };
+
+  const handleExperienceLevelChange = (level: keyof typeof experienceLevels) => {
+    setExperienceLevels((prev) => ({ ...prev, [level]: !prev[level] }));
+    setCurrentPage(1);
+  };
+
   const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    setCurrentPage(1)
+    setSearchTerm(term.trim());
+    setCurrentPage(1);
   };
 
   const clearFilters = () => {
     setSortBy("");
-    setContractTypes({
-      cdi: false,
-      cdd: false,
-      stage: false,
-      freelance: false,
-    });
-    setExperienceLevels({
-      junior: false,
-      intermediaire: false,
-      senior: false,
-    });
-    setCurrentPage(1)
+    setContractTypes({ cdi: false, cdd: false, stage: false, freelance: false });
+    setExperienceLevels({ junior: false, intermediaire: false, senior: false });
     setSearchTerm("");
+    setCurrentPage(1);
   };
 
-  const totalPages = Math.ceil(filterJob?.length / JOBS_PER_PAGE);
-  const paginatedJobs = filterJob?.slice(
-    (currentPage - 1) * JOBS_PER_PAGE,
-    currentPage * JOBS_PER_PAGE
-  );
+
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

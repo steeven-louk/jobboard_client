@@ -47,15 +47,6 @@ export const updateCompany = async (id: string,userId:string, data: { name?: str
         if (isNaN(companyId)) throw new Error("ID invalide");
 
         // ✅ Envoi de l'image si elle existe
-        // if (data.logo) {
-        //     await handleUpload("company_logo", "cm7kl40fz0006jnq8eyvtwjhn", data.logo);
-        // }
-        // if (data.logo && data.logo instanceof File) {
-        //     const uploadResponse = await handleUpload("company_logo", "cm7kl40fz0006jnq8eyvtwjhn", data.logo);
-        //     if (uploadResponse?.fileUrl) {
-        //         data.logo = uploadResponse.fileUrl; // Met à jour `data.logo` avec l'URL du fichier
-        //     }
-        // }
         if (data.logo && data.logo instanceof File) {
             const uploadResponse = await handleUpload("company_logo", userId, data.logo);
             if (!uploadResponse || !uploadResponse.fileUrl) {

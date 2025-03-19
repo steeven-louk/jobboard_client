@@ -28,7 +28,7 @@ interface profilDetail{
     birthdate:string
     domaine: string
     picture?: string
-    email:string
+    email:string,
   }
 
  const Profil = () => {
@@ -100,7 +100,7 @@ interface profilDetail{
                                       alt={`${userDetail?.fullName} picture`}
                                       width={150}
                                       height={150}
-                                      className="rounded-full w-[5rem] bg-red-500 h-[5rem] bg-cover  max-w-full max-h-full  mr-4"
+                                      className="rounded-full w-[7rem] bg-red-500 h-[7rem] bg-cover  max-w-full max-h-full  mr-4"
                                     />
                             <div className="flex flex-col gap-2">
                                 <CardTitle>{userDetail?.fullName}</CardTitle>
@@ -175,9 +175,12 @@ interface profilDetail{
                                     <p className=''>{exp.contract}</p>
                                 </div>
                                 <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                                    <span className='text-gray-500'>Date</span>
-                                    <p className=''>{exp.date}</p>
-                                </div>
+                                <span className='text-gray-500'>Date</span>
+                                <p className='inline-flex gap-3'>
+                                    De <span>{new Date(exp?.date_debut).toLocaleDateString()}</span> à 
+                                     <span>{new Date(exp?.date_fin).toLocaleDateString()}</span>
+                                </p>
+                            </div>
                                 <div className="flex md:my-4 flex-col md:flex-row gap-1 md:gap-5">
                                     <span className='text-gray-500'>Description, missions</span>
                                     <p className='md:ml-[7.5rem]'>{exp.description}</p>
@@ -248,8 +251,12 @@ interface profilDetail{
                             </div>
                             <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
                                 <span className='text-gray-500'>Date</span>
-                                <p className=''>De {diplome?.date}</p>
+                                <p className='inline-flex gap-3'>
+                                    De <span>{new Date(diplome?.date_debut).toLocaleDateString()}</span> à 
+                                     <span>{new Date(diplome?.date_fin).toLocaleDateString()}</span>
+                                </p>
                             </div>
+
                             <div className="flex md:my-4 flex-col md:flex-row  gap-1 md:gap-5">
                                 <span className='text-gray-500'>Description</span>
                                 <p className='md:ml-[12rem]'>{diplome?.description}</p>

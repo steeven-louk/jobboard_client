@@ -31,7 +31,7 @@ const Fonctionnalite = () => {
         <p className=''>JobHunt vous offre des outils puissants pour faciliter votre recherche d&apos;emploi. Explorez les fonctionnalités qui vous aideront à rester organisé et proactif.</p>
 
         </div>
-        <div className="grid place-items-center gap-5 md:gap-0 mt-10 grid-cols-1 md:grid-cols-3 mx-auto">
+        <div className="grid place-items-center gap-5 md:gap-0 mt-10 grid-cols-1 md:grid-cols-3 sm:grid-cols-2 mx-auto">
         {fonctionnalite?.map((item,index)=>(
             <Card className="card text-center flex flex-col items-center md:w-[20rem] w-full shadow-md transition-all hover:shadow-slate-500 shadow-slate-300 p-2" key={index+1}>
                 <CardHeader className='text-center mx-auto text-[#309689]'>{item.icon}</CardHeader>

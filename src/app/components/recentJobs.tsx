@@ -17,7 +17,7 @@ export const RecentJobs = () => {
              try {
                     setIsLoading(true);
                     const data = await getAllJob();
-                    const filteredData = data.slice(0,6)
+                    const filteredData = data.slice(0,4)
                     setRecentJobs(filteredData);
                   } catch (error) {
                     // toast.error("Erreur lors de la récupération des jobs");
@@ -30,11 +30,11 @@ export const RecentJobs = () => {
     }, [])
     return (
         <section className='container px-4 md:px-10 mx-auto mt-5 md:my-10'>
-            <h1 className='capitalize font-bold text-2xl'>recent jobs available</h1>
             <div className="flex justify-between md:mb-5 mb:2">
-                <p className=' text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                <h1 className='capitalize font-bold text-2xl md:text-3xl'>emplois récents disponibles</h1>
                 <Link href={"/jobs"} className='underline color-primary font-semibold'>Voir plus</Link>
             </div>
+            
             {isLoading?(
             <div className='space-x-4'>
                 {[...Array(4)].map((_,index)=>(

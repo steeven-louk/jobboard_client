@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 
 
@@ -35,7 +35,7 @@ const Navbar = () => {
   const userRole = session?.user?.role;
   const companyId = session?.user?.companyId;
 
-  const router = useRouter();
+  const pathname = usePathname();
 
 //   const handleProtectedAction = () => {
 //   //   if (session) {
@@ -68,12 +68,14 @@ useEffect(() => {
           <div className="hidden sm:ml-6 md:flex sm:space-x-5 xl:space-x-8">
             {navItems.map((item) => (
               <Link
-                key={item.name}
-                href={item.href}
-                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent transition-all duration-300 text-sm font-medium text-gray-500 hover:border-[#309689] hover:text-gray-700"
-              >
-                {item.name}
-              </Link>
+              key={item.name}
+              href={item.href}
+              className={`inline-flex items-center px-1 pt-1 border-b-2 border-transparent transition-all duration-300 text-sm font-medium ${
+                pathname === item.href ? "border-[#309689] text-gray-700" : "text-gray-500 hover:border-[#309689] hover:text-gray-700"
+              }`}
+            >
+              {item.name}
+            </Link>
             ))}
           </div>
           {/* <div className="btn-group sm:hidden md:block inline-flex items-baseline gap-4 ">

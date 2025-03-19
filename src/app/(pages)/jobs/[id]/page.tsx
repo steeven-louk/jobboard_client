@@ -36,7 +36,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
   const path = usePathname();
   const { id } = use(params);
 
-  const [getJobDetail, setJobDetail] = useState<any>(null);
+  const [getJobDetail, setJobDetail] = useState([]);
   const [isFavorite, setIsInFavorie] = useState<boolean>(false);
 
   const { data: session } = useSession();

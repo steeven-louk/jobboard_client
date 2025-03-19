@@ -1,13 +1,9 @@
 "use client";
 import { HeaderComponent } from "@/app/components/headerComponent";
 import { JobCard } from "@/app/components/jobCard";
-// import { Card, CardContent } from "@/components/ui/card";
-// import { Checkbox } from "@/components/ui/checkbox";
-// import { Label } from "@/components/ui/label";
-// import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
-// import { SelectValue } from "@radix-ui/react-select";
+
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import SearchBar from "@/app/components/searchBar";
 import { useSearchParams } from "next/navigation";
 import { JobFilters } from "@/app/components/jobFilter";
@@ -56,7 +52,6 @@ export default function Jobs() {
     setSearchTerm(initialSearchTerm);
   }, [initialSearchTerm]);
 
-  // ✅ Récupère les jobs et gère l'état de chargement
   useEffect(() => {
     const getAllJobs = async () => {
       try {

@@ -51,7 +51,7 @@ const Profil = () => {
   const userId: string = session?.user?.id || "";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+console.log(isModalOpen)
   const deleteExperience = async (id: number) => {
     try {
       const experience = await handleDeleteExperience(id);

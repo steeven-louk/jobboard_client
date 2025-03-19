@@ -15,10 +15,10 @@ import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import Link from "next/link";
 
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
+
 export default function RegisterPage() {
   const [role, setRole] = useState<"USER" | "RECRUITER">("USER");
   const [step, setStep] = useState(1);
@@ -147,7 +147,7 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
                     <Input {...register("birthdate")} type="date" />
                     {errors.birthdate && <p className="text-red-500 text-sm">{errors.birthdate.message}</p>}
 
-                    <Button type="submit" className="w-full">S'inscrire</Button>
+                    <Button type="submit" className="w-full">S&apos;inscrire</Button>
                   </form>
                 </TabsContent>
                 <TabsContent value="RECRUITER">

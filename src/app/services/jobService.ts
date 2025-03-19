@@ -33,7 +33,7 @@ export const getDetailJob = async (id:number) => {
     }
 };
 
-export const createJob = async (jobData: any) => {
+export const createJob = async (jobData) => {
     try {
         const response = await api.post("/create_job", {
             ...jobData
@@ -44,6 +44,6 @@ export const createJob = async (jobData: any) => {
         toast("Erreur", {
           description: "Erreur de création d'emploi",
         });
-      throw error.response?.data || "Erreur de création d'emploi";
+      throw error?.response?.data || "Erreur de création d'emploi";
     }
   };

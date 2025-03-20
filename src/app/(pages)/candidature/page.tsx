@@ -29,13 +29,13 @@ interface IJob {
     };
   }
   
-  interface IApplication {
-    id: number;
-    job: IJob;
+  interface IApplications {
+    id: string;
+    job?: IJob;
   }
 
 const Candidature = () => {
-    const [getApplication, setGetApplication] = useState<IApplication[]>([]);
+    const [getApplication, setGetApplication] = useState<IApplications[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -44,7 +44,7 @@ const Candidature = () => {
             try {
                 const data= await getUserApplications();
 
-                   if(data)setGetApplication(data);
+                   setGetApplication(data ?? []);
             } catch (error) {
                 toast("Erreur", {
                     description: "Erreur lors de la recuperation des candidature",
@@ -72,9 +72,11 @@ const Candidature = () => {
                 ):(
                     getApplication?.length > 0?(
                         getApplication?.map((apk)=>(
-                            <div key={apk.id}>
-                            <JobCard path={""} job={apk?.job} />
-                        </div>
+                            apk.job ? ( // ✅ Vérifie que `job` existe avant de l'afficher
+                                <div key={apk.id}>
+                                  <JobCard path={""} job={apk.job} />
+                                </div>
+                              ) : null
                         ))
                     ):(<p>Aucune candidature</p>)
                 )

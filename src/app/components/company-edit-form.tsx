@@ -14,17 +14,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Company {
+  id: number;
+  name: string;
+  description: string;
+  location: string;
+  employeeCount?: string;
+  domaine?: string;
+  logo?: File | string;
+}
+
 interface CompanyEditFormProps {
-  company: {
-    id:number
-    name: string;
-    logo?: File | string;
-    domaine: string;
-    location: string;
-    employeeCount?: string;
-    description: string;
-  } ;
-  onSubmit: (data: CompanyEditFormProps["company"]) => void;
+  company?: Company|null; // ✅ Rendre `company` optionnel
+  onSubmit: (data: Company) => void;
   onCancel: () => void;
 }
 
@@ -33,9 +35,20 @@ export function CompanyEditForm({
   onSubmit,
   onCancel,
 }: CompanyEditFormProps) {
-  const [formData, setFormData] = useState(company);
-  const [previewLogo, setPreviewLogo] = useState(company.logo);
-
+  const [formData, setFormData] = useState<Company>(
+    company ?? {
+      id: 0,
+      name: "",
+      logo: undefined,
+      domaine: "",
+      location: "",
+      employeeCount: "",
+      description: "",
+    }
+  );
+  const [previewLogo, setPreviewLogo] = useState<string | undefined>(
+    company?.logo ? (typeof company.logo === "string" ? company.logo : undefined) : undefined
+  );
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -92,7 +105,7 @@ export function CompanyEditForm({
           id="name"
           className="mt-3"
           name="name"
-          value={formData.name}
+          value={formData?.name}
           onChange={handleChange}
           required
         />
@@ -103,7 +116,7 @@ export function CompanyEditForm({
           id="domaine"
           className="mt-3"
           name="domaine"
-          value={formData.domaine}
+          value={formData?.domaine}
           onChange={handleChange}
           required
         />
@@ -114,7 +127,7 @@ export function CompanyEditForm({
           id="location"
           className="mt-3"
           name="location"
-          value={formData.location}
+          value={formData?.location}
           onChange={handleChange}
           required
         />
@@ -125,16 +138,16 @@ export function CompanyEditForm({
           required
           onValueChange={(value) => handleSelectChange("employeeCount", value)}
           name="employeeCount"
-          value={formData.employeeCount}
+          value={formData?.employeeCount}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Sélectionnez votre nombre d'employées" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="0-10">0 - 10</SelectItem>
-            <SelectItem value="10-50">10 - 50</SelectItem>
-            <SelectItem value="50-100">50 - 100</SelectItem>
-            <SelectItem value="100-120">100 - 120</SelectItem>
+            <SelectItem value="1-10">1-10</SelectItem>
+            <SelectItem value="11-50">11-50</SelectItem>
+            <SelectItem value="51-200">51-200</SelectItem>
+            <SelectItem value="200+">200+</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -143,7 +156,7 @@ export function CompanyEditForm({
         <Textarea
           id="description"
           name="description"
-          value={formData.description}
+          value={formData?.description}
           onChange={handleChange}
           rows={4}
           required

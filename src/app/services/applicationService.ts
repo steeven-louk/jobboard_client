@@ -22,6 +22,8 @@ interface IApplyResponse {
   message: string;
   data?: IApplication
 }
+
+
 export const getUserApplications = async ():Promise<IApplication[] | void> => {
   try {
     const application = await api.get("/user/applications/");

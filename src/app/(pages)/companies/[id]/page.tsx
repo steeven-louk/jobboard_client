@@ -58,7 +58,7 @@ export default function CompanyProfilePage({
   const { id } = use(params);
   const { data: session } = useSession();
   const userRole = session?.user?.role;
-  const userId = session?.user?.id;
+  const userId = session?.user?.id || "";
 
   const [company, setCompany] = useState<ICompanyDetail | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -82,7 +82,7 @@ export default function CompanyProfilePage({
   }, [id]);
 
   const handleCompanyUpdate = async (updatedCompany:ICompanyDetail) => {
-    
+
     try {
       const response = await updateCompany(id, userId, updatedCompany);
       setCompany(updatedCompany);

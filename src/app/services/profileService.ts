@@ -19,7 +19,7 @@ export const getUserProfile = async () => {
     }
   };
 
-  export const updateUserProfile = async (userId:string,formData:{fullName?: string;picture?:File;domaine?:string;birthdate?:string;sexe:string;phone:string,email:string}) => {
+  export const updateUserProfile = async (userId:string,formData:{fullName?: string;picture?:string |File;domaine?:string;birthdate?:Date|string;sexe:string;phone:string,email:string}) => {
     try {
       console.log("formaddata", formData)
       console.log("formaddata pic", formData.picture)
@@ -45,11 +45,11 @@ export const getUserProfile = async () => {
         await getUserProfile();
         return response.data;
     }
-    } catch (error) {
+    } catch (error:any) {
       toast("Erreur", {
         description: "Erreur de la modification du profil.",
       });
         console.log("Erreur de la modification du profil",error)
-      throw error?.response?.data || "Erreur de la modification du profil";
+      throw new Error(error?.response?.data || "Erreur de la modification du profil");
     }
   };

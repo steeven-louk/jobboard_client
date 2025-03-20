@@ -38,9 +38,10 @@ interface Application {
   createdAt: string;
   cv_url: string;
   coverLetter: string;
-  job: {
+  job?: {
     title: string;
   };
+
 }
 
 export default function ApplicationDetailPage({
@@ -58,7 +59,7 @@ export default function ApplicationDetailPage({
     const handleGetApplication = async () => {
       try {
         const data = await getApplication(id);
-        setApplication(data);
+        if(data)setApplication(data);
       } catch (error) {
         console.log(error);
         throw error;

@@ -25,6 +25,7 @@ interface IJob {
     company: {
       logo: string | null;
       domaine: string | null;
+      picture:string
     };
   }
   
@@ -43,7 +44,7 @@ const Candidature = () => {
             try {
                 const data= await getUserApplications();
 
-                    setGetApplication(data);
+                   if(data)setGetApplication(data);
             } catch (error) {
                 toast("Erreur", {
                     description: "Erreur lors de la recuperation des candidature",

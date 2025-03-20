@@ -18,12 +18,12 @@ interface CompanyEditFormProps {
   company: {
     id:number
     name: string;
-    logo: string;
+    logo?: File | string;
     domaine: string;
     location: string;
     employeeCount?: string;
     description: string;
-  };
+  } ;
   onSubmit: (data: CompanyEditFormProps["company"]) => void;
   onCancel: () => void;
 }
@@ -68,7 +68,7 @@ export function CompanyEditForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="flex items-center space-x-4 my-4">
         <Image
-          src={previewLogo || "/placeholder.svg"}
+          src={ typeof previewLogo === 'string' ? previewLogo : "/placeholder.svg"}
           alt="Company logo preview"
           width={100}
           height={150}

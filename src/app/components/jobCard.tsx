@@ -26,7 +26,7 @@ import { isInFavorite, toggleFavorite } from "../services/favorisService";
 import Image from "next/image";
 
 interface IJob {
-  id: number;
+  id?: number;
   title: string;
   description: string;
   skill: string;
@@ -39,13 +39,13 @@ interface IJob {
   createdAt: string | Date;
   company: {
     logo: string | null;
-    domaine: string | null;
+    domaine: string | null
   };
 }
 
 interface JobCardProps {
   path: string;
-  job: IJob;
+  job: IJob | null;
 }
 
 
@@ -59,22 +59,27 @@ export const JobCard = ({ path, job }: JobCardProps) => {
       return alert("Vous devez être connecté pour ajouter aux favoris");
 
     try {
-      const checkResponse = await isInFavorite(job?.id);
-      setIsInFavorie(checkResponse);
+      const jobId = job?.id;
+      if (typeof jobId === "number") {
+        const checkResponse = await isInFavorite(jobId);
+        setIsInFavorie(checkResponse);
 
-      const response = await toggleFavorite(job?.id);
-      setIsInFavorie(response);
-      console.log(response);
+        const response = await toggleFavorite(jobId);
+        setIsInFavorie(response);
+        console.log(response);
+      }
     } catch (error) {
       console.error("Erreur lors de l'ajout aux favoris :", error);
     }
   };
 
+
+
   return (
     <Card className="card shadow-md hover:shadow-slate-400 transition-shadow p-3 shadow-slate-700 rounded-md my-5">
       <div className="flex justify-between mb-3">
         <Badge className="text-base  color-primary px-1 rounded-md bg-green-300">
-          {formatedRelativeTime(new Date(job.createdAt))}
+          {job && formatedRelativeTime(new Date(job.createdAt))}
         </Badge>
         {userRole === "USER" && (
           <BookmarkPlus

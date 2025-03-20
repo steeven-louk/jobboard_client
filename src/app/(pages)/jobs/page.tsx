@@ -65,7 +65,7 @@ export default function Jobs() {
       try {
         setIsLoading(true);
         const data = await getAllJob();
-        setJobs(data);
+       if(data)setJobs(data);
       } catch (error) {
         toast.error("Erreur lors de la récupération des jobs");
         console.error("❌ Erreur récupération jobs:", error);

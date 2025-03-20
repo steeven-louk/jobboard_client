@@ -24,16 +24,18 @@ interface Profil {
   fullName: string;
   domaine: string;
   email: string;
-  birthdate: string;
+  birthdate: Date |string;
   phone: string;
   sexe: "Homme" | "Femme" | string; // 🔹 Correction du type `boolean` -> string
-  picture?: string;
+  picture?: string | File;
   location:string;
 }
+
 
 interface ProfilEditFormProps {
   profil?: Profil; // Rendre le profil optionnel pour éviter les erreurs
   onClose: () => void;
+  onOpen?: ()=> void;
   onSubmit: (data: Profil) => void;
 }
 
@@ -136,7 +138,7 @@ export default function ProfilModal({
                 <div className="col-span-3 flex flex-col gap-2">
                   {imagePreview && (
                     <Image
-                      src={imagePreview}
+                      src={typeof imagePreview === "string" ? imagePreview : ""}
                       width={50}
                       height={50}
                       alt="Aperçu"

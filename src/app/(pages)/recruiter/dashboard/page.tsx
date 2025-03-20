@@ -34,6 +34,19 @@ interface IJob {
 interface ICompanyJob{
   id: number;
   title: string;
+  description: string;
+  skill: string;
+  requirement: string;
+  location: string;
+  salary: number | null;
+  duration: string;
+  jobType: string;
+  isPremium: boolean;
+  createdAt: string | Date;
+  company: {
+    logo: string | null;
+    domaine: string | null;
+  };
 }
 export default function RecruiterDashboard() {
   const [activeTab, setActiveTab] = useState<"jobs" | "applications">("jobs");

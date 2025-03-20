@@ -12,6 +12,8 @@ interface IApplication {
   user: {
     fullName: string;
     email: string;
+    phone: string;
+    picture: string;
   };
 }
 
@@ -42,7 +44,7 @@ export const getApplication = async (id: string):Promise<IApplication | void> =>
     if(application.status === 200){
         const {data} =  application
         console.log(data);
-        return data?.application;
+        return data?.application || null;
       }
   } catch (error:any) {
     toast("Erreur", {
@@ -51,6 +53,7 @@ export const getApplication = async (id: string):Promise<IApplication | void> =>
     throw new Error( error.response?.data || "Erreur de récupération de la candidature");
   }
 };
+
 
 export const changeStatus =async(application:IApplication,newStatus:string):Promise<void>=>{
    try {

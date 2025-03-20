@@ -69,7 +69,7 @@ interface IProfilDetail {
   location: string;
   birthdate: Date | string ;
   domaine: string;
-  picture?: string;
+  picture?: string | File;
   email: string;
   Experience?: IExperience[];
   Diplome?:IDiplome[];
@@ -77,7 +77,7 @@ interface IProfilDetail {
 }
 
 const Profil = () => {
-  const [userDetail, setUserDetail] = useState<IProfilDetail | null>(null);
+  const [userDetail, setUserDetail] = useState<IProfilDetail | undefined>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: session } = useSession();
 
@@ -138,7 +138,7 @@ console.log(isModalOpen)
             <div className="flex justify-between my-5">
               <div className="left inline-flex gap-3 items-baseline ">
                 <Image
-                  src={userDetail?.picture || "/placeholder.svg"}
+                  src={typeof userDetail?.picture === "string" ? userDetail?.picture : "/placeholder.svg"}
                   alt={`${userDetail?.fullName} picture`}
                   width={150}
                   height={150}

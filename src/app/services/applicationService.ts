@@ -27,6 +27,7 @@ export const getUserApplications = async ():Promise<IApplication[] | void> => {
         const {data} =  application
         return data?.applications || [];
       }
+      
   } catch (error:any) {
     toast("Erreur", {
       description: "Erreur lors de la récupération des candidatures",

@@ -25,8 +25,19 @@ import { toast } from "sonner";
 interface IJob {
   id: number;
   title: string;
-  company: string;
+  description: string;
+  skill: string;
+  requirement: string;
   location: string;
+  salary: number | null;
+  duration: string;
+  jobType: string;
+  isPremium: boolean;
+  createdAt: string | Date;
+  company: {
+    logo: string | null;
+    domaine: string | null;
+  };
 }
 
 interface ICompanyDetail {
@@ -34,7 +45,7 @@ interface ICompanyDetail {
   name: string;
   description: string;
   location: string;
-  employeeCount?: number;
+  employeeCount?: string;
   domaine?: string;
   logo?: File | string;
   jobs?: IJob[];

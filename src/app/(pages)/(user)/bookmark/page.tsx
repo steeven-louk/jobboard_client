@@ -14,8 +14,19 @@ import ProtectedRoute from "@/app/components/protectedRoutes";
 interface IJob {
   id: number;
   title: string;
-  company: string;
+  description: string;
+  skill: string;
+  requirement: string;
   location: string;
+  salary: number | null;
+  duration: string;
+  jobType: string;
+  isPremium: boolean;
+  createdAt: string | Date;
+  company: {
+    logo: string | null;
+    domaine: string | null;
+  };
 }
 
 interface IFavoris {

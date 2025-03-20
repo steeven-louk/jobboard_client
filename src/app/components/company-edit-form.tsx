@@ -16,11 +16,12 @@ import {
 
 interface CompanyEditFormProps {
   company: {
+    id:number
     name: string;
     logo: string;
     domaine: string;
     location: string;
-    employeeCount: string;
+    employeeCount?: string;
     description: string;
   };
   onSubmit: (data: CompanyEditFormProps["company"]) => void;

@@ -13,8 +13,19 @@ import { JobCardSkeleton } from '@/app/components/skeletons/job-card-skeleton';
 interface IJob {
     id: number;
     title: string;
-    company: string;
+    description: string;
+    skill: string;
+    requirement: string;
     location: string;
+    salary: number | null;
+    duration: string;
+    jobType: string;
+    isPremium: boolean;
+    createdAt: string | Date;
+    company: {
+      logo: string | null;
+      domaine: string | null;
+    };
   }
   
   interface IApplication {

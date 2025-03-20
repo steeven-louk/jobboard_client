@@ -14,13 +14,21 @@ import { getAllJob } from "@/app/services/jobService";
 import { toast } from "sonner";
 
 interface jobType {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  company: string;
+  skill: string;
+  requirement: string;
+  location: string;
+  salary: number | null;
+  duration: string;
   jobType: string;
-  salary: string;
-  createdAt: string;
+  isPremium: boolean;
+  createdAt: string | Date;
+  company: {
+    logo: string | null;
+    domaine: string | null;
+  };
 }
 
 export default function Jobs() {
@@ -94,11 +102,11 @@ export default function Jobs() {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
         case "salary-high":
-          return (parseInt(b.salary) || 0) - (parseInt(a.salary) || 0);
+          return (b.salary || 0) - (a.salary || 0);
         case "salary-low":
-          return (parseInt(a.salary) || 0) - (parseInt(b.salary) || 0);
+          return (a.salary || 0) - (b.salary || 0);
         case "company":
-          return a.company.localeCompare(b.company);
+          return a.company?.localeCompare(b.company);
         default:
           return 0;
       }

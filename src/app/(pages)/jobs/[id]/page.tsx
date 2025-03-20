@@ -34,13 +34,22 @@ import { toast } from "sonner";
 
 
 interface IJobDetail{
-  title:string
-  description:string
-  requirement:string
-  skill:string
-  company:{
+  id: number;
+  title: string;
+  description: string;
+  skill: string;
+  requirement: string;
+  location: string;
+  salary: number | null;
+  duration: string;
+  jobType: string;
+  isPremium: boolean;
+  createdAt: string | Date;
+  company: {
+    logo: string | null;
+    domaine: string | null;
     name:string
-  }
+  };
 }
 const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
   const path = usePathname();

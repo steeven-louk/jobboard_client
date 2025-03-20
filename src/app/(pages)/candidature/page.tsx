@@ -10,16 +10,28 @@ import { toast } from 'sonner';
 import { JobCardSkeleton } from '@/app/components/skeletons/job-card-skeleton';
 
 
+interface IJob {
+    id: number;
+    title: string;
+    company: string;
+    location: string;
+  }
+  
+  interface IApplication {
+    id: number;
+    job: IJob;
+  }
+
 const Candidature = () => {
-    const [getApplication, setGetApplication] = useState([]);
+    const [getApplication, setGetApplication] = useState<IApplication[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const handleGetApplication =async()=>{
             setIsLoading(true);
             try {
-                const data = await getUserApplications();
-                 
+                const data= await getUserApplications();
+
                     setGetApplication(data);
             } catch (error) {
                 toast("Erreur", {
@@ -32,6 +44,7 @@ const Candidature = () => {
         }
         handleGetApplication();
     }, [])
+
     return (
         <ProtectedRoute requiredRole="USER">
             

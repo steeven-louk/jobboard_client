@@ -32,11 +32,21 @@ import { getDetailJob } from "@/app/services/jobService";
 import { toggleFavorite, isInFavorite } from "@/app/services/favorisService";
 import { toast } from "sonner";
 
+
+interface IJobDetail{
+  title:string
+  description:string
+  requirement:string
+  skill:string
+  company:{
+    name:string
+  }
+}
 const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
   const path = usePathname();
   const { id } = use(params);
 
-  const [getJobDetail, setJobDetail] = useState([]);
+  const [getJobDetail, setJobDetail] = useState<IJobDetail | null>(null);
   const [isFavorite, setIsInFavorie] = useState<boolean>(false);
 
   const { data: session } = useSession();
@@ -154,8 +164,8 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
                 {userRole === "USER" && (
                   <DrawerForm
                     jobId={id}
-                    jobTitle={getJobDetail?.title}
-                    companyName={getJobDetail?.company.name}
+                    jobTitle={getJobDetail?.title ?? ""}
+                    companyName={getJobDetail?.company.name ?? ""}
                   />
                 )}
                 <Button

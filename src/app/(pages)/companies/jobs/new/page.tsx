@@ -16,14 +16,12 @@ import {
 import { Card, CardFooter } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-import { cn } from "@/lib/utils";
-
 import ProtectedRoute from "@/app/components/protectedRoutes";
 
 import { loadStripe } from "@stripe/stripe-js";
 import api from "@/app/services/api";
 
-interface jobType {
+interface IJobType {
   title: string;
   location: string;
   salary: number | string;
@@ -32,8 +30,8 @@ interface jobType {
   skill: string;
   requirement: string;
   duration: string;
-  expiration_date: Date | string;
-  selectedOffer: string | null;
+  expiration_date: Date | string |null;
+  selectedOffer: Offer | null;
 }
 
 interface Offer {
@@ -45,12 +43,12 @@ interface Offer {
 
 export default function NewJobPage() {
   // const router = useRouter();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState<number>(1);
   const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
   );
 
-  const [jobData, setJobData] = useState<jobType>({
+  const [jobData, setJobData] = useState<IJobType>({
     title: "",
     location: "",
     salary: "",
@@ -105,6 +103,10 @@ export default function NewJobPage() {
 
     try {
       const stripe = await stripePromise;
+      if (!stripe) {
+        console.error("Erreur Stripe : Impossible de charger le paiement.");
+        return;
+      }
 
       const response = await api.post("/payment/create-checkout-session", {
         jobData,
@@ -257,7 +259,7 @@ export default function NewJobPage() {
                   id="expiration_date"
                   name="expiration_date"
                   type="date"
-                  value={jobData?.expiration_date || ""}
+                  value={jobData.expiration_date ? new Date(jobData.expiration_date).toISOString().split('T')[0] : ""}
                   onChange={handleInputChange}
                   required
                 />
@@ -286,12 +288,8 @@ export default function NewJobPage() {
                         className="flex flex-col cursor-pointer"
                       >
                         <Card
-                          className={cn(
-                            offer?.value === offer.duration
-                              ? "border-green-500 bg-green-500"
-                              : "hover:bg-secondary/50",
-                            "p-4 border-2 transition-all"
-                          )}
+                          className= "border-green-500 bg-green-500 hover:bg-secondary/50 p-4 border-2 transition-all"
+                         
                         >
                           <div className="flex justify-between items-center">
                             <div>

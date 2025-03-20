@@ -15,7 +15,8 @@ export const RecentJobs = () => {
       try {
         setIsLoading(true);
         const data = await getAllJob();
-        const filteredData = data.slice(0, 4);
+        console.log('recent', data)
+        const filteredData = data?.slice(0, 4);
         setRecentJobs(filteredData);
       } catch (error) {
         // toast.error("Erreur lors de la récupération des jobs");

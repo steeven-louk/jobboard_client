@@ -22,7 +22,7 @@ import {
 } from "@/app/services/experienceService";
 import { toast } from "sonner";
 
-interface Experience {
+interface IExperience {
   id?: number;
   title: string;
   entreprise: string;
@@ -34,14 +34,13 @@ interface Experience {
   competence: string;
   en_cours: boolean;
 }
-
 interface Props {
-  experience?: Experience; // Rend la prop optionnelle pour l'ajout
+  experience?: IExperience; // Rend la prop optionnelle pour l'ajout
 }
 
 export default function ExperienceModal({ experience }: Props) {
   // Définir les valeurs par défaut si aucune expérience n'est fournie (mode ajout)
-  const [formData, setFormData] = useState<Experience>(
+  const [formData, setFormData] = useState<IExperience>(
     experience || {
       title: "",
       entreprise: "",
@@ -59,29 +58,27 @@ export default function ExperienceModal({ experience }: Props) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
-  function handleCheckboxChange(checked: boolean) {
-    setFormData((prev) => ({ ...prev, en_cours: checked }));
+  function handleCheckboxChange(checked: boolean | string) {
+    setFormData((prev: IExperience) => ({ ...prev, en_cours: Boolean(checked) }));
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!formData.en_cours && new Date(formData.date_debut) > new Date(formData.date_fin)) {
+      toast.error("La date de fin doit être postérieure à la date de début.");
+      return;
+    }
+
     try {
       if (experience) {
         // Mise à jour
-        const response = await handleUpdateExperience(experience?.id, formData);
-        if (response?.status === 200) {
-          console.log("Expérience mise à jour :", response);
-
-          toast("Expérience mise à jour");
-        }
+         await handleUpdateExperience(experience?.id ?? 0, formData);
+       
       } else {
         // Ajout
-        const response = await handleAddExperience(formData);
-        if (response?.status === 201) {
-          toast("Nouvelle expérience ajoutée");
-          console.log("Nouvelle expérience ajoutée :", response?.data);
-        }
+        await handleAddExperience(formData);
+        
       }
     } catch (error) {
       toast("Erreur", {
@@ -136,7 +133,7 @@ export default function ExperienceModal({ experience }: Props) {
                   id={name}
                   name={name}
                   type={type}
-                  value={formData[name as keyof Experience]}
+                  value={formData[name as keyof IExperience]}
                   onChange={handleChange}
                   className="col-span-3"
                 />

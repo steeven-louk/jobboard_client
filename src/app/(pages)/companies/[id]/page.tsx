@@ -21,14 +21,23 @@ import { getCompanyDetail, updateCompany } from "@/app/services/companyService";
 
 import { toast } from "sonner";
 
-interface companyDetail {
-  description: string;
-  name: string;
+
+interface IJob {
   id: number;
+  title: string;
+  company: string;
   location: string;
-  employeeCount: string;
-  domaine: string;
-  logo: string;
+}
+
+interface ICompanyDetail {
+  id: number;
+  name: string;
+  description: string;
+  location: string;
+  employeeCount?: number;
+  domaine?: string;
+  logo?: File | string;
+  jobs?: IJob[];
 }
 export default function CompanyProfilePage({
   params,
@@ -40,16 +49,16 @@ export default function CompanyProfilePage({
   const userRole = session?.user?.role;
   const userId = session?.user?.id;
 
-  const [company, setCompany] = useState<companyDetail | null>(null);
+  const [company, setCompany] = useState<ICompanyDetail | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
 
   const JOBS_PER_PAGE = 4;
 
   useEffect(() => {
     const getCompanyDetails = async () => {
       try {
-        const response = await getCompanyDetail(id);
+        const response:ICompanyDetail = await getCompanyDetail(id);
         setCompany(response);
       } catch (error) {
         toast("Erreur", {
@@ -61,11 +70,11 @@ export default function CompanyProfilePage({
     getCompanyDetails();
   }, [id]);
 
-  const handleCompanyUpdate = async (updatedCompany) => {
-    setCompany(updatedCompany);
-
+  const handleCompanyUpdate = async (updatedCompany:ICompanyDetail) => {
+    
     try {
-      const response = await updateCompany(id, userId, company);
+      const response = await updateCompany(id, userId, updatedCompany);
+      setCompany(updatedCompany);
       setIsEditModalOpen(false);
       console.log("response for update campany", response);
     } catch (error) {
@@ -82,7 +91,7 @@ export default function CompanyProfilePage({
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const totalPages = Math.ceil(company?.jobs?.length / JOBS_PER_PAGE);
+  const totalPages =company?.jobs? Math.ceil(company?.jobs?.length / JOBS_PER_PAGE):0;
   const paginatedJobs = company?.jobs?.slice(
     (currentPage - 1) * JOBS_PER_PAGE,
     currentPage * JOBS_PER_PAGE
@@ -91,13 +100,15 @@ export default function CompanyProfilePage({
   return (
     <div className="container mx-auto md:px-4 py-8">
       <div className="flex items-center mb-6">
+        {/* <Image */}
         <Image
-          src={company?.logo || "/placeholder.svg"}
+          src={typeof company?.logo === "string" ? company?.logo : "/placeholder.svg"}
           alt={`${company?.name} logo`}
           width={150}
           height={150}
           className="rounded-full w-[9rem] h-[9rem] bg-cover  max-w-full max-h-full  mr-4"
         />
+
         <h1 className="text-3xl font-bold ml-4">{company?.name}</h1>
       </div>
       <div className="md:grid flex flex-col-reverse px-2 md:flex-none md:grid-cols-3 gap-8">
@@ -121,7 +132,7 @@ export default function CompanyProfilePage({
                   <JobCard key={job.id} job={job} path={""} />
                 ))}
               </div>
-              <span>{company?.jobs.length <= 0 && "aucun job"}</span>
+              <span>{company?.jobs && company.jobs.length <= 0 && "aucun job disponible"}</span>
             </CardContent>
           </Card>
           <Pagination

@@ -53,8 +53,7 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
     try {
       const job = await applyToJob(jobId, cv.CV, LM);
 
-      if (job?.status === 201 || job?.status === 200) {
-        toast.success(job?.data.message);
+      if (job) {
         setIsLoading(false);
         setOpen(false);
         setLM("");

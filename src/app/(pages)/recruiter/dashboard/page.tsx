@@ -15,39 +15,55 @@ import {
 } from "@/app/services/companyService";
 import { toast } from "sonner";
 
+
+interface IApplication {
+  id: number;
+  status: string;
+  user: {
+    fullName: string;
+  };
+}
+
+// ✅ Interface pour typer un job
+interface IJob {
+  id: number;
+  title: string;
+  applications?: IApplication[];
+}
+
+interface ICompanyJob{
+  id: number;
+  title: string;
+}
 export default function RecruiterDashboard() {
-  const [activeTab, setActiveTab] = useState("jobs");
-  const [jobData, setJobData] = useState([]);
-  const [companyJob, setCompanyJob] = useState([]);
+  const [activeTab, setActiveTab] = useState<"jobs" | "applications">("jobs");
+  const [jobData, setJobData] = useState<IJob[]>([]);
+  const [companyJob, setCompanyJob] = useState<ICompanyJob[]>([]);
 
   useEffect(() => {
-    const getCompanyJob = async () => {
+    const fetchCompanyJobs = async () => {
       try {
-        const response = await getCompanyJobs();
+        const response: ICompanyJob[] = await getCompanyJobs();
         setCompanyJob(response);
       } catch (error) {
-        toast("Erreur", {
-          description: "Erreur lors de la recuperation des données",
-        });
-        console.log("erreur lors de la recuperation des données", error);
+        console.error("❌ Erreur lors de la récupération des offres :", error);
+        toast.error("Erreur lors de la récupération des offres.");
       }
     };
-    getCompanyJob();
+    fetchCompanyJobs();
   }, []);
 
   useEffect(() => {
-    const getData = async () => {
+    const fetchCompanyApplications = async () => {
       try {
-        const response = await getCompanyApplyJobs();
+        const response: IJob[] = await getCompanyApplyJobs();
         setJobData(response);
       } catch (error) {
-        toast("Erreur", {
-          description: "Erreur lors de la recuperation des données",
-        });
-        console.log("erreur lors de la recuperation des données", error);
+        console.error("❌ Erreur lors de la récupération des candidatures :", error);
+        toast.error("Erreur lors de la récupération des candidatures.");
       }
     };
-    getData();
+    fetchCompanyApplications();
   }, []);
 
   return (
@@ -56,7 +72,7 @@ export default function RecruiterDashboard() {
         <h1 className="text-3xl font-bold mb-6">Tableau de bord recruteur</h1>
         <Tabs
           value={activeTab}
-          onValueChange={setActiveTab}
+          onValueChange={(value)=>setActiveTab(value as "jobs" | "applications")}
           className="space-y-4"
         >
           <TabsList>
@@ -70,9 +86,11 @@ export default function RecruiterDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {companyJob?.map((job) => (
-                    <JobCard key={job.id} job={job} path={""} />
-                  ))}
+                {companyJob.length > 0 ? (
+                    companyJob.map((job) => <JobCard key={job.id} job={job} path={""} />)
+                  ) : (
+                    <p>Aucune offre publiée.</p>
+                  )}
                 </div>
                 <Link href="/companies/jobs/new" className="block mt-4">
                   <Button>Publier une nouvelle offre</Button>
@@ -86,32 +104,30 @@ export default function RecruiterDashboard() {
                 <CardTitle>Candidatures reçues</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {jobData?.map((job) =>
-                    job?.applications.map((application) => (
-                      <Card key={application.id}>
-                        <CardContent className="flex justify-between items-center p-4">
-                          <div>
-                            <h3 className="font-semibold">{job?.title}</h3>
-                            <p className="text-sm text-gray-500">
-                              {application?.user.fullName}
-                            </p>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                              {application?.status}
-                            </span>
-                            <Link
-                              href={`/recruiter/applications/${application.id}`}
-                            >
-                              <Button variant="outline" size="sm">
-                                Voir détails
-                              </Button>
-                            </Link>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
+              <div className="space-y-4">
+                  {jobData.length > 0 ? (
+                    jobData.map((job) =>
+                      job.applications?.map((application) => (
+                        <Card key={application.id}>
+                          <CardContent className="flex justify-between items-center p-4">
+                            <div>
+                              <h3 className="font-semibold">{job.title}</h3>
+                              <p className="text-sm text-gray-500">{application.user.fullName}</p>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                                {application.status}
+                              </span>
+                              <Link href={`/recruiter/applications/${application.id}`}>
+                                <Button variant="outline" size="sm">Voir détails</Button>
+                              </Link>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))
+                    )
+                  ) : (
+                    <p>Aucune candidature reçue.</p>
                   )}
                 </div>
               </CardContent>

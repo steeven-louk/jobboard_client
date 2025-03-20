@@ -29,8 +29,8 @@ interface Diplome {
   school: string;
   date_debut: string;
   date_fin: string;
-  description: string;
-  competence: string;
+  description?: string;
+  competence?: string;
 }
 
 interface Props {
@@ -62,22 +62,12 @@ export default function DiplomeModal({ diplome }: Props) {
     try {
       if (diplome) {
         // Mise à jour
-        const response = await handleUpdateFormation(diplome?.id, formData);
-        toast("Formation mise à jour");
-        if (response?.status === 200) {
-          console.log("Formation mise à jour :", response);
+       await handleUpdateFormation(diplome?.id ?? 0, formData);
 
-          toast("Formation mise à jour");
-        }
-
-        console.log("Formation mise à jour :", response?.data);
       } else {
         // Ajout
-        const response = await handleAddFormation(formData);
-        if (response?.status === 201) {
-          toast("Nouvelle formation ajoutée");
-          console.log("Nouvelle formation ajoutée :", response?.data);
-        }
+      await handleAddFormation(formData);
+       
       }
     } catch (error) {
       toast("Erreur", {

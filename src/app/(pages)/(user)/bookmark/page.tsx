@@ -9,23 +9,35 @@ import { getFavoris } from "@/app/services/favorisService";
 import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
 import ProtectedRoute from "@/app/components/protectedRoutes";
 
+
+// ✅ Interface pour typer les favoris
+interface IJob {
+  id: number;
+  title: string;
+  company: string;
+  location: string;
+}
+
+interface IFavoris {
+  id: number;
+  job: IJob;
+}
 const Bookmark = () => {
-  const [getBookmark, setGetBookmark] = useState([]);
+  const [getBookmark, setGetBookmark] = useState<IFavoris[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const handleGetBookmark = async () => {
       try {
-        const favoris = await getFavoris();
+        const favoris: IFavoris[] = await getFavoris();
         setGetBookmark(favoris);
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1200);
       } catch (error) {
         toast("Erreur", {
           description: "Erreur lors de la récupération des favoris",
         });
         console.log("erreur lors de la recuperation des favoris", error);
+      }finally{
+        setIsLoading(false);
       }
     };
     handleGetBookmark();
@@ -47,7 +59,6 @@ const Bookmark = () => {
           ) : (
             <p>Aucun favoris trouvé</p>
           )}
-          {/* <JobCard path={path} job={getJobDetail} /> */}
         </div>
       </div>
     </ProtectedRoute>

@@ -8,27 +8,33 @@ import { getCompanies } from "@/app/services/companyService";
 
 import { toast } from "sonner";
 
-export default function CompaniesPage() {
-  const [Companies, setCompanies] = useState([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [currentPage, setCurrentPage] = useState(1);
+interface ICompany {
+  id: string;
+  name: string;
+  location: string;
+  domaine: string;
+  logo: string;
+  employeeCount:string
+  
+}
 
-  const JOBS_PER_PAGE = 6;
+export default function CompaniesPage() {
+  const [companies, setCompanies] = useState<ICompany[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const COMPANIES_PER_PAGE = 6;
 
   useEffect(() => {
     const getAllCompanies = async () => {
       try {
-        const response = await getCompanies();
+        const response: ICompany[] = await getCompanies();
         setCompanies(response);
       } catch (error) {
-        toast("Erreur", {
-          description: "Erreur lors de la récupération des company",
-        });
-        console.log("erreur lors de la recuperation des company", error);
+        console.error("❌ Erreur lors de la récupération des entreprises :", error);
+        toast.error("Erreur lors de la récupération des entreprises.");
       } finally {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1500);
+        setIsLoading(false);
       }
     };
     getAllCompanies();
@@ -39,24 +45,25 @@ export default function CompaniesPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const totalPages = Math.ceil(Companies?.length / JOBS_PER_PAGE);
-  const paginatedJobs = Companies?.slice(
-    (currentPage - 1) * JOBS_PER_PAGE,
-    currentPage * JOBS_PER_PAGE
+  // ✅ Vérification que `companies` contient bien des données avant d'appeler `.length`
+  const totalPages = Math.ceil(companies.length / COMPANIES_PER_PAGE);
+  const paginatedCompanies = companies.slice(
+    (currentPage - 1) * COMPANIES_PER_PAGE,
+    currentPage * COMPANIES_PER_PAGE
   );
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Entreprises</h1>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {isLoading
-          ? [...Array(6)].map((_, index) => <CompanyCardSkeleton key={index} />)
-          : paginatedJobs?.map((company) => (
-              <CompanyCard key={company?.id} company={company} />
-            ))}
-        {Companies?.length === 0 && <p>Aucun job trouvé</p>}
+      {isLoading
+          ? [...Array(COMPANIES_PER_PAGE)].map((_, index) => <CompanyCardSkeleton key={index} />)
+          : paginatedCompanies.length > 0 ? (
+              paginatedCompanies.map((company) => <CompanyCard key={company.id} company={company} />)
+            ) : (
+              <p>Aucune entreprise trouvée</p> // ✅ Correction du message
+            )}
       </div>
       <Pagination
         currentPage={currentPage}

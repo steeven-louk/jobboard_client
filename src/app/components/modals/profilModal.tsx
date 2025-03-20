@@ -26,8 +26,9 @@ interface Profil {
   email: string;
   birthdate: string;
   phone: string;
-  sexe: string;
+  sexe: "Homme" | "Femme" | string; // 🔹 Correction du type `boolean` -> string
   picture?: string;
+  location:string;
 }
 
 interface ProfilEditFormProps {
@@ -50,6 +51,7 @@ export default function ProfilModal({
     phone: "",
     sexe: "",
     picture: "",
+    location: "",
   };
 
   const [formData, setFormData] = useState<Profil>(initialData);

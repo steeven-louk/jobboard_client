@@ -26,6 +26,8 @@ import { useRouter } from "next/navigation";
 
 interface Application {
   id: string;
+  jobId: number;
+
   user: {
     fullName: string;
     email: string;

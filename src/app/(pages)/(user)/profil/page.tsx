@@ -31,26 +31,59 @@ import { handleDeleteFormation } from "@/app/services/diplomeService";
 import Image from "next/image";
 import { toast } from "sonner";
 
-interface profilDetail {
-  sexe: boolean;
-  fullName: string;
+
+
+interface IDiplome {
   id: number;
+  title: string;
+  school: string;
+  location: string;
+  date: string;
+  date_debut: string;
+  date_fin: string;
+  level:string;
+  competence?: string;
+  description?:string
+
+}
+
+interface IExperience {
+  id: number;
+  title: string;
+  entreprise: string;
+  location: string;
+  contract: string;
+  date_debut: string;
+  date_fin: string;
+  description: string;
+  competence: string;
+  en_cours: boolean;
+
+}
+
+interface IProfilDetail {
+  sexe: "Homme" | "Femme" | string; // 🔹 Correction du type `boolean` -> string
+  fullName: string;
+  id: string;
   phone: string;
   location: string;
-  birthdate: string;
+  birthdate: Date | string ;
   domaine: string;
   picture?: string;
   email: string;
+  Experience?: IExperience[];
+  Diplome?:IDiplome[];
+
 }
 
 const Profil = () => {
-  const [userDetail, setUserDetail] = useState<profilDetail>();
+  const [userDetail, setUserDetail] = useState<IProfilDetail | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: session } = useSession();
 
   const userRole = session?.user?.role;
   const userId: string = session?.user?.id || "";
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
 console.log(isModalOpen)
   const deleteExperience = async (id: number) => {
     try {
@@ -82,11 +115,12 @@ console.log(isModalOpen)
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const handleProfilUpdate = async (updatedProfil) => {
+  const handleProfilUpdate = async (updatedProfil:IProfilDetail) => {
     setUserDetail(updatedProfil);
 
     try {
-      await updateUserProfile(userId, userDetail);
+      await updateUserProfile(userId, updatedProfil);
+      console.log("profile mis a jour avec succes")
     } catch (error) {
       toast("Erreur", {
         description: "Erreur lors de la modification du profil",
@@ -132,7 +166,7 @@ console.log(isModalOpen)
               <div className="inline-flex align-baseline gap-2">
                 <Cake />
                 <span>
-                  {new Date(userDetail?.birthdate).toLocaleDateString()}
+                  {userDetail?.birthdate?  new Date(userDetail?.birthdate).toLocaleDateString() : "Non renseigné"}
                 </span>
               </div>
               <div className="inline-flex align-baseline gap-2">
@@ -162,8 +196,8 @@ console.log(isModalOpen)
                 </div>
 
                 <Separator className="my-5" />
-                {userDetail?.Experience?.length > 0 ? (
-                  userDetail?.Experience.map((exp) => (
+                {userDetail && userDetail.Experience &&  userDetail?.Experience?.length > 0 ? (
+                  userDetail?.Experience?.map((exp) => (
                     <Card className="p-4 border-none shadow-none" key={exp.id}>
                       <div className="flex justify-between">
                         <div className="flex flex-col align-baseline gap-3">
@@ -203,11 +237,11 @@ console.log(isModalOpen)
                           <p className="inline-flex gap-3">
                             De{" "}
                             <span>
-                              {new Date(exp?.date_debut).toLocaleDateString()}
+                              {exp.date_debut ? new Date(exp?.date_debut).toLocaleDateString() : "N/A"}
                             </span>{" "}
                             à
                             <span>
-                              {new Date(exp?.date_fin).toLocaleDateString()}
+                              {exp.date_fin ? new Date( exp?.date_fin).toLocaleDateString() : "Présent"}
                             </span>
                           </p>
                         </div>
@@ -220,8 +254,7 @@ console.log(isModalOpen)
                         <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
                           <span className="text-gray-500">Compétences</span>
                           <div className="flex flex-wrap gap-2">
-                            {exp.competence
-                              .split(",")
+                            {exp.competence?.split(",")
                               .map((skill: string, index: number) => (
                                 <Badge key={index} className="relative w-fit">
                                   {skill.trim()}
@@ -253,8 +286,8 @@ console.log(isModalOpen)
                   <DiplomeModal />
                 </div>
                 <Separator className="my-5" />
-                {userDetail?.Diplome?.length > 0 ? (
-                  userDetail.Diplome.map((diplome) => (
+                {userDetail?.Diplome && userDetail?.Diplome?.length > 0 ? (
+                  userDetail?.Diplome?.map((diplome) => (
                     <Card key={diplome.id} className="border-none shadow-none">
                    
                       <CardContent className="mt-6 grid gap-4 md:gap-0 p-0 md:p-2">
@@ -298,13 +331,13 @@ console.log(isModalOpen)
                           <p className="inline-flex gap-3">
                             De{" "}
                             <span>
-                              {new Date(
+                              {diplome?.date_debut? new Date(
                                 diplome?.date_debut
-                              ).toLocaleDateString()}
+                              ).toLocaleDateString() : "N/A"}
                             </span>{" "}
                             à
                             <span>
-                              {new Date(diplome?.date_fin).toLocaleDateString()}
+                              {diplome?.date_fin ? new Date(diplome?.date_fin).toLocaleDateString():"Présent"}
                             </span>
                           </p>
                         </div>
@@ -318,8 +351,7 @@ console.log(isModalOpen)
                         <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
                           <span className="text-gray-500">Compétences</span>
                           <div className="flex flex-wrap gap-2">
-                            {diplome?.competence
-                              .split(",")
+                            {diplome?.competence?.split(",")
                               .map((skill: string, index: number) => (
                                 <Badge key={index} className="relative w-fit">
                                   {skill.trim()}
@@ -327,7 +359,7 @@ console.log(isModalOpen)
                               ))}
                           </div>
                         </div>
-                        {/* <div className="flex flex-col gap-1 md:gap-5"></div> */}
+
                       </CardContent>
                       <Separator className="my-5" />
                     </Card>

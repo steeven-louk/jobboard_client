@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
@@ -19,6 +19,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 
+
+interface ICandidateFormData {
+  fullName: string;
+  email: string;
+  password: string;
+  phone: string;
+  city: string;
+  birthdate: string;
+}
+
+// ✅ Interface pour le formulaire de recruteur
+interface IRecruiterFormData extends ICandidateFormData {
+  companyName: string;
+  companyLocation: string;
+  description: string;
+}
 export default function RegisterPage() {
   const [role, setRole] = useState<"USER" | "RECRUITER">("USER");
   const [step, setStep] = useState(1);
@@ -53,15 +69,20 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
     birthdate: z.string().refine((dateStr) => {
       const birthDate = new Date(dateStr);
       return birthDate <= minDateForRecruiter;
-    }, { message: "Vous devez avoir au moins 15 ans pour vous inscrire." }),
+    }, { message: "Vous devez avoir au moins 18 ans pour vous inscrire." }),
   });
+
+  // ✅ Utilisation de `z.infer` pour extraire les types
+// type ICandidateFormData = z.infer<typeof candidateSchema>;
+// type IRecruiterFormData = z.infer<typeof recruiterSchema>;
+
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
-  } = useForm({
+  } = useForm<ICandidateFormData | IRecruiterFormData>({
     resolver: zodResolver(role === "USER" ? candidateSchema : recruiterSchema),
   });
 
@@ -75,7 +96,7 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
     }
    console.log("eqqdsfhgj", requiredFields)
 
-    const isValid = requiredFields.every(field => values[field]);
+    const isValid = requiredFields.every((field) => values[field as keyof typeof values]);
     console.log(values,requiredFields)
     if (!isValid) {
       toast("Veuillez remplir tous les champs obligatoires avant de continuer.")
@@ -86,7 +107,7 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
     setStep(2);
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit:SubmitHandler<ICandidateFormData | IRecruiterFormData> = async (data) => {
     try {
       const endpoint = role === "USER" ? `${URL}register` : `${URL}register-recruiter`;
       const response = await axios.post(endpoint, { ...data, role });

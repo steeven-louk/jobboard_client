@@ -37,7 +37,7 @@ export const getCompanyDetail = async (id: string) => {
     }
 };
 
-export const updateCompany = async (id: string,userId:string, data: { name?: string;description?:string;domaine?:string;location?:string; logo?: File }) => {
+export const updateCompany = async (id: string,userId:string, data: { name?: string;description?:string;domaine?:string;location?:string; logo?: File | string }) => {
 
     try {
         const companyId = parseInt(id);

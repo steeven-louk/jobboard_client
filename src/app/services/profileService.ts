@@ -10,12 +10,12 @@ export const getUserProfile = async () => {
        
         return data?.user;
       }
-    } catch (error) {
+    } catch (error:any) {
         console.log(error);
         toast("Erreur", {
           description: "Erreur de récupération du profil",
         });
-      throw error.response?.data || "Erreur de récupération du profil";
+      throw new Error(error.response?.data || "Erreur de récupération du profil");
     }
   };
 

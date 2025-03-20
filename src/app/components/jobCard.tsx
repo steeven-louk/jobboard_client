@@ -25,24 +25,31 @@ import { useSession } from "next-auth/react";
 import { isInFavorite, toggleFavorite } from "../services/favorisService";
 import Image from "next/image";
 
-interface jobCard {
-  company: {
-    logo: string | null;
-    domaine: string | null;
-  };
+interface IJob {
   id: number;
   title: string;
   description: string;
   skill: string;
   requirement: string;
   location: string;
-  salary: number;
+  salary: number | null;
   duration: string;
   jobType: string;
   isPremium: boolean;
-  createdAt: Date;
+  createdAt: string | Date;
+  company: {
+    logo: string | null;
+    domaine: string | null;
+  };
 }
-export const JobCard = ({ path, job }: { path: string; job: jobCard }) => {
+
+interface JobCardProps {
+  path: string;
+  job: IJob;
+}
+
+
+export const JobCard = ({ path, job }: JobCardProps) => {
   const { data: session } = useSession();
   const userRole = session?.user?.role;
   const [isFavorite, setIsInFavorie] = useState<boolean>(false);
@@ -67,7 +74,7 @@ export const JobCard = ({ path, job }: { path: string; job: jobCard }) => {
     <Card className="card shadow-md hover:shadow-slate-400 transition-shadow p-3 shadow-slate-700 rounded-md my-5">
       <div className="flex justify-between mb-3">
         <Badge className="text-base  color-primary px-1 rounded-md bg-green-300">
-          {formatedRelativeTime(job?.createdAt)}
+          {formatedRelativeTime(new Date(job.createdAt))}
         </Badge>
         {userRole === "USER" && (
           <BookmarkPlus

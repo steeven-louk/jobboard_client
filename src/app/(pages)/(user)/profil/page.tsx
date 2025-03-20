@@ -81,7 +81,7 @@ const Profil = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: session } = useSession();
 
-  const userRole = session?.user?.role;
+  const userRole = session?.user?.role ;
   const userId: string = session?.user?.id || "";
 
 console.log(isModalOpen)

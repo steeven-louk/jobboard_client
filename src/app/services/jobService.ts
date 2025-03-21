@@ -32,11 +32,11 @@ interface IJobData {
   expiration_date: string | Date;
 }
 
-export const getAllJob = async(): Promise<IJob[] | void>=>{
+export const getAllJob = async(): Promise<IJob[]>=>{
     try {
         const response = await api.get("/jobs");
         if (response.status === 200) {
-        return response?.data?.jobs || []
+        return response?.data?.jobs as IJob[];
         }
       } catch (error) {
         toast("Erreur", {
@@ -45,6 +45,7 @@ export const getAllJob = async(): Promise<IJob[] | void>=>{
           console.error("Erreur lors de la récupération des jobs :", error);
         throw error
       }
+      return [];
 }
 
 export const getDetailJob = async (id: number): Promise<IJob | null> => {

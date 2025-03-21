@@ -6,15 +6,33 @@ import { JobCard } from "./jobCard";
 import { getAllJob } from "../services/jobService";
 import { JobCardSkeleton } from "./skeletons/job-card-skeleton";
 
+
+interface IJob {
+  id: number;
+  title: string;
+  description: string;
+  skill: string;
+  requirement: string;
+  location: string;
+  salary: number | null;
+  duration: string;
+  jobType: string;
+  isPremium: boolean;
+  createdAt: string | Date;
+  company: {
+    logo: string | null;
+    domaine: string | null;
+  };
+}
 export const RecentJobs = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [recentJobs, setRecentJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [recentJobs, setRecentJobs] = useState<IJob[]>([]);;
 
   useEffect(() => {
     const getRecentJob = async () => {
       try {
         setIsLoading(true);
-        const data = await getAllJob();
+        const data:IJob[] = await getAllJob();
         console.log('recent', data)
         const filteredData = data?.slice(0, 4);
         setRecentJobs(filteredData);

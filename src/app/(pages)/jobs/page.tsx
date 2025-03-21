@@ -163,17 +163,16 @@ export default function Jobs() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   return (
-    <div className="w-full">
+    <Suspense>
+      <div className="w-full">
       <HeaderComponent pageName="Jobs" />
 
       <section className="container mx-auto flex flex-col p-3">
         <h1 className="text-3xl font-bold mb-8">
           Offres d&apos;emploi disponibles
         </h1>
-        <Suspense>
 
         <SearchBar onSearch={handleSearch} initialSearchTerm={searchTerm} />
-        </Suspense>
 
         <div className="flex flex-col md:flex-row gap-8 mt-8">
           <aside className="w-full h-fit md:w-[20rem] rounded-md">
@@ -234,5 +233,6 @@ export default function Jobs() {
         </div>
       </section>
     </div>
+    </Suspense>
   );
 }

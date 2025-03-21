@@ -57,8 +57,11 @@ export default function Jobs() {
 
   // ✅ Met à jour la recherche uniquement si `initialSearchTerm` change
   useEffect(() => {
-    setSearchTerm(initialSearchTerm);
-  }, [initialSearchTerm]);
+    // setSearchTerm(initialSearchTerm);
+    if(searchTerm !== initialSearchTerm){
+      setSearchTerm(initialSearchTerm);
+    }
+  }, [initialSearchTerm, searchTerm]);
 
   useEffect(() => {
     const getAllJobs = async () => {
@@ -84,7 +87,7 @@ export default function Jobs() {
       return (
         job?.title?.toLowerCase().includes(searchLower) ||
         job?.description?.toLowerCase().includes(searchLower) ||
-        job?.company?.domaine?.toLowerCase()?.includes(searchLower?? "")
+        job?.company?.domaine?.toLowerCase()?.includes(searchLower)
       );
     })
     .filter((job) => {

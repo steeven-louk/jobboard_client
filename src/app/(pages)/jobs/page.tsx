@@ -2,7 +2,7 @@
 import { HeaderComponent } from "@/app/components/headerComponent";
 import { JobCard } from "@/app/components/jobCard";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import SearchBar from "@/app/components/searchBar";
 import { useSearchParams } from "next/navigation";
@@ -57,11 +57,11 @@ export default function Jobs() {
 
   // ✅ Met à jour la recherche uniquement si `initialSearchTerm` change
   useEffect(() => {
-    // setSearchTerm(initialSearchTerm);
-    if(searchTerm !== initialSearchTerm){
-      setSearchTerm(initialSearchTerm);
-    }
-  }, [initialSearchTerm, searchTerm]);
+    setSearchTerm(initialSearchTerm);
+    // if(searchTerm !== initialSearchTerm){
+    //   setSearchTerm(initialSearchTerm);
+    // }
+  }, [initialSearchTerm]);
 
   useEffect(() => {
     const getAllJobs = async () => {
@@ -170,7 +170,10 @@ export default function Jobs() {
         <h1 className="text-3xl font-bold mb-8">
           Offres d&apos;emploi disponibles
         </h1>
+        <Suspense>
+
         <SearchBar onSearch={handleSearch} initialSearchTerm={searchTerm} />
+        </Suspense>
 
         <div className="flex flex-col md:flex-row gap-8 mt-8">
           <aside className="w-full h-fit md:w-[20rem] rounded-md">

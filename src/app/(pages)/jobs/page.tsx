@@ -84,7 +84,7 @@ export default function Jobs() {
       return (
         job?.title?.toLowerCase().includes(searchLower) ||
         job?.description?.toLowerCase().includes(searchLower) ||
-        job?.company?.toLowerCase().includes(searchLower)
+        job?.company?.domaine?.toLowerCase()?.includes(searchLower?? "")
       );
     })
     .filter((job) => {
@@ -106,7 +106,7 @@ export default function Jobs() {
         case "salary-low":
           return (a.salary || 0) - (b.salary || 0);
         case "company":
-          return a.company?.localeCompare(b.company);
+          return a.company?.domaine?.localeCompare(b?.company?.domaine ??"") ?? 0;
         default:
           return 0;
       }
@@ -176,8 +176,8 @@ export default function Jobs() {
               contractTypes={contractTypes}
               experienceLevels={experienceLevels}
               onSortChange={handleSortChange}
-              onContractTypeChange={handleContractTypeChange}
-              onExperienceLevelChange={handleExperienceLevelChange}
+              onContractTypeChange={()=>handleContractTypeChange}
+              onExperienceLevelChange={()=>handleExperienceLevelChange}
               onClearFilters={clearFilters}
             />
           </aside>

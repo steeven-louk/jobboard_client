@@ -36,7 +36,7 @@ export const handleDeleteFormation =async(id:number): Promise<void>=>{
         toast.success("Formation supprimée avec succès !");
 
 
-    } catch(error){
+    } catch(error:any){
         console.error("❌ Erreur lors de la suppression de la formation :", error);
         toast.error("Erreur lors de la suppression de la formation.");
         throw new Error(error.response?.data || "Erreur lors de la suppression de la formation.");
@@ -53,7 +53,7 @@ export const handleUpdateFormation =async(id:number, formData:IFormation): Promi
             return response.data;
                 }
 
-    } catch(error){
+    } catch(error:any){
         console.error("❌ Erreur lors de la mise à jour de la formation :", error);
     toast.error("Erreur lors de la mise à jour de la formation.");
     throw new Error(error.response?.data || "Erreur lors de la mise à jour de la formation.");

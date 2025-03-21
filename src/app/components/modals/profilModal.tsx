@@ -126,7 +126,14 @@ export default function ProfilModal({
                     id={name}
                     name={name}
                     type={type}
-                    value={formData[name as keyof Profil] || ""}
+                    // value={formData[name as keyof Profil] || ""}
+                    value={
+                      name === "birthdate"
+                        ? formData.birthdate instanceof Date
+                          ? formData.birthdate.toISOString().split("T")[0]
+                          : formData.birthdate
+                        : (formData[name as keyof Profil] as string) || ""
+                    }                    
                     onChange={handleChange}
                     className="col-span-3"
                   />

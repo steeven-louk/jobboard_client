@@ -23,7 +23,7 @@ export const handleAddExperience =async(formData:IExperience):Promise<IExperienc
                   toast("Nouvelle expérience ajoutée");
                   return response.data;
                 }
-    } catch(error){
+    } catch(error:any){
         console.error("❌ Erreur lors de l'ajout de l'expérience :", error);
     throw new Error(error.response?.data || "Erreur lors de l'ajout de l'expérience.");
     }

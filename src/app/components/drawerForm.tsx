@@ -73,7 +73,7 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
   return (
     <div>
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger>
+        <DrawerTrigger asChild>
           <Button>Postuler maintenant</Button>
         </DrawerTrigger>
         <DrawerContent className="md:max-w-[54rem] w-full mx-auto">

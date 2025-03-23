@@ -6,7 +6,7 @@ import Navbar from "./components/navbar";
 
 import { Providers } from "./utils/provider";
 import { Toaster } from "@/components/ui/sonner";
-
+import { SpeedInsights } from "@vercel/speed-insights/next"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -37,6 +37,7 @@ export default function RootLayout({
           {children}
           <Footer />
           <Toaster />
+          <SpeedInsights/>
         </Providers>
       </body>
     </html>

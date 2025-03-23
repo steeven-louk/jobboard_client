@@ -242,7 +242,7 @@
 //   );
 // }
 "use client";
-import { HeaderComponent } from "@/app/components/headerComponent";
+// import { HeaderComponent } from "@/app/components/headerComponent";
 import { JobCard } from "@/app/components/jobCard";
 import { Suspense, useEffect, useState } from "react";
 import SearchBar from "@/app/components/searchBar";
@@ -389,7 +389,7 @@ export default function JobContent() {
   return (
     <Suspense fallback={<p>Chargement...</p>}>
       <div className="w-full">
-        <HeaderComponent pageName="Jobs" />
+        {/* <HeaderComponent pageName="Jobs" /> */}
 
         <section className="container mx-auto flex flex-col p-3">
           <h1 className="text-3xl font-bold mb-8">Offres d&apos;emploi disponibles</h1>

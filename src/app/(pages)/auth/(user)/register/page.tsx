@@ -40,7 +40,7 @@ export default function RegisterPage() {
   const [step, setStep] = useState(1);
 
   const router = useRouter();
-  const URL = "http://localhost:5800/api/auth/";
+  const URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5800/api/auth/";
 
   // Définition des dates minimales pour l'âge des utilisateurs
 const today = new Date();

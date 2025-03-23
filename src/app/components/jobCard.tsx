@@ -100,7 +100,7 @@ export const JobCard = ({ path, job }: JobCardProps) => {
               alt={`${job?.title}-logo`}
               width={50}
               height={50}
-              className="rounded-full w-[5rem] h-[5rem] bg-cover  max-w-full max-h-full  mr-4"
+              className="rounded-full w-[3rem] h=[3rem] md:w-[5rem] md:h-[5rem] bg-cover  max-w-full max-h-full  mr-4"
             />
           ) : (
             <span className="icon">

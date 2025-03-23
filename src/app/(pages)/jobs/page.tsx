@@ -33,7 +33,7 @@ interface jobType {
 
 export default function Jobs() {
   const searchParams = useSearchParams();
-  const initialSearchTerm = searchParams.get("search") || "";
+  // const initialSearchTerm = searchParams.get("search") || "";
   const JOBS_PER_PAGE = 6;
 
   const [getJobs, setJobs] = useState<jobType[]>([]);
@@ -56,12 +56,17 @@ export default function Jobs() {
   });
 
   // ✅ Met à jour la recherche uniquement si `initialSearchTerm` change
+  // useEffect(() => {
+  //   setSearchTerm(initialSearchTerm);
+  //   // if(searchTerm !== initialSearchTerm){
+  //   //   setSearchTerm(initialSearchTerm);
+  //   // }
+  // }, [initialSearchTerm]);
   useEffect(() => {
+    const initialSearchTerm = searchParams.get("search") || "";
     setSearchTerm(initialSearchTerm);
-    // if(searchTerm !== initialSearchTerm){
-    //   setSearchTerm(initialSearchTerm);
-    // }
-  }, [initialSearchTerm]);
+  }, [searchParams]);
+
 
   useEffect(() => {
     const getAllJobs = async () => {

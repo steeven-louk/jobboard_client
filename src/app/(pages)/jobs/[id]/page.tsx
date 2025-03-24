@@ -84,7 +84,6 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
     }
   };
 
-  console.log("jobDetail", path);
 
   useEffect(() => {
     if (!id) return;
@@ -96,6 +95,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
       }
       try {
         const response = await getDetailJob(id);
+
         setJobDetail(response);
       } catch (error) {
         toast("Erreur", {

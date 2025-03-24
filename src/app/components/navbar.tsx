@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   BookmarkIcon,
   BriefcaseBusiness,
@@ -168,6 +168,9 @@ const Navbar = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right">
+              <SheetHeader>
+          <SheetTitle>Navigation</SheetTitle>
+        </SheetHeader>
                 <nav className="flex flex-col space-y-4 mt-4">
                   {navItems.map((item) => (
                     <Link

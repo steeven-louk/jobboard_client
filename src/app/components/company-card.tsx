@@ -39,7 +39,7 @@ export function CompanyCard({ company }: CompanyCardProps) {
           </div>
           <div className="flex items-center">
             <Users className="w-4 h-4 mr-2" />
-            <span>{company?.employeeCount} employés</span>
+            <span>{company?.employeeCount || 0} employés</span>
           </div>
         </div>
         <Link

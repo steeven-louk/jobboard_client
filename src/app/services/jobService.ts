@@ -55,7 +55,7 @@ export const getDetailJob = async (id: number): Promise<IJob | null> => {
     const response = await api.get(`/job/${id}`);
 
     if (response.status === 200) {
-      return response.data?.job || null;
+      return response.data?.jobs || null;
     }
   } catch (error: any) {
     console.error("❌ Erreur lors de la récupération du job :", error);

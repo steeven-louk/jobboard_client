@@ -52,7 +52,7 @@ export const RecentJobs = () => {
         <h1 className="capitalize font-bold text-2xl md:text-3xl">
           emplois récents disponibles
         </h1>
-        <Link href={"/jobs"} className="underline color-primary font-semibold">
+        <Link href={"/jobs"} className="underline text-primary font-semibold">
           Voir plus
         </Link>
       </div>

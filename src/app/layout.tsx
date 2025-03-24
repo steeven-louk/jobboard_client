@@ -7,6 +7,7 @@ import Navbar from "./components/navbar";
 import { Providers } from "./utils/provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { ThemeProvider } from "./components/theme/theme-provider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,16 +29,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <Navbar />
-          {children}
-          <Footer />
-          <Toaster />
-          <SpeedInsights/>
+          <ThemeProvider attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange>
+            <Navbar />
+            {children}
+            <Footer />
+            <Toaster />
+            <SpeedInsights/>
+          </ThemeProvider>
         </Providers>
       </body>
     </html>

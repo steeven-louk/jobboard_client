@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { ModeToggle } from "./theme/theme-toogle";
 
 const navItems = [
   { name: "Accueil", href: "/" },
@@ -63,7 +64,7 @@ const Navbar = () => {
     <nav
       className={`container mx-auto z-30 top-0 sticky  transition-all duration-300 ${
         isScrolled
-          ? "bg-slate-100 shadow-lg shadow-gray-800 rounded-lg top-2"
+          ? " bg-primary shadow-lg shadow-gray-800 rounded-lg top-2"
           : "bg-transparent"
       }`}
     >
@@ -81,10 +82,10 @@ const Navbar = () => {
             <Link
               key={item.name}
               href={item.href}
-              className={`inline-flex items-center px-1 pt-1 border-b-2 border-transparent transition-all duration-300 text-sm font-medium ${
+              className={`inline-flex items-center px-1 pt-1 border-b-2 border-transparent transition-all duration-300 text-sm font-semibold ${
                 pathname === item.href
-                  ? "border-[#309689] text-gray-700"
-                  : "text-gray-500 hover:border-[#309689] hover:text-gray-700"
+                  ? "border-[#309689] "
+                  : "text-gray-800 hover:border-[#309689] font-medium hover:text-gray-700"
               }`}
             >
               {item.name}
@@ -93,6 +94,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex align-baseline gap-3">
+          <ModeToggle/>
           <div className="profile flex align-baseline gap-3">
             {status === "authenticated" && (
               <DropdownMenu>

@@ -41,7 +41,7 @@ const Fonctionnalite = () => {
         ))}
         </div>
         <div className="justify-center flex gap-3 mt-10 items-baseline">
-            <Button variant={'outline'} className='border p-2'>En savoir plus</Button>
+            <Button className='border p-2'>En savoir plus</Button>
             <Button variant={'ghost'} className='border-none'><Link className='inline-flex items-center' href={"/auth/register"}>S&apos;inscrire <ChevronRight/></Link></Button>
         </div>
     </section>

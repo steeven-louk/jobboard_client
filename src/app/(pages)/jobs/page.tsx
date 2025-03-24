@@ -3,34 +3,10 @@ import { HeaderComponent } from "@/app/components/headerComponent";
 // import { JobCard } from "@/app/components/jobCard";
 import { Suspense } from "react";
 import JobContent from "./component/jobContent";
-// import SearchBar from "@/app/components/searchBar";
-// import { useSearchParams } from "next/navigation";
-// import { JobFilters } from "@/app/components/jobFilter";
-// import { Button } from "@/components/ui/button";
-// import { ChevronLeft, ChevronRight } from "lucide-react";
-// import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
-// import { getAllJob } from "@/app/services/jobService";
-// import { toast } from "sonner";
 
-// interface JobType {
-//   id: number;
-//   title: string;
-//   description: string;
-//   skill: string;
-//   requirement: string;
-//   location: string;
-//   salary: number | null;
-//   duration: string;
-//   jobType: string;
-//   isPremium: boolean;
-//   createdAt: string | Date;
-//   company: {
-//     logo: string | null;
-//     domaine: string | null;
-//   };
-// }
 
 export default function Jobs() {
+
   // const searchParams = useSearchParams();
   // const [searchTerm, setSearchTerm] = useState("");
 

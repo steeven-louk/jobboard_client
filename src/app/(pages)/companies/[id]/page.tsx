@@ -49,6 +49,7 @@ interface ICompanyDetail {
   domaine?: string;
   logo?: File | string;
   jobs?: IJob[];
+  userId: string
 }
 export default function CompanyProfilePage({
   params,
@@ -65,6 +66,7 @@ export default function CompanyProfilePage({
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
 
   const JOBS_PER_PAGE = 4;
+  const verifyUser = userId === company?.userId;
 
   useEffect(() => {
     const getCompanyDetails = async () => {
@@ -108,10 +110,10 @@ export default function CompanyProfilePage({
     currentPage * JOBS_PER_PAGE
   );
 
+  console.log("dsfsdf", company)
   return (
     <div className="container mx-auto md:px-4 py-8">
       <div className="flex items-center mb-6">
-        {/* <Image */}
         <Image
           src={typeof company?.logo === "string" ? company?.logo : "/placeholder.svg"}
           alt={`${company?.name} logo`}
@@ -152,7 +154,7 @@ export default function CompanyProfilePage({
             onPageChange={handlePageChange}
           />
         </div>
-        <div className="">
+        <div>
           <Card>
             <CardContent>
               <div className="space-y-2 py-2">
@@ -170,7 +172,7 @@ export default function CompanyProfilePage({
               </div>
             </CardContent>
           </Card>
-          {userRole === "RECRUITER" && (
+          {userRole === "RECRUITER" && verifyUser && (
             <Card className="mt-3 md:fixed">
               <CardHeader>
                 <CardTitle>Actions du recruteur</CardTitle>

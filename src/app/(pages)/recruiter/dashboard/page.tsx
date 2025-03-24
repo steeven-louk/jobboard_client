@@ -79,6 +79,8 @@ export default function RecruiterDashboard() {
     fetchCompanyApplications();
   }, []);
 
+  console.log(companyJob)
+
   return (
     <ProtectedRoute requiredRole="RECRUITER">
       <div className="container mx-auto px-4 py-8">
@@ -93,6 +95,9 @@ export default function RecruiterDashboard() {
             <TabsTrigger value="applications">Candidatures</TabsTrigger>
           </TabsList>
           <TabsContent value="jobs">
+          <Link href="/companies/jobs/new" className="block mb-4">
+                  <Button>Publier une nouvelle offre</Button>
+                </Link>
             <Card>
               <CardHeader>
                 <CardTitle>Vos offres d&apos;emploi</CardTitle>
@@ -105,9 +110,7 @@ export default function RecruiterDashboard() {
                     <p>Aucune offre publiée.</p>
                   )}
                 </div>
-                <Link href="/companies/jobs/new" className="block mt-4">
-                  <Button>Publier une nouvelle offre</Button>
-                </Link>
+               
               </CardContent>
             </Card>
           </TabsContent>

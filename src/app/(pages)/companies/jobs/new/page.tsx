@@ -192,8 +192,9 @@ export default function NewJobPage() {
                     <SelectContent>
                       <SelectItem value="CDI">CDI</SelectItem>
                       <SelectItem value="CDD">CDD</SelectItem>
-                      <SelectItem value="Freelance">Freelance</SelectItem>
-                      <SelectItem value="Stage">Stage</SelectItem>
+                      <SelectItem value="FREELANCE">Freelance</SelectItem>
+                      <SelectItem value="STAGE">Stage</SelectItem>
+                      <SelectItem value="INTERIM">Interim</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -204,7 +205,7 @@ export default function NewJobPage() {
                 <Input
                   id="duration"
                   name="duration"
-                  type="number"
+                  type="text"
                   value={jobData.duration}
                   onChange={handleInputChange}
                   required

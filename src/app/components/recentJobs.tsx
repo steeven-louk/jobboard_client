@@ -33,7 +33,7 @@ export const RecentJobs = () => {
       try {
         setIsLoading(true);
         const data:IJob[] = await getAllJob();
-        console.log('recent', data)
+
         const filteredData = data?.slice(0, 4);
         setRecentJobs(filteredData);
       } catch (error) {
@@ -45,6 +45,7 @@ export const RecentJobs = () => {
     };
     getRecentJob();
   }, []);
+
   return (
     <section className="container px-4 md:px-10 mx-auto mt-5 md:my-10">
       <div className="flex justify-between md:mb-5 mb:2">

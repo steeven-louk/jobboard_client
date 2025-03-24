@@ -22,6 +22,7 @@ interface Company {
   employeeCount?: string;
   domaine?: string;
   logo?: File | string;
+  userId: string
 }
 
 interface CompanyEditFormProps {
@@ -44,6 +45,7 @@ export function CompanyEditForm({
       location: "",
       employeeCount: "",
       description: "",
+      userId: "",
     }
   );
   const [previewLogo, setPreviewLogo] = useState<string | undefined>(

@@ -44,7 +44,7 @@ export function CompanyCard({ company }: CompanyCardProps) {
         </div>
         <Link
           href={`/companies/${company.id}`}
-          className="mt-4 inline-block text-blue-600 hover:underline"
+          className="mt-4 inline-block text-primary font-semibold hover:underline"
         >
           Voir le profil
         </Link>

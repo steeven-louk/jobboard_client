@@ -34,7 +34,7 @@ const Fonctionnalite = () => {
         <div className="grid place-items-center gap-5 md:gap-0 mt-10 grid-cols-1 md:grid-cols-3 sm:grid-cols-2 mx-auto">
         {fonctionnalite?.map((item,index)=>(
             <Card className="card text-center flex flex-col items-center md:w-[20rem] w-full shadow-md transition-all hover:shadow-slate-500 shadow-slate-300 p-2" key={index+1}>
-                <CardHeader className='text-center mx-auto text-[#309689]'>{item.icon}</CardHeader>
+                <CardHeader className='text-center mx-auto text-primary'>{item.icon}</CardHeader>
                 <CardTitle className='text-2xl font-bold my-4'>{item.title}</CardTitle>
                 <CardDescription className='md:text-sm text-xl'>{item.subtext}</CardDescription>
             </Card>

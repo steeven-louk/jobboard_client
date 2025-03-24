@@ -72,7 +72,7 @@ const Candidature = () => {
                 ):(
                     getApplication?.length > 0?(
                         getApplication?.map((apk)=>(
-                            apk.job ? ( // ✅ Vérifie que `job` existe avant de l'afficher
+                            apk.job ? (
                                 <div key={apk.id}>
                                   <JobCard path={""} job={apk.job} />
                                 </div>

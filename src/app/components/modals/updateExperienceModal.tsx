@@ -133,11 +133,6 @@ export default function ExperienceModal({ experience }: Props) {
                   id={name}
                   name={name}
                   type={type}
-                  // value={
-                  //   name === "date_debut" || name === "date_fin"
-                  //     ? new Date(formData[name as keyof IExperience]).toISOString().split("T")[0]
-                  //     : (formData[name as keyof IExperience] as string) || ""
-                  // }
                   value={
                     type === "date"
                       ? formData[name as keyof IExperience]
@@ -164,7 +159,7 @@ export default function ExperienceModal({ experience }: Props) {
               </div>
             </div>
           </div>
-          <DialogFooter className="">
+          <DialogFooter>
             <Button className="max-w-44 w-full font-semibold uppercase" type="submit">
               {experience ? "Modifier" : "Ajouter"}
             </Button>

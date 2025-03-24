@@ -145,7 +145,7 @@ export const JobCard = ({ path, job }: JobCardProps) => {
         {!path && (
           <Button
             asChild
-            className="bg-[#309689] rounded-md p-2 capitalize mt-4 md:mt-0 w-36"
+            className=" rounded-md p-2 capitalize mt-4 md:mt-0 w-36"
           >
             <Link href={`/jobs/${job?.id}`}>job detail</Link>
           </Button>

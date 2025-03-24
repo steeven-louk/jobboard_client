@@ -158,7 +158,7 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
               </div>
 
               <DrawerFooter>
-                <Button disabled={isLoading} className="bg-green-500">
+                <Button disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -126,7 +126,6 @@ export default function ProfilModal({
                     id={name}
                     name={name}
                     type={type}
-                    // value={formData[name as keyof Profil] || ""}
                     value={
                       name === "birthdate"
                         ? formData.birthdate instanceof Date

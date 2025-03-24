@@ -389,7 +389,7 @@ export default function JobContent() {
   return (
     <Suspense fallback={<p>Chargement...</p>}>
       <div className="w-full">
-        {/* <HeaderComponent pageName="Jobs" /> */}
+
 
         <section className="container mx-auto flex flex-col p-3">
           <h1 className="text-3xl font-bold mb-8">Offres d&apos;emploi disponibles</h1>

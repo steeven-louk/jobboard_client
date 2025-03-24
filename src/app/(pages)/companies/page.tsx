@@ -45,7 +45,6 @@ export default function CompaniesPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // ✅ Vérification que `companies` contient bien des données avant d'appeler `.length`
   const totalPages = Math.ceil(companies.length / COMPANIES_PER_PAGE);
   const paginatedCompanies = companies.slice(
     (currentPage - 1) * COMPANIES_PER_PAGE,
@@ -62,7 +61,7 @@ export default function CompaniesPage() {
           : paginatedCompanies.length > 0 ? (
               paginatedCompanies.map((company) => <CompanyCard key={company.id} company={company} />)
             ) : (
-              <p>Aucune entreprise trouvée</p> // ✅ Correction du message
+              <p>Aucune entreprise trouvée</p>
             )}
       </div>
       <Pagination

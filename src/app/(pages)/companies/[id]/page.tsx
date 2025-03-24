@@ -110,7 +110,7 @@ export default function CompanyProfilePage({
     currentPage * JOBS_PER_PAGE
   );
 
-  console.log("dsfsdf", company)
+
   return (
     <div className="container mx-auto md:px-4 py-8">
       <div className="flex items-center mb-6">

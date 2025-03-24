@@ -289,7 +289,7 @@ export default function NewJobPage() {
                         className="flex flex-col cursor-pointer"
                       >
                         <Card
-                          className= "border-green-500 bg-green-500 hover:bg-secondary/50 p-4 border-2 transition-all"
+                          className= "border-green-500  hover:bg-secondary/50 p-4 border-2 transition-all"
                          
                         >
                           <div className="flex justify-between items-center">

@@ -31,7 +31,7 @@ export default function SearchBar({
       className="flex shadow-md flex-col md:flex-row shadow-black rounded-md search-box w-full justify-center items-center"
     >
       <div className=" w-full bg-white inline-flex gap-3 items-center p-4 rounded-md rounded-r-none">
-        <Search className="text-gray-600 hidden md:block" />
+        <Search className=" hidden md:block" />
         <Input
           type="text"
           className="w-full text-xl focus:outline-none focus:ring-0 shadow-none flex-grow p-1 border border-white focus:border-transparent text-black placeholder-slate-400"
@@ -46,7 +46,7 @@ export default function SearchBar({
       </div>
       <Button
         type="submit"
-        className="inline-flex font-bold items-center gap-2 mb-2 md:mb-0 border h-[2.50rem] md:h-[4.25rem]  md:px-2 rounded-r-md md:rounded-l-none bg-[#309689]"
+        className="inline-flex font-bold items-center gap-2 mb-2 md:mb-0 border h-[2.50rem] md:h-[4.25rem]  md:px-2 rounded-r-md md:rounded-l-none"
       >
         <Search className="h-4 w-4 mr-2" />
         Trouver un job

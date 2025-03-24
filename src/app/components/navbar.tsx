@@ -162,7 +162,7 @@ const Navbar = () => {
           <div className="sm:hidden flex items-center">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button  size="icon">
                   <Menu style={{ width: "30px", height: "30px" }} />
                   <span className="sr-only">Ouvrir le menu</span>
                 </Button>

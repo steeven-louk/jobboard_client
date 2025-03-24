@@ -40,7 +40,7 @@ export function HomeSearchBar() {
       </div>
       <Button
         type="submit"
-        className="inline-flex font-bold items-center gap-2 border h-[3.25rem] md:h-[4.25rem]  px-2 rounded-r-md rounded-l-md md:rounded-l-none bg-[#309689]"
+        className="inline-flex font-bold items-center gap-2 border h-[3.25rem] md:h-[4.25rem]  px-2 rounded-r-md rounded-l-md md:rounded-l-none"
       >
         <Search className="h-4 w-4 mr-2" />
         Trouver un job

@@ -65,7 +65,7 @@ export function JobFilters({
               ))}
             </div>
           </div>
-          <Button onClick={onClearFilters} variant="outline" className="w-full mt-4">
+          <Button onClick={onClearFilters}  className="w-full mt-4">
             Effacer les filtres
           </Button>
         </div>

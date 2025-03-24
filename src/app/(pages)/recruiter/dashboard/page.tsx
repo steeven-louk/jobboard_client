@@ -79,8 +79,8 @@ export default function RecruiterDashboard() {
     fetchCompanyApplications();
   }, []);
 
-  console.log(companyJob)
 
+  
   return (
     <ProtectedRoute requiredRole="RECRUITER">
       <div className="container mx-auto px-4 py-8">
@@ -135,7 +135,7 @@ export default function RecruiterDashboard() {
                                 {application.status}
                               </span>
                               <Link href={`/recruiter/applications/${application.id}`}>
-                                <Button variant="outline" size="sm">Voir détails</Button>
+                                <Button  size="sm">Voir détails</Button>
                               </Link>
                             </div>
                           </CardContent>

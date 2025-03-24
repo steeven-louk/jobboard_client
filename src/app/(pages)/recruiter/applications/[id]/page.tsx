@@ -83,7 +83,6 @@ export default function ApplicationDetailPage({
     <ProtectedRoute requiredRole="RECRUITER">
       <div className="container mx-auto px-4 py-8">
         <Button
-          variant="outline"
           onClick={() => router.back()}
           className="mb-4"
         >
@@ -132,11 +131,11 @@ export default function ApplicationDetailPage({
                   </div>
                   <div className="img my-auto">
                     <Image
-                      src={application?.user.picture}
+                      src={application?.user.picture || ""}
                       width={170}
                       height={170}
                       className="object-cover rounded-md"
-                      alt={application?.user.fullName}
+                      alt={application?.user.fullName || "profil picture"}
                     />
                   </div>
                 </TabsContent>

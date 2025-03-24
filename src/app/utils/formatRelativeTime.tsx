@@ -6,10 +6,10 @@ export function formatedRelativeTime(date: Date) {
     );
 
     if(diffInDay ===0){
-        return "Posted Today";
+        return "Poster Aujourd'hui";
     }else if(diffInDay === 1){
-        return "Posted 1 day ago";
+        return "Poster il y a 1j";
     }else{
-        return `Posted ${diffInDay} day ago`;
+        return `Poster il y a ${diffInDay}j`;
     }
 }

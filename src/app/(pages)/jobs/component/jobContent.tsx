@@ -403,8 +403,8 @@ export default function JobContent() {
                 contractTypes={contractTypes}
                 experienceLevels={experienceLevels}
                 onSortChange={handleSortChange}
-                onContractTypeChange={()=>handleContractTypeChange}
-                onExperienceLevelChange={()=>handleExperienceLevelChange}
+                onContractTypeChange={(type) => handleContractTypeChange(type as keyof typeof contractTypes)}
+                onExperienceLevelChange={(type)=>handleExperienceLevelChange(type as keyof typeof experienceLevels)}
                 onClearFilters={clearFilters}
               />
             </aside>

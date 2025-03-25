@@ -252,7 +252,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
 import { getAllJob } from "@/app/services/jobService";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
+
 
 interface JobType {
   id: number;
@@ -309,7 +310,7 @@ export default function JobContent() {
         const data = await getAllJob();
         if (data) setJobs(data);
       } catch (error) {
-        toast.error("Erreur lors de la récupération des jobs");
+        toast.error("❌ Erreur lors de la récupération des jobs");
         console.error("❌ Erreur récupération jobs:", error);
       } finally {
         setTimeout(() => setIsLoading(false), 500);

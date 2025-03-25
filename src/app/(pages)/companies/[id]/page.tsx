@@ -18,8 +18,8 @@ import { JobCard } from "@/app/components/jobCard";
 import { CompanyEditForm } from "@/app/components/company-edit-form";
 import { Pagination } from "@/app/components/pagination";
 import { getCompanyDetail, updateCompany } from "@/app/services/companyService";
+import { toast } from "react-toastify";
 
-import { toast } from "sonner";
 
 
 interface IJob {
@@ -74,10 +74,8 @@ export default function CompanyProfilePage({
         const response:ICompanyDetail = await getCompanyDetail(id);
         setCompany(response);
       } catch (error) {
-        toast("Erreur", {
-          description: "Erreur lors de la recuperation des company",
-        });
-        console.log("erreur lors de la recuperation des company", error);
+        toast.error("Erreur lors de la recuperation des company");
+        console.error("erreur lors de la recuperation des company", error);
       }
     };
     getCompanyDetails();
@@ -86,18 +84,16 @@ export default function CompanyProfilePage({
   const handleCompanyUpdate = async (updatedCompany:ICompanyDetail) => {
 
     try {
-      const response = await updateCompany(id, userId, updatedCompany);
+       await updateCompany(id, userId, updatedCompany);
       setCompany(updatedCompany);
       setIsEditModalOpen(false);
-      console.log("response for update campany", response);
+      // console.log("response for update campany", response);
     } catch (error) {
-      toast("Erreur", {
-        description: "Erreur lors de la modification de la company",
-      });
-      console.log("erreur lors de la modification de la company", error);
+      toast.error("Erreur lors de la modification de la company");
+      console.error("erreur lors de la modification de la company", error);
     }
-    toast("Company mis à jour");
-    console.log("Company updated:", updatedCompany);
+    toast.success("Company mis à jour");
+    // console.log("Company updated:", updatedCompany);
   };
 
   const handlePageChange = (page: number) => {

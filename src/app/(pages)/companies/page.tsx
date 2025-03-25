@@ -5,8 +5,8 @@ import { CompanyCard } from "@/app/components/company-card";
 import { Pagination } from "@/app/components/pagination";
 import { CompanyCardSkeleton } from "@/app/components/skeletons/company-card-skeleton";
 import { getCompanies } from "@/app/services/companyService";
+import { toast } from "react-toastify";
 
-import { toast } from "sonner";
 
 interface ICompany {
   id: string;
@@ -32,7 +32,7 @@ export default function CompaniesPage() {
         setCompanies(response);
       } catch (error) {
         console.error("❌ Erreur lors de la récupération des entreprises :", error);
-        toast.error("Erreur lors de la récupération des entreprises.");
+        toast.error("❌ Erreur lors de la récupération des entreprises.");
       } finally {
         setIsLoading(false);
       }

@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -20,14 +21,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
     if (!session) {
       // toast.error("Vous devez être connecté pour accéder à cette page !");
-      alert("Vous devez être connecté pour accéder à cette page !");
-      console.error("Vous devez être connecté pour accéder à cette page !");
+      // alert("Vous devez être connecté pour accéder à cette page !");
+      toast.error("Vous devez être connecté pour accéder à cette page !");
 
       router.push("/auth/login");
     } else if (requiredRole && session?.user?.role !== requiredRole) {
       // toast.warning("Accès réservé aux recruteurs !");
       alert("Accès réservé aux recruteurs !");
-      console.log("Accès réservé aux recruteurs !");
+      toast.warning("Accès réservé aux recruteurs !");
+      // console.log("Accès réservé aux recruteurs !");
       router.push("/");
     }
   }, [session, status, requiredRole, router]);

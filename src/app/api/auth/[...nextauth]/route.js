@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 
 const authOptions = {
@@ -29,9 +30,7 @@ const authOptions = {
             };
           }
         } catch (error) {
-          toast("Erreur", {
-            description: "Email ou mot de passe incorrect",
-          })
+          toast.error("Email ou mot de passe incorrect")
           throw new Error("Email ou mot de passe incorrect", error);
         }
         return null;

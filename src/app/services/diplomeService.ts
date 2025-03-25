@@ -1,4 +1,5 @@
-import { toast } from "sonner";
+// import { toast } from "sonner";
+import { toast } from "react-toastify";
 import api from "./api";
 import { getUserProfile } from "./profileService";
 
@@ -19,10 +20,11 @@ export const handleAddFormation =async(formData: IFormation): Promise<IFormation
         const response = await api.post("/user/profil/diplome/", formData)
          if (response?.status === 201) {
              await getUserProfile();
-                  toast("Nouvelle formation ajoutée");
+                  toast.success("Nouvelle formation ajoutée");
                   return response.data;
                 }
     } catch(error:any){
+        toast.error("❌ Erreur lors de l'ajout de la formation")
         console.error("❌ Erreur lors de l'ajout de la formation :", error);
     throw new Error(error.response?.data || "Erreur lors de l'ajout de la formation.");
     }
@@ -38,7 +40,7 @@ export const handleDeleteFormation =async(id:number): Promise<void>=>{
 
     } catch(error:any){
         console.error("❌ Erreur lors de la suppression de la formation :", error);
-        toast.error("Erreur lors de la suppression de la formation.");
+        toast.error("❌ Erreur lors de la suppression de la formation.");
         throw new Error(error.response?.data || "Erreur lors de la suppression de la formation.");
 
     }
@@ -55,7 +57,7 @@ export const handleUpdateFormation =async(id:number, formData:IFormation): Promi
 
     } catch(error:any){
         console.error("❌ Erreur lors de la mise à jour de la formation :", error);
-    toast.error("Erreur lors de la mise à jour de la formation.");
+    toast.error("❌ Erreur lors de la mise à jour de la formation.");
     throw new Error(error.response?.data || "Erreur lors de la mise à jour de la formation.");
     }
 }

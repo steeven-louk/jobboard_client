@@ -1,4 +1,5 @@
-import { toast } from "sonner";
+// import { toast } from "sonner";
+import { toast } from "react-toastify";
 import api from "./api";
 import { getUserProfile } from "./profileService";
 
@@ -20,10 +21,11 @@ export const handleAddExperience =async(formData:IExperience):Promise<IExperienc
         const response = await api.post("/user/profil/experience/", formData);
         if (response?.status === 201) {
             await getUserProfile();
-                  toast("Nouvelle expérience ajoutée");
+                  toast.success("Nouvelle expérience ajoutée");
                   return response.data;
                 }
     } catch(error:any){
+        toast.error("❌ Erreur lors de l'ajout de l'expérience");
         console.error("❌ Erreur lors de l'ajout de l'expérience :", error);
     throw new Error(error.response?.data || "Erreur lors de l'ajout de l'expérience.");
     }
@@ -35,6 +37,7 @@ export const handleDeleteExperience =async(id:number):Promise<void>=>{
         await getUserProfile();
 
     } catch(error:any){
+        toast.error("❌ Erreur lors de la suppression de l'expérience");
         console.error("❌ Erreur lors de la suppression de l'expérience :", error);
     throw new Error(error.response?.data || "Erreur lors de la suppression de l'expérience.");
 
@@ -51,6 +54,7 @@ export const handleUpdateExperience =async(id:number, formData:IExperience):Prom
           }
 
     } catch(error:any){
+        toast.error("❌ Erreur lors de la mise à jour de l'expérience");
         console.error("❌ Erreur lors de la mise à jour de l'expérience :", error);
         throw new Error(error.response?.data || "Erreur lors de la mise à jour de l'expérience.");
     }

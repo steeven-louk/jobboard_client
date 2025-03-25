@@ -39,6 +39,7 @@ export const RecentJobs = () => {
       } catch (error) {
         // toast.error("Erreur lors de la récupération des jobs");
         console.error("❌ Erreur récupération jobs:", error);
+        
       } finally {
         setTimeout(() => setIsLoading(false), 500);
       }

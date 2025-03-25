@@ -20,7 +20,8 @@ import {
   handleAddExperience,
   handleUpdateExperience,
 } from "@/app/services/experienceService";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
+// import { toast } from "sonner";
 
 interface IExperience {
   id?: number;
@@ -81,9 +82,7 @@ export default function ExperienceModal({ experience }: Props) {
         await handleAddExperience(formData);
       }
     } catch (error) {
-      toast("Erreur", {
-        description: "Erreur lors de l'opération",
-      });
+      toast.error("Erreur lors de l'opération");
       console.error("Erreur lors de l'opération", error);
     }
   };

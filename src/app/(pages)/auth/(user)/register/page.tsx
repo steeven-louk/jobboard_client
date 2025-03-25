@@ -16,8 +16,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
+import { toast } from "react-toastify";
 
 
 interface ICandidateFormData {
@@ -72,11 +72,6 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
     }, { message: "Vous devez avoir au moins 18 ans pour vous inscrire." }),
   });
 
-  // ✅ Utilisation de `z.infer` pour extraire les types
-// type ICandidateFormData = z.infer<typeof candidateSchema>;
-// type IRecruiterFormData = z.infer<typeof recruiterSchema>;
-
-
   const {
     register,
     handleSubmit,
@@ -94,13 +89,12 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
      if (role === "RECRUITER") {
       requiredFields.push("companyName", "companyLocation", "description");
     }
-   console.log("eqqdsfhgj", requiredFields)
 
     const isValid = requiredFields.every((field) => values[field as keyof typeof values]);
     console.log(values,requiredFields)
     if (!isValid) {
-      toast("Veuillez remplir tous les champs obligatoires avant de continuer.")
-      alert("Veuillez remplir tous les champs obligatoires avant de continuer.");
+      toast.warning("Veuillez remplir tous les champs obligatoires avant de continuer.")
+      // alert("Veuillez remplir tous les champs obligatoires avant de continuer.");
       return;
     }
 
@@ -112,13 +106,11 @@ const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(),
       const endpoint = role === "USER" ? `${URL}register` : `${URL}register-recruiter`;
       const response = await axios.post(endpoint, { ...data, role });
       console.log(response);
-      toast("inscription reussie")
+      toast.success("inscription reussie")
       router.push("/auth/login");
     } catch (error) {
-      toast("Erreur", {
-          description: "Erreur lors de l'inscription",
-        })
-      console.log("Erreur lors de l'inscription", error);
+      toast("Erreur lors de l'inscription")
+      console.error("Erreur lors de l'inscription", error);
     }
   };
 

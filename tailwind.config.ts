@@ -9,6 +9,11 @@ export default {
   ],
   theme: {
   	extend: {
+		fontFamily: {
+			sans: ["var(--font-lato)"],
+			poppins: ["var(--font-poppins)"],
+			lato: ["var(--font-lato)"],
+		  },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

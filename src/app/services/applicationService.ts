@@ -1,4 +1,5 @@
-import { toast } from "sonner";
+// import { toast } from "sonner";
+import { toast } from "react-toastify";
 import api from "./api";
 import { handleUpload } from "./companyService";
 
@@ -33,9 +34,8 @@ export const getUserApplications = async ():Promise<IApplication[] | void> => {
       }
       
   } catch (error:any) {
-    toast("Erreur", {
-      description: "Erreur lors de la récupération des candidatures",
-    })
+    toast.error("Erreur lors de la récupération des candidatures")
+
     throw new Error(error.response?.data || "Erreur de récupération des candidatures");
   }
 };
@@ -49,9 +49,7 @@ export const getApplication = async (id: string):Promise<IApplication | void> =>
         return data?.application || null;
       }
   } catch (error:any) {
-    toast("Erreur", {
-      description: "Erreur lors de la récupération de la candidature",
-    })
+    toast.error("Erreur lors de la récupération de la candidature")
     throw new Error( error.response?.data || "Erreur de récupération de la candidature");
   }
 };
@@ -68,11 +66,14 @@ export const changeStatus =async(application:IApplication,newStatus:string):Prom
       },);
 
     if(response.status ===200){
-      toast(`Status mis à jour: ${newStatus}`)
-        console.log(`Status mis à jour: ${newStatus}`, response)
+      toast.info(`Status mis à jour: ${newStatus}`)
+        // console.log(`Status mis à jour: ${newStatus}`, response)
     }
-   } catch (error) {
+   } catch (error:any) {
+    toast.error("❌ Erreur lors du changement de statut")
     console.error("❌ Erreur lors du changement de statut :", error);
+    throw new Error( error.response?.data || "Erreur lors du changement de statut ");
+
 
    }
 }
@@ -92,9 +93,10 @@ export const applyToJob = async (jobId: number, CV: File | string | null, LM: st
           throw new Error("L'upload du CV a échoué."); // Stopper la suite du code
         }
         CV = uploadResponse.fileUrl; // 🔹 Met à jour `CV` avec l'URL du fichier
-        console.log("✅ CV uploadé:", CV);
+        // console.log("✅ CV uploadé:", CV);
       } catch (uploadError) {
         console.error("❌ Erreur lors de l'upload du CV:", uploadError);
+        toast.error("❌ Erreur lors de l'upload du CV:");
         throw new Error("Erreur lors de l'upload du CV.");
       }
     }

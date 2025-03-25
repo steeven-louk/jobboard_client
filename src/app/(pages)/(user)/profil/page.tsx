@@ -29,7 +29,8 @@ import { handleDeleteExperience } from "@/app/services/experienceService";
 import { handleDeleteFormation } from "@/app/services/diplomeService";
 
 import Image from "next/image";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
+// import { toast } from "sonner";
 
 
 
@@ -87,13 +88,11 @@ const Profil = () => {
 console.log(isModalOpen)
   const deleteExperience = async (id: number) => {
     try {
-      const experience = await handleDeleteExperience(id);
-      console.log(experience);
+      await handleDeleteExperience(id);
+      // console.log(experience);
     } catch (error) {
-      toast("Erreur", {
-        description: "Erreur lors de la suppression de l'experience",
-      });
-      console.log("erreur lors de la suppression de l'experience", error);
+      toast.error("Erreur lors de la suppression de l'experience");
+      console.error("erreur lors de la suppression de l'experience", error);
     }
   };
 
@@ -103,10 +102,8 @@ console.log(isModalOpen)
         const data = await getUserProfile();
         setUserDetail(data);
       } catch (error) {
-        toast("Erreur", {
-          description: "Erreur lors de la recupération du profil",
-        });
-        console.log("erreur lors de la recuperation du profil", error);
+        toast.error("Erreur lors de la recupération du profil");
+        console.error("erreur lors de la recuperation du profil", error);
       }
     };
 
@@ -120,11 +117,9 @@ console.log(isModalOpen)
 
     try {
       await updateUserProfile(userId, updatedProfil);
-      console.log("profile mis a jour avec succes")
+      // console.log("profile mis a jour avec succes")
     } catch (error) {
-      toast("Erreur", {
-        description: "Erreur lors de la modification du profil",
-      });
+      toast("Erreur lors de la modification du profil");
       console.log("Erreur lors de la modification du profil", error);
     }
   };

@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react";
 import { HeaderComponent } from "@/app/components/headerComponent";
 import { JobCard } from "@/app/components/jobCard";
 
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { getFavoris } from "@/app/services/favorisService";
 import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
 import ProtectedRoute from "@/app/components/protectedRoutes";
+import { toast } from "react-toastify";
 
 
 // ✅ Interface pour typer les favoris
@@ -43,9 +44,7 @@ const Bookmark = () => {
         const favoris: IFavoris[] = await getFavoris();
         setGetBookmark(favoris);
       } catch (error) {
-        toast("Erreur", {
-          description: "Erreur lors de la récupération des favoris",
-        });
+        toast.error("Erreur lors de la récupération des favoris");
         console.log("erreur lors de la recuperation des favoris", error);
       }finally{
         setIsLoading(false);

@@ -30,7 +30,8 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getDetailJob } from "@/app/services/jobService";
 import { toggleFavorite, isInFavorite } from "@/app/services/favorisService";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
+
 
 
 interface IJobDetail{
@@ -63,23 +64,21 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
 
   const addToFavorie = async () => {
     if (!session) {
-      toast("Vous devez être connecté pour ajouter aux favoris");
+      toast.info("Vous devez être connecté pour ajouter aux favoris");
       return alert("Vous devez être connecté pour ajouter aux favoris");
     }
     try {
       const response = await toggleFavorite(id);
       setIsInFavorie(response);
       if (isFavorite) {
-        toast("Favorie supprimé avec succes");
+        toast.success("Favorie supprimé avec succes");
       } else {
-        toast("Favorie ajouter avec succes");
+        toast.success("Favorie ajouter avec succes");
       }
 
       console.log(response);
     } catch (error) {
-      toast("Erreur", {
-        description: "Erreur lors de l'ajout aux favoris",
-      });
+      toast.error("Erreur lors de l'ajout aux favoris");
       console.error("Erreur lors de l'ajout aux favoris :", error);
     }
   };
@@ -98,9 +97,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
 
         setJobDetail(response);
       } catch (error) {
-        toast("Erreur", {
-          description: "Erreur lors de la récupération du job",
-        });
+        toast.error("Erreur lors de la récupération du job");
         console.error("Erreur lors de la récupération du job :", error);
       }
     };

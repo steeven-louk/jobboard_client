@@ -6,8 +6,9 @@ import { JobCard } from '@/app/components/jobCard';
 import ProtectedRoute from '@/app/components/protectedRoutes';
 
 import { getUserApplications } from '@/app/services/applicationService';
-import { toast } from 'sonner';
+
 import { JobCardSkeleton } from '@/app/components/skeletons/job-card-skeleton';
+import { toast } from 'react-toastify';
 
 
 interface IJob {
@@ -46,10 +47,8 @@ const Candidature = () => {
 
                    setGetApplication(data ?? []);
             } catch (error) {
-                toast("Erreur", {
-                    description: "Erreur lors de la recuperation des candidature",
-                  })
-                console.log("erreur lors de la recuperation des candidature" ,error)
+                toast.error("Erreur lors de la recuperation des candidature")
+                console.error("erreur lors de la recuperation des candidature" ,error)
             }finally{
                 setIsLoading(false);
             }

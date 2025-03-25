@@ -150,7 +150,7 @@ const Navbar = () => {
             )}
             <>
               {status === "authenticated" && (
-                <p className="capitalize font-semibold top-1 relative">
+                <p className="capitalize font-semibold top-2 relative">
                   {session?.user?.name}
                 </p>
               )}

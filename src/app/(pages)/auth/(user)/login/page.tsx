@@ -20,8 +20,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -50,12 +50,10 @@ export default function LoginPage() {
         setLoading(false);
       }
 
-      console.log("Tentative de connexion avec:", { email, password, role });
+      // console.log("Tentative de connexion avec:", { email, password, role });
     } catch (error) {
-      toast("Erreur", {
-        description: "Erreur lors de la connexion",
-      });
-      console.log("erreur lors de la connexion", error);
+      toast.error("Erreur lors de la connexion");
+      console.error("erreur lors de la connexion", error);
     }
   };
 

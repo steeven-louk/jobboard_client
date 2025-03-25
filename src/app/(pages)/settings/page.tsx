@@ -12,7 +12,6 @@ import { Pen, Trash2 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-// type Props = {}
 
 const Settings = () => {
   return (

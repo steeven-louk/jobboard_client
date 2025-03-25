@@ -24,6 +24,7 @@ import { formatedRelativeTime } from "../utils/formatRelativeTime";
 import { useSession } from "next-auth/react";
 import { isInFavorite, toggleFavorite } from "../services/favorisService";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 interface IJob {
   id?: number;
@@ -55,9 +56,10 @@ export const JobCard = ({ path, job }: JobCardProps) => {
   const [isFavorite, setIsInFavorie] = useState<boolean>(false);
 
   const addToFavorie = async () => {
-    if (!session)
+    if (!session){
+      toast.warning("Vous devez être connecté pour ajouter aux favoris")
       return alert("Vous devez être connecté pour ajouter aux favoris");
-
+    }
     try {
       const jobId = job?.id;
       if (typeof jobId === "number") {
@@ -66,10 +68,11 @@ export const JobCard = ({ path, job }: JobCardProps) => {
 
         const response = await toggleFavorite(jobId);
         setIsInFavorie(response);
-        console.log(response);
+        // console.log(response);
       }
     } catch (error) {
       console.error("Erreur lors de l'ajout aux favoris :", error);
+      toast.error("Erreur lors de l'ajout aux favoris");
     }
   };
 

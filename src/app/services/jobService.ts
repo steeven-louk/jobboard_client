@@ -1,4 +1,5 @@
-import { toast } from "sonner";
+// import { toast } from "sonner";
+import { toast } from "react-toastify";
 import api from "./api";
 
 interface IJob {
@@ -38,12 +39,10 @@ export const getAllJob = async(): Promise<IJob[]>=>{
         if (response.status === 200) {
         return response?.data?.jobs as IJob[];
         }
-      } catch (error) {
-        toast("Erreur", {
-          description: "Erreur lors de la récupération des jobs",
-        });
+      } catch (error:any) {
+        toast.error("Erreur lors de la récupération des jobs");
           console.error("Erreur lors de la récupération des jobs :", error);
-        throw error
+        throw new Error(error || "Erreur lors de la récupération des jobs")
       }
       return [];
 }
@@ -59,7 +58,9 @@ export const getDetailJob = async (id: number): Promise<IJob | null> => {
     }
   } catch (error: any) {
     console.error("❌ Erreur lors de la récupération du job :", error);
-    toast.error("Erreur lors de la récupération du job.");
+    toast.error("❌ Erreur lors de la récupération du job.");
+    throw new Error(error || "Erreur lors de la récupération du job")
+
   }
 
   return null; // 🔹 Ajout d'un return explicite en cas d'erreur
@@ -77,9 +78,7 @@ export const createJob = async (jobData:IJobData): Promise<IJob[] | void> => {
     
     } catch (error:any) {
         console.log(error)
-        toast("Erreur", {
-          description: " Erreur lors de la création de l'emploi",
-        });
+        toast.error("Erreur lors de la création de l'emploi");
       throw new Error(error?.response?.data || " Erreur lors de la création de l'emploi");
     }
   };

@@ -1,22 +1,29 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Lato } from "next/font/google"
 import "./globals.css";
 import { Footer } from "./components/footer";
 import Navbar from "./components/navbar";
 
 import { Providers } from "./utils/provider";
-import { Toaster } from "@/components/ui/sonner";
+
+// import { Toaster } from "@/components/ui/sonner";
+import { ToastContainer } from 'react-toastify';
+
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ThemeProvider } from "./components/theme/theme-provider";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const poppins = Poppins({
   subsets: ["latin"],
-});
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+})
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const lato = Lato({
   subsets: ["latin"],
-});
+  weight: ["400", "700"],
+  variable: "--font-lato",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "JobBoard - Trouvez l'emploi de vos rêves",
@@ -31,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} ${lato.variable} font-sans`}
       >
         <Providers>
           <ThemeProvider attribute="class"
@@ -41,7 +48,19 @@ export default function RootLayout({
             <Navbar />
             {children}
             <Footer />
-            <Toaster />
+            {/* <Toaster /> */}
+            <ToastContainer position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              // transition=
+              // Bounce={true}
+              />
             <SpeedInsights/>
           </ThemeProvider>
         </Providers>

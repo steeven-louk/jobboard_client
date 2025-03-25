@@ -13,7 +13,7 @@ import {
   getCompanyApplyJobs,
   getCompanyJobs,
 } from "@/app/services/companyService";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 
 interface IApplication {
@@ -24,7 +24,6 @@ interface IApplication {
   };
 }
 
-// ✅ Interface pour typer un job
 interface IJob {
   id: number;
   title: string;

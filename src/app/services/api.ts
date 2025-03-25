@@ -7,7 +7,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// Ajouter un intercepteur pour attacher le token à chaque requête
+// intercepteur pour attacher le token à chaque requête
 api.interceptors.request.use(async (config) => {
   const session = await getSession(); // Récupérer la session NextAuth
   if (session?.user?.token) {

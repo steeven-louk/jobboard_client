@@ -61,7 +61,7 @@ export default function ApplicationDetailPage({
         const data = await getApplication(id);
         if(data)setApplication(data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
         throw error;
       }
     };

@@ -20,6 +20,7 @@ import ProtectedRoute from "@/app/components/protectedRoutes";
 
 import { loadStripe } from "@stripe/stripe-js";
 import api from "@/app/services/api";
+import { toast } from "react-toastify";
 
 interface IJobType {
   title: string;
@@ -98,6 +99,7 @@ export default function NewJobPage() {
 
     if (!jobData.selectedOffer) {
       alert("Veuillez choisir une offre avant de publier.");
+      toast.info("Veuillez choisir une offre avant de publier.");
       return;
     }
 

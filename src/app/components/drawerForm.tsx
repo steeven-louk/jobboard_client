@@ -19,8 +19,9 @@ import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { applyToJob } from "../services/applicationService";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface Props {
   jobId: number;
@@ -59,11 +60,12 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
         setLM("");
         setCv({ CV: null });
       } else {
+        toast.error("Erreur lors de l'envoi");
         throw new Error("Erreur lors de l'envoi");
       }
     } catch (error) {
       console.error("❌ Erreur:", error);
-      toast.error("Échec de l'application au job");
+      toast.error("❌ Échec de l'application au job");
       setLM("");
       setCv({ CV: null });
     } finally {

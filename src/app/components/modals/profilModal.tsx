@@ -89,7 +89,7 @@ export default function ProfilModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Données envoyées :", formData);
+    // console.log("Données envoyées :", formData);
     onSubmit(formData);
 
     onClose();

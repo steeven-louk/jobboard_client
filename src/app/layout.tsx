@@ -6,7 +6,6 @@ import Navbar from "./components/navbar";
 
 import { Providers } from "./utils/provider";
 
-// import { Toaster } from "@/components/ui/sonner";
 import { ToastContainer } from 'react-toastify';
 
 import { SpeedInsights } from "@vercel/speed-insights/next"
@@ -45,10 +44,11 @@ export default function RootLayout({
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange>
+
             <Navbar />
             {children}
             <Footer />
-            {/* <Toaster /> */}
+
             <ToastContainer position="top-right"
               autoClose={5000}
               hideProgressBar={false}
@@ -58,8 +58,6 @@ export default function RootLayout({
               pauseOnFocusLoss
               draggable
               pauseOnHover
-              // transition=
-              // Bounce={true}
               />
             <SpeedInsights/>
           </ThemeProvider>

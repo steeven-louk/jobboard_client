@@ -248,14 +248,30 @@ import { Suspense, useEffect, useState } from "react";
 import SearchBar from "@/app/components/searchBar";
 import { useSearchParams } from "next/navigation";
 import { JobFilters } from "@/app/components/jobFilter";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
 import { getAllJob } from "@/app/services/jobService";
 import { toast } from "react-toastify";
+import { Pagination } from "@/app/components/pagination";
 
 
-interface JobType {
+// interface JobType {
+//   id: number;
+//   title: string;
+//   description: string;
+//   skill: string;
+//   requirement: string;
+//   location: string;
+//   salary: number | null;
+//   duration: string;
+//   jobType: string;
+//   isPremium: boolean;
+//   createdAt: string | Date;
+//   company: {
+//     logo: string | null;
+//     domaine: string | null;
+//   };
+// }
+interface IJob {
   id: number;
   title: string;
   description: string;
@@ -264,92 +280,164 @@ interface JobType {
   location: string;
   salary: number | null;
   duration: string;
-  jobType: string;
+  jobType: string; // Ex: "CDI", "CDD", "STAGE", "FREELANCE", "INTERIM"
   isPremium: boolean;
   createdAt: string | Date;
+  experienceLevel?: "junior" | "intermediaire" | "senior" | string; // Ajouté pour le filtrage par niveau d'expérience
   company: {
     logo: string | null;
     domaine: string | null;
+    name: string; // Ajouté pour la cohérence avec JobCard
   };
 }
-
 export default function JobContent() {
   const searchParams = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const JOBS_PER_PAGE = 6;
-  const [getJobs, setJobs] = useState<JobType[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState("");
+  const [jobs, setJobs] = useState<IJob[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [sortBy, setSortBy] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  
+  const JOBS_PER_PAGE = 6;
 
-  const [contractTypes, setContractTypes] = useState({
+  const [contractTypes, setContractTypes] = useState<{
+    cdi: boolean;
+    cdd: boolean;
+    stage: boolean;
+    freelance: boolean;
+    interim: boolean;
+  }>({
     cdi: false,
     cdd: false,
     stage: false,
     freelance: false,
+    interim: false,
   });
 
-  const [experienceLevels, setExperienceLevels] = useState({
+  const [experienceLevels, setExperienceLevels] = useState<{
+    junior: boolean;
+    intermediaire: boolean;
+    senior: boolean;
+  }>({
     junior: false,
     intermediaire: false,
     senior: false,
   });
 
-  // ✅ Met à jour la recherche depuis les paramètres d'URL
+  // Met à jour la recherche depuis les paramètres d'URL
   useEffect(() => {
     const initialSearchTerm = searchParams.get("search") || "";
     setSearchTerm(initialSearchTerm);
   }, [searchParams]);
 
-  // ✅ Récupération des offres d'emploi
+  //Récupération des offres d'emploi
   useEffect(() => {
     const fetchJobs = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
-        const data = await getAllJob();
-        if (data) setJobs(data);
-      } catch (error) {
-        toast.error("❌ Erreur lors de la récupération des jobs");
-        console.error("❌ Erreur récupération jobs:", error);
+        const data: IJob[] | null = await getAllJob();
+        if (data) {
+          setJobs(data);
+        } else {
+          setJobs([]); // S'assurer que 'jobs' est un tableau vide si null
+        }
+      } catch (error: any) {
+        toast.error(error.message || "Erreur lors de la récupération des offres d'emploi.");
+        console.error("❌ Erreur lors de la récupération des offres d'emploi :", error);
+        setJobs([]); // Réinitialise les jobs en cas d'erreur
       } finally {
-        setTimeout(() => setIsLoading(false), 500);
+        setIsLoading(false); 
       }
     };
     fetchJobs();
   }, []);
 
-  // ✅ Filtrage des jobs
-  const filteredJobs = getJobs
+  // Filtrage des jobs
+  // const filteredJobs = getJobs
+  //   ?.filter((job) => {
+  //     if (!searchTerm.trim()) return true;
+  //     const searchLower = searchTerm.toLowerCase();
+  //     return (
+  //       job?.title?.toLowerCase().includes(searchLower) ||
+  //       job?.description?.toLowerCase().includes(searchLower) ||
+  //       job?.company?.domaine?.toLowerCase()?.includes(searchLower)
+  //     );
+  //   })
+  //   .filter((job) => {
+  //     if (Object.values(contractTypes).every((v) => !v)) return true;
+  //     return contractTypes[job?.jobType?.toLowerCase() as keyof typeof contractTypes] || false;
+  //   })
+  //   .sort((a, b) => {
+  //     switch (sortBy) {
+  //       case "recent":
+  //         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  //       case "salary-high":
+  //         return (b.salary || 0) - (a.salary || 0);
+  //       case "salary-low":
+  //         return (a.salary || 0) - (b.salary || 0);
+  //       case "company":
+  //         return a.company?.domaine?.localeCompare(b?.company?.domaine ?? "") ?? 0;
+  //       default:
+  //         return 0;
+  //     }
+  //   });
+
+  // ✅ Pagination
+    const filteredJobs = jobs
     ?.filter((job) => {
-      if (!searchTerm.trim()) return true;
+      // Filtrage par terme de recherche
+      if (!searchTerm.trim()) return true; // Si pas de terme de recherche, inclure tous les jobs
       const searchLower = searchTerm.toLowerCase();
       return (
         job?.title?.toLowerCase().includes(searchLower) ||
         job?.description?.toLowerCase().includes(searchLower) ||
-        job?.company?.domaine?.toLowerCase()?.includes(searchLower)
+        job?.company?.domaine?.toLowerCase()?.includes(searchLower) ||
+        job?.location?.toLowerCase().includes(searchLower) || // Ajout de la localisation à la recherche
+        job?.skill?.toLowerCase().includes(searchLower) // Ajout des compétences à la recherche
       );
     })
     .filter((job) => {
-      if (Object.values(contractTypes).every((v) => !v)) return true;
-      return contractTypes[job?.jobType?.toLowerCase() as keyof typeof contractTypes] || false;
+      // Filtrage par type de contrat
+      const activeContractFilters = Object.keys(contractTypes).filter(
+        (key) => contractTypes[key as keyof typeof contractTypes]
+      );
+      if (activeContractFilters.length === 0) return true; // Si aucun filtre de contrat, inclure tous les jobs
+
+      // Normalise le type de contrat du job pour la comparaison (ex: "CDI" -> "cdi")
+      const jobContractTypeLower = job?.jobType?.toLowerCase();
+      return activeContractFilters.includes(jobContractTypeLower);
+    })
+    .filter((job) => {
+      // Filtrage par niveau d'expérience
+      const activeExperienceFilters = Object.keys(experienceLevels).filter(
+        (key) => experienceLevels[key as keyof typeof experienceLevels]
+      );
+      if (activeExperienceFilters.length === 0) return true; // Si aucun filtre d'expérience, inclure tous les jobs
+
+      // Normalise le niveau d'expérience du job pour la comparaison
+      const jobExperienceLevelLower = job?.experienceLevel?.toLowerCase();
+      return activeExperienceFilters.includes(jobExperienceLevelLower || "");
     })
     .sort((a, b) => {
+      // Tri des offres d'emploi
       switch (sortBy) {
         case "recent":
+          // Tri par date de création (du plus récent au plus ancien)
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         case "salary-high":
+          // Tri par salaire (du plus élevé au plus bas)
           return (b.salary || 0) - (a.salary || 0);
         case "salary-low":
+          // Tri par salaire (du plus bas au plus élevé)
           return (a.salary || 0) - (b.salary || 0);
         case "company":
-          return a.company?.domaine?.localeCompare(b?.company?.domaine ?? "") ?? 0;
+          // Tri par nom de domaine de l'entreprise
+          return a.company?.name?.localeCompare(b?.company?.name ?? "") ?? 0; // Utilise company.name
         default:
-          return 0;
+          return 0; // Pas de tri par défaut
       }
     });
-
-  // ✅ Pagination
   const totalPages = Math.ceil(filteredJobs.length / JOBS_PER_PAGE);
   const paginatedJobs = filteredJobs.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
 
@@ -376,7 +464,7 @@ export default function JobContent() {
 
   const clearFilters = () => {
     setSortBy("");
-    setContractTypes({ cdi: false, cdd: false, stage: false, freelance: false });
+    setContractTypes({ cdi: false, cdd: false, stage: false, freelance: false, interim: false });
     setExperienceLevels({ junior: false, intermediaire: false, senior: false });
     setSearchTerm("");
     setCurrentPage(1);
@@ -398,7 +486,7 @@ export default function JobContent() {
           <SearchBar onSearch={handleSearch} initialSearchTerm={searchTerm} />
 
           <div className="flex flex-col md:flex-row gap-8 mt-8">
-            <aside className="w-full h-fit md:w-[20rem] rounded-md">
+            <aside className="w-full h-fit md:w-[20rem] rounded-md p-4 bg-white shadow-md">
               <JobFilters
                 sortBy={sortBy}
                 contractTypes={contractTypes}
@@ -410,30 +498,31 @@ export default function JobContent() {
               />
             </aside>
             <main className="w-full">
-              <div className="job_component mt-5">
-                {isLoading ? (
-                  <div className="space-y-4">
-                    {[...Array(JOBS_PER_PAGE)].map((_, index) => (
-                      <JobCardSkeleton key={index} />
-                    ))}
-                  </div>
-                ) : (
-                  paginatedJobs.map((job) => <JobCard key={job.id} job={job} path="" />)
-                )}
-                {paginatedJobs.length === 0 && <p>Aucun emploi trouvé.</p>}
-              </div>
-              {totalPages > 1 && (
-                <div className="flex justify-between items-center mt-8">
-                  <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                    <ChevronLeft className="h-4 w-4 mr-2" />
-                    Précédent
-                  </Button>
-                  <span>Page {currentPage} sur {totalPages}</span>
-                  <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                    Suivant <ChevronRight className="h-4 w-4 ml-2" />
-                  </Button>
-                </div>
+              <div className="job_component space-y-4">
+              {isLoading ? (
+                // Affiche des squelettes pendant le chargement
+                [...Array(JOBS_PER_PAGE)].map((_, index) => (
+                  <JobCardSkeleton key={index} />
+                ))
+              ) : paginatedJobs.length > 0 ? (
+                // Affiche les cartes d'emploi paginées
+                paginatedJobs.map((job) => (
+                  <JobCard key={job.id} job={job} path={`/jobs/${job.id}`} /> // Lien vers la page de détail du job
+                ))
+              ) : (
+                // Message si aucun emploi n'est trouvé après filtrage/recherche
+                <p className="text-gray-500 text-center py-10">Aucun emploi trouvé correspondant à vos critères.</p>
               )}
+            </div>
+              {totalPages > 1 && (
+              <div className="mt-8">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            )}
             </main>
           </div>
         </section>

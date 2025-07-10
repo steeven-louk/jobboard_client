@@ -48,6 +48,13 @@ interface Offer {
   duration: number;
 }
 
+const OfferZodSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  price: z.number(),
+  duration: z.number(),
+});
+
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
@@ -77,14 +84,21 @@ const step2Schema = z.object({
 });
 
 // Schéma pour l'étape 3 (sélection de l'offre) - les champs sont gérés par l'état local
+// const step3Schema = z.object({
+//   selectedOffer: z.object({
+//     id: z.string(),
+//     description: z.string(),
+//     price: z.number(),
+//     duration: z.number(),
+//   }, { required_error: "Veuillez choisir une offre de publication." }).nullable()
+//     .refine(offer => offer !== null, { message: "Veuillez choisir une offre de publication." }),
+// });
 const step3Schema = z.object({
-  selectedOffer: z.object({
-    id: z.string(),
-    description: z.string(),
-    price: z.number(),
-    duration: z.number(),
-  }, { required_error: "Veuillez choisir une offre de publication." }).nullable()
-    .refine(offer => offer !== null, { message: "Veuillez choisir une offre de publication." }),
+  // Correction ici : Utilisation de z.union pour permettre explicitement 'null'
+  selectedOffer: z.union([
+    OfferZodSchema, // Utilise le schéma nommé pour l'offre
+    z.null(), // Permet explicitement la valeur null
+  ]).refine(offer => offer !== null, { message: "Veuillez choisir une offre de publication." }),
 });
 
 // Schéma combiné pour la soumission finale (tous les champs du formulaire)
@@ -210,8 +224,9 @@ export default function NewJobPage() {
     setStep((prevStep) => prevStep - 1);
   };
 
-   const handleOfferChange = (value: string) => {
+  const handleOfferChange = (value: string) => {
     const offer = offerTypes.find((o) => o.id === value);
+    // Utilisez OfferZodSchema.parse(offer) ou un cast si vous êtes certain que 'offer' est valide,
     setValue("selectedOffer", offer || null, { shouldValidate: true }); // Met à jour la valeur et déclenche la validation
   };
 

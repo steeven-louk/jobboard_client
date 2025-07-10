@@ -6,13 +6,13 @@ import api from "./api";
  * @description Représente la structure des données d'une entreprise.
  */
 interface ICompany {
-  id: number;
+  id: string;
   name: string;
   description: string;
   domaine: string;
   location: string;
   logo: string; // URL du logo
-  // Ajoutez d'autres propriétés de l'entreprise si nécessaire
+  employeeCount: string
 }
 
 /**

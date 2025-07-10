@@ -9,9 +9,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-// import { toast } from "@/components/ui/use-toast"
 import { AlertCircle, Mail, MapPin, Phone } from "lucide-react"
-// import { toast } from "sonner"
+
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -36,7 +35,7 @@ export default function ContactPage() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
+    // Simulate
     setTimeout(() => {
       console.log("Form submitted:", formData)
     //   toast({

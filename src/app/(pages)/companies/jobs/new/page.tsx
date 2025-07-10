@@ -226,7 +226,7 @@ export default function NewJobPage() {
 
   const handleOfferChange = (value: string) => {
     const offer = offerTypes.find((o) => o.id === value);
-    // Utilisez OfferZodSchema.parse(offer) ou un cast si vous êtes certain que 'offer' est valide,
+
     setValue("selectedOffer", offer || null, { shouldValidate: true }); // Met à jour la valeur et déclenche la validation
   };
 
@@ -596,7 +596,7 @@ export default function NewJobPage() {
                 <div>
                   <Label htmlFor="jobType">Type de contrat</Label>
                   <Select
-                    value={watch("jobType")} // Utilise watch pour la valeur
+                    value={watch("jobType")}
                     onValueChange={(value) => setValue("jobType", value, { shouldValidate: true })}
                     disabled={loading}
                   >
@@ -735,7 +735,7 @@ export default function NewJobPage() {
           )}
 
           {/* Navigation entre les étapes */}
-          <CardFooter className="flex justify-between mt-6 p-0"> {/* Ajustement du padding */}
+          <CardFooter className="flex justify-between mt-6 p-0">
             {step > 1 && (
               <Button type="button" onClick={handlePrevStep} disabled={loading}>
                 Précédent
@@ -746,7 +746,7 @@ export default function NewJobPage() {
               <Button
                 type="button"
                 onClick={handleNextStep}
-                className="ml-auto" // Aligner à droite si seul bouton
+                className="ml-auto"
                 disabled={loading}
               >
                 Suivant
@@ -759,7 +759,7 @@ export default function NewJobPage() {
                     Publication en cours...
                   </>
                 ) : (
-                  "Publier l'offre et payer" // Texte plus explicite
+                  "Publier l'offre et payer" 
                 )}
               </Button>
             )}

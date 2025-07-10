@@ -244,7 +244,7 @@
 "use client";
 // import { HeaderComponent } from "@/app/components/headerComponent";
 import { JobCard } from "@/app/components/jobCard";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "@/app/components/searchBar";
 import { useSearchParams } from "next/navigation";
 import { JobFilters } from "@/app/components/jobFilter";
@@ -254,23 +254,6 @@ import { toast } from "react-toastify";
 import { Pagination } from "@/app/components/pagination";
 
 
-// interface JobType {
-//   id: number;
-//   title: string;
-//   description: string;
-//   skill: string;
-//   requirement: string;
-//   location: string;
-//   salary: number | null;
-//   duration: string;
-//   jobType: string;
-//   isPremium: boolean;
-//   createdAt: string | Date;
-//   company: {
-//     logo: string | null;
-//     domaine: string | null;
-//   };
-// }
 interface IJob {
   id: number;
   title: string;
@@ -287,7 +270,7 @@ interface IJob {
   company: {
     logo: string | null;
     domaine: string | null;
-    name: string; // Ajouté pour la cohérence avec JobCard
+    name: string;
   };
 }
 export default function JobContent() {
@@ -393,8 +376,8 @@ export default function JobContent() {
         job?.title?.toLowerCase().includes(searchLower) ||
         job?.description?.toLowerCase().includes(searchLower) ||
         job?.company?.domaine?.toLowerCase()?.includes(searchLower) ||
-        job?.location?.toLowerCase().includes(searchLower) || // Ajout de la localisation à la recherche
-        job?.skill?.toLowerCase().includes(searchLower) // Ajout des compétences à la recherche
+        job?.location?.toLowerCase().includes(searchLower) ||
+        job?.skill?.toLowerCase().includes(searchLower)
       );
     })
     .filter((job) => {
@@ -441,7 +424,7 @@ export default function JobContent() {
   const totalPages = Math.ceil(filteredJobs.length / JOBS_PER_PAGE);
   const paginatedJobs = filteredJobs.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
 
-  // ✅ Fonctions pour modifier les filtres et la recherche
+  // Fonctions pour modifier les filtres et la recherche
   const handleSortChange = (value: string) => {
     setSortBy(value);
     setCurrentPage(1);
@@ -476,7 +459,7 @@ export default function JobContent() {
   };
 
   return (
-    <Suspense fallback={<p>Chargement...</p>}>
+    <div>
       <div className="w-full">
 
 
@@ -507,7 +490,7 @@ export default function JobContent() {
               ) : paginatedJobs.length > 0 ? (
                 // Affiche les cartes d'emploi paginées
                 paginatedJobs.map((job) => (
-                  <JobCard key={job.id} job={job} path={`/jobs/${job.id}`} /> // Lien vers la page de détail du job
+                  <JobCard key={job.id} job={job} path={""} /> // Lien vers la page de détail du job
                 ))
               ) : (
                 // Message si aucun emploi n'est trouvé après filtrage/recherche
@@ -527,6 +510,6 @@ export default function JobContent() {
           </div>
         </section>
       </div>
-    </Suspense>
+    </div>
   );
 }

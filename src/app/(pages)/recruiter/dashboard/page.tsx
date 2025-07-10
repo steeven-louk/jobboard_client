@@ -15,6 +15,7 @@ import {
 } from "@/app/services/companyService";
 import { toast } from "react-toastify";
 import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
+import { ApplicationCardSkeleton } from "@/app/components/skeletons/ApplicationCardSkeleton";
 
 
 interface IApplication {
@@ -161,8 +162,7 @@ export default function RecruiterDashboard() {
                 <div className="space-y-4">
                   {isLoadingApplications ? (
                     // Affiche des squelettes pendant le chargement des candidatures
-                    [...Array(3)].map((_, index) => <h1 key={index}>Chargement...</h1>)
-                    // [...Array(3)].map((_, index) => <ApplicationCardSkeleton key={index} />)
+                    [...Array(3)].map((_, index) => <ApplicationCardSkeleton key={index} />)
                   ) : receivedApplications.length > 0 ? (
                     // Parcourt chaque job, puis chaque application pour ce job
                     receivedApplications.map((job) =>

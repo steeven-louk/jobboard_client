@@ -38,29 +38,6 @@ export default function RegisterPage() {
   const minDateForRecruiter = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
 
 
-  // Schéma de validation pour le candidat
-  // const candidateSchema = z.object({
-  //   fullName: z.string().min(3, "Nom trop court"),
-  //   email: z.string().email("Email invalide"),
-  //   password: z.string().min(6, "Mot de passe trop court"),
-  //   phone: z.string().min(9, "Numéro de téléphone incorrect"),
-  //   city: z.string().min(2, "Ville requise"),
-  //   birthdate: z.string().refine((dateStr) => {
-  //     const birthDate = new Date(dateStr);
-  //     return birthDate <= minDateForCandidate;
-  //   }, { message: "Vous devez avoir au moins 15 ans pour vous inscrire." }),
-  // });
-
-  // Schéma de validation pour le recruteur (avec des champs supplémentaires)
-  // const recruiterSchema = candidateSchema.extend({
-  //   companyName: z.string().min(3, "Nom de l'entreprise trop court"),
-  //   companyLocation: z.string().min(3, "Localisation invalide"),
-  //   description: z.string().min(5, "Description trop courte"),
-  //   birthdate: z.string().refine((dateStr) => {
-  //     const birthDate = new Date(dateStr);
-  //     return birthDate <= minDateForRecruiter;
-  //   }, { message: "Vous devez avoir au moins 18 ans pour vous inscrire." }),
-  // });
 // Schéma de validation de base pour les champs communs (candidat et recruteur - étape 1)
   const baseSchema = z.object({
     fullName: z.string().min(3, "Le nom complet est trop court (min. 3 caractères).").nonempty("Le nom complet est requis."),
@@ -119,24 +96,7 @@ export default function RegisterPage() {
   }, [role, reset, clearErrors]);
 
 
-  // const handleNextStep = () => {
-  //   const values = getValues();
-  //   const requiredFields = ["fullName", "email", "password", "phone", "city", "birthdate"];
 
-  //    if (role === "RECRUITER") {
-  //     requiredFields.push("companyName", "companyLocation", "description");
-  //   }
-
-  //   const isValid = requiredFields.every((field) => values[field as keyof typeof values]);
-  //   console.log(values,requiredFields)
-  //   if (!isValid) {
-  //     toast.warning("Veuillez remplir tous les champs obligatoires avant de continuer.")
-  //     // alert("Veuillez remplir tous les champs obligatoires avant de continuer.");
-  //     return;
-  //   }
-
-  //   setStep(2);
-  // };
   const handleNextStep = async () => {
     let isValid = false;
     if (role === "RECRUITER" && step === 1) {
@@ -187,7 +147,7 @@ export default function RegisterPage() {
       </div>
       <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm lg:w-96">
-                    <Card className="shadow-md shadow-black"> {/* Ajout de l'ombre pour la cohérence */}
+                    <Card className="shadow-md shadow-black"> 
             <CardHeader>
               <CardTitle className="text-2xl font-bold">Inscription</CardTitle>
               <CardDescription>Créez votre compte JobBoard</CardDescription>
@@ -346,6 +306,7 @@ export default function RegisterPage() {
                             {...register("city")}
                             placeholder="Ville"
                             disabled={loading}
+                            autoComplete="false"
                           />
                           {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>}
                         </div>
@@ -375,6 +336,7 @@ export default function RegisterPage() {
                             {...register("companyName")}
                             placeholder="Nom de l'entreprise"
                             disabled={loading}
+                            autoComplete="none"
                           />
                           {errors.companyName && <p className="text-red-500 text-sm mt-1">{errors.companyName.message}</p>}
                         </div>
@@ -386,17 +348,19 @@ export default function RegisterPage() {
                             {...register("companyLocation")}
                             placeholder="Localisation de l'entreprise"
                             disabled={loading}
+                            autoComplete="none"
                           />
                           {errors.companyLocation && <p className="text-red-500 text-sm mt-1">{errors.companyLocation.message}</p>}
                         </div>
 
                         <div>
-                          <Label htmlFor="description-recruiter">Description de l'entreprise</Label>
+                          <Label htmlFor="description-recruiter">Description de l&apos;entreprise</Label>
                           <Textarea
                             id="description-recruiter"
                             {...register("description")}
                             placeholder="Description de l'entreprise"
                             disabled={loading}
+                            autoComplete="none"
                           />
                           {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
                         </div>

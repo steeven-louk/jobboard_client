@@ -19,6 +19,7 @@ import { CompanyEditForm } from "@/app/components/company-edit-form";
 import { Pagination } from "@/app/components/pagination";
 import { getCompanyDetail, updateCompany } from "@/app/services/companyService";
 import { toast } from "react-toastify";
+import { CompanyProfileSkeleton } from "@/app/components/skeletons/Skeletons";
 
 
 
@@ -135,127 +136,19 @@ export default function CompanyProfilePage({
   ) || [];
 
   if (isLoadingPage || sessionStatus === "loading") {
-    return <h1 className="text-xl">Chargement....</h1>;
-    // return <CompanyProfileSkeleton />;
+    return <CompanyProfileSkeleton />;
   }
 
     // Si aucune entreprise n'est trouvée après le chargement
   if (!company) {
     return (
-      // <ProtectedRoute>
         <div className="container mx-auto px-4 py-8 text-center">
           <h1 className="text-3xl font-bold text-gray-700">Entreprise non trouvée</h1>
           <p className="mt-4 text-gray-500">Désolé, l&apos;entreprise que vous recherchez n&apos;existe pas ou a été supprimée.</p>
         </div>
-      // </ProtectedRoute>
     );
   }
   return (
-    // <div className="container mx-auto md:px-4 py-8">
-    //   <div className="flex items-center mb-6">
-    //     <Image
-    //       src={typeof company?.logo === "string" ? company?.logo : "/placeholder.svg"}
-    //       alt={`${company?.name} logo`}
-    //       width={150}
-    //       height={150}
-    //       className="rounded-full w-[9rem] h-[9rem] bg-cover  max-w-full max-h-full  mr-4"
-    //     />
-
-    //     <h1 className="text-3xl font-bold ml-4">{company?.name}</h1>
-    //   </div>
-    //   <div className="md:grid flex flex-col-reverse px-2 md:flex-none md:grid-cols-3 gap-8">
-    //     <div className="md:col-span-2">
-    //       <Card className="mb-8">
-    //         <CardHeader>
-    //           <CardTitle>À propos de l&apos;entreprise</CardTitle>
-    //         </CardHeader>
-    //         <CardContent>
-    //           <p className="mb-4">{company?.description}</p>
-    //         </CardContent>
-    //       </Card>
-
-    //       <Card>
-    //         <CardHeader>
-    //           <CardTitle>Offres d&apos;emploi actuelles</CardTitle>
-    //         </CardHeader>
-    //         <CardContent>
-    //           <div className="space-y-4">
-    //             {paginatedJobs?.map((job) => (
-    //               <JobCard key={job.id} job={job} path={""} />
-    //             ))}
-    //           </div>
-    //           <span>{company?.jobs && company.jobs.length <= 0 && "aucun job disponible"}</span>
-    //         </CardContent>
-    //       </Card>
-    //       <Pagination
-    //         currentPage={currentPage}
-    //         totalPages={totalPages}
-    //         onPageChange={handlePageChange}
-    //       />
-    //     </div>
-    //     <div>
-    //       <Card>
-    //         <CardContent>
-    //           <div className="space-y-2 py-2">
-    //             <p>
-    //               <strong>Domaine :</strong>{" "}
-    //               {company?.domaine || "non mentionner"}
-    //             </p>
-    //             <p>
-    //               <strong>Localisation :</strong> {company?.location}
-    //             </p>
-    //             <p>
-    //               <strong>Taille de l&apos;entreprise :</strong>{" "}
-    //               {company?.employeeCount || 0} employés
-    //             </p>
-    //           </div>
-    //         </CardContent>
-    //       </Card>
-    //       {userRole === "RECRUITER" && verifyUser && (
-    //         <Card className="mt-3 md:fixed">
-    //           <CardHeader>
-    //             <CardTitle>Actions du recruteur</CardTitle>
-    //           </CardHeader>
-    //           <CardContent className="space-y-4 gap-4">
-    //             <Link href={`/companies/jobs/new`}>
-    //               <Button className="w-full">
-    //                 Ajouter une offre d&apos;emploi
-    //               </Button>
-    //             </Link>
-
-    //             <Dialog
-    //               open={isEditModalOpen}
-    //               onOpenChange={setIsEditModalOpen}
-    //             >
-    //               <DialogTrigger asChild>
-    //                 <Button variant="outline" className="w-full">
-    //                   Modifier le profil de l&apos;entreprise
-    //                 </Button>
-    //               </DialogTrigger>
-    //               <DialogContent className="max-w-[425px] md:max-w-[45rem] w-full">
-    //                 <DialogHeader className="">
-    //                   <DialogTitle>
-    //                     Modifier le profil de l&apos;entreprise
-    //                   </DialogTitle>
-    //                 </DialogHeader>
-    //                 <CompanyEditForm
-    //                   company={company}
-    //                   onSubmit={handleCompanyUpdate}
-    //                   onCancel={() => setIsEditModalOpen(false)}
-    //                 />
-    //               </DialogContent>
-    //             </Dialog>
-    //             <Link href="/recruiter/dashboard">
-    //               <Button variant="secondary" className="w-full">
-    //                 Tableau de bord recruteur
-    //               </Button>
-    //             </Link>
-    //           </CardContent>
-    //         </Card>
-    //       )}
-    //     </div>
-    //   </div>
-    // </div>
           <div className="container mx-auto md:px-4 py-8">
         <div className="flex items-center mb-6 flex-col md:flex-row text-center md:text-left">
           {/* Logo de l'entreprise */}

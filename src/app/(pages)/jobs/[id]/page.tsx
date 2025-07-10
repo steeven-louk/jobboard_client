@@ -30,6 +30,7 @@ import { useSession } from "next-auth/react";
 import { getDetailJob } from "@/app/services/jobService";
 import { toggleFavorite, isInFavorite } from "@/app/services/favorisService";
 import { toast } from "react-toastify";
+import { JobDetailSkeleton } from "@/app/components/skeletons/Skeletons";
 
 
 
@@ -57,8 +58,8 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
 
   const [jobDetail, setJobDetail] = useState<IJobDetail | null>(null);
   const [isFavorite, setIsFavorite] = useState<boolean | null>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true); // État de chargement initial
-  const [isTogglingFavorite, setIsTogglingFavorite] = useState<boolean>(false); // État pour le bouton favori
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isTogglingFavorite, setIsTogglingFavorite] = useState<boolean>(false);
 
   const { data: session, status: sessionStatus } = useSession();
   const userRole = session?.user?.role;
@@ -86,7 +87,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
 
 
   const fetchJobData = async () => {
-    setIsLoading(true); // Active le chargement
+    setIsLoading(true); 
     try {
       // Vérifier si le job est en favori si l'utilisateur est connecté
       if (sessionStatus === "authenticated" && id) {
@@ -104,7 +105,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
       console.error("❌ Erreur lors de la récupération du job :", error);
       setJobDetail(null); // Réinitialise les détails du job en cas d'erreur
     } finally {
-      setIsLoading(false); // Désactive le chargement
+      setIsLoading(false); 
     }
   };
 
@@ -123,7 +124,6 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
   const handleToggleFavorite = async () => {
     if (!session) {
       toast.info("Vous devez être connecté pour ajouter/retirer des favoris.");
-      // Pas besoin d'alert(), le toast est suffisant
       return;
     }
     if (isTogglingFavorite || !id) return; // Empêche les clics multiples ou si jobId est null
@@ -146,9 +146,9 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
   };
 
   // Affiche un skeleton de page pendant le chargement
-  // if (isLoading) {
-  //   return <JobDetailSkeleton />;
-  // }
+  if (isLoading) {
+    return <JobDetailSkeleton />;
+  }
 
   // Si le job n'est pas trouvé après le chargement
   if (!jobDetail) {
@@ -265,17 +265,15 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
       </Breadcrumb>
 
       <div className="container mx-auto p-3 md:p-0">
-        {/* JobCard est utilisé pour afficher un aperçu, mais le contenu détaillé est ci-dessous */}
-        {/* Note: JobCard prend un objet JobType, assurez-vous que IJobDetail est compatible. */}
         <JobCard path={path} job={jobDetail} />
 
         <main className="grid md:grid-cols-6 gap-8 mt-4">
-          <section className="md:col-span-4"> {/* Utilise md:col-span-4 pour la colonne principale */}
+          <section className="md:col-span-4">
             <Card className="p-4 shadow-md mb-5">
               <CardTitle className="capitalize text-2xl font-bold mb-5">
                 Description du poste
               </CardTitle>
-              <CardContent className="whitespace-pre-wrap text-gray-700 p-0"> {/* Utilise whitespace-pre-wrap pour préserver les retours à la ligne */}
+              <CardContent className="whitespace-pre-wrap text-gray-700 p-0"> 
                 {jobDetail?.description || "Aucune description disponible."}
               </CardContent>
             </Card>
@@ -297,7 +295,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
             </Card>
           </section>
 
-          <aside className="md:col-span-2"> {/* Utilise md:col-span-2 pour la colonne latérale */}
+          <aside className="md:col-span-2">
             <Card className="card p-4 md:sticky md:top-11 shadow-md shadow-black">
               <CardTitle className="text-xl font-bold mb-3">Postuler à cette offre</CardTitle>
               <CardDescription className="my-3 text-gray-600">

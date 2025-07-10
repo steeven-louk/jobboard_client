@@ -60,7 +60,6 @@ const Candidature = () => {;
   // Effet pour récupérer les candidatures au montage du composant
   useEffect(() => {
     // Ne tente de récupérer les candidatures que si la session est authentifiée.
-    // ProtectedRoute gérera la redirection si l'utilisateur n'est pas connecté.
     if (sessionStatus === "authenticated") {
       fetchUserApplications();
     }
@@ -82,7 +81,6 @@ const Candidature = () => {;
             // Affiche les JobCards si des candidatures sont trouvées
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {applications.map((applicationItem) => (
-                // Assurez-vous que applicationItem.job est toujours défini avant de le passer à JobCard
                 applicationItem.job ? (
                   <JobCard path={""} key={applicationItem.id} job={applicationItem.job} />
                 ) : null // Ne rend rien si l'objet job est manquant

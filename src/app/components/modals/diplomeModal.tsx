@@ -13,14 +13,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { PenIcon, PlusIcon } from "lucide-react";
+import { Loader2, PenIcon, PlusIcon } from "lucide-react";
 
 import {
   handleAddFormation,
   handleUpdateFormation,
 } from "@/app/services/diplomeService";
 import { toast } from "react-toastify";
-// import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Diplome {
   id?: number;
@@ -35,10 +35,11 @@ interface Diplome {
 }
 
 interface Props {
-  diplome?: Diplome; // Rend la prop optionnelle pour l'ajout
+  diplome?: Diplome;
+  onSuccess?:()=> void;
 }
 
-export default function DiplomeModal({ diplome }: Props) {
+export default function DiplomeModal({ diplome, onSuccess }: Props) {
   // Définir les valeurs par défaut si aucune expérience n'est fournie (mode ajout)
   const [formData, setFormData] = useState<Diplome>(
     diplome || {
@@ -53,31 +54,59 @@ export default function DiplomeModal({ diplome }: Props) {
     }
   );
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // État pour contrôler l'ouverture/fermeture du dialogue.
+  const [open, setOpen] = useState(false);
+
+  /**
+   * @function handleChange
+   * @description Gère les changements dans les champs de saisie du formulaire.
+   * Met à jour l'état `formData` avec les nouvelles valeurs.
+   * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} e L'événement de changement.
+   */
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
 
+  /**
+   * @function handleSubmit
+   * @description Gère la soumission du formulaire (ajout ou modification de formation).
+   * Appelle les services `handleAddFormation` ou `handleUpdateFormation`.
+   * Gère les états de chargement et les messages toast.
+   * @param {React.FormEvent} e L'événement de soumission du formulaire.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Empêche le rechargement de la page par défaut
+    setIsLoading(true); // Active l'état de chargement
 
     try {
-      if (diplome) {
-        // Mise à jour
-       await handleUpdateFormation(diplome?.id ?? 0, formData);
-
+      if (diplome?.id) {
+        // Mode modification : l'ID doit exister pour la mise à jour
+        await handleUpdateFormation(diplome.id, formData);
+        toast.success("Formation mise à jour avec succès !");
       } else {
-        // Ajout
-      await handleAddFormation(formData);
-       
+        // Mode ajout : pas d'ID initial
+        await handleAddFormation(formData);
+        toast.success("Formation ajoutée avec succès !");
       }
-    } catch (error) {
-      toast.error("Erreur lors de l'opération");
-      console.error("Erreur lors de l'opération", error);
+      setOpen(false); // Ferme le dialogue après une soumission réussie
+      // Appelle le callback onSuccess si fourni
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error: any) {
+      console.error("❌ Erreur lors de l'opération sur la formation :", error);
+      // Le service `formationService` gère déjà le toast.error,
+      // mais un toast générique ici peut servir de fallback.
+      toast.error(error.message || "Erreur lors de l'opération sur la formation.");
+    } finally {
+      setIsLoading(false); // Désactive toujours l'état de chargement
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="inline-flex md:gap-4 md:align-baseline">
           {diplome ? <PenIcon /> : <PlusIcon />}
@@ -100,31 +129,49 @@ export default function DiplomeModal({ diplome }: Props) {
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             {[
-              { label: "Titre", name: "title" },
-              { label: "Niveau", name: "level" },
-              { label: "Etablissement", name: "school" },
-              { label: "Localisation", name: "location" },
-              { label: "Date de debut", name: "date_debut", type: "date" },
-              { label: "Date de fin", name: "date_fin", type: "date" },
-              { label: "Description", name: "description" },
+              { label: "Titre", name: "title", type: "text", required: true },
+              { label: "Niveau", name: "level", type: "text", required: true },
+              { label: "Etablissement", name: "school", type: "text", required: true },
+              { label: "Localisation", name: "location", type: "text", required: true },
+              { label: "Date de début", name: "date_debut", type: "date", required: true },
+              { label: "Date de fin", name: "date_fin", type: "date", required: true },
+              { label: "Description", name: "description", component: "textarea" },
               {
                 label: "Compétence",
                 name: "competence",
-                placeholder: "separé vos competences d'une virgule",
+                type: "text",
+                placeholder: "séparer vos compétences d'une virgule",
               },
-            ].map(({ label, name, type = "text" }) => (
+            ].map(({ label, name, type = "text", component = "input", placeholder, required = false }) => (
               <div key={name} className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor={name} className="text-right">
                   {label}
+                  {required && <span className="text-red-500">*</span>}
                 </Label>
-                <Input
-                  id={name}
-                  name={name}
-                  type={type}
-                  value={formData[name as keyof Diplome]}
-                  onChange={handleChange}
-                  className="col-span-3"
-                />
+               {component === "textarea" ? (
+                  <Textarea
+                    id={name}
+                    name={name}
+                    value={formData[name as keyof Diplome] || ""}
+                    onChange={handleChange}
+                    className="col-span-3"
+                    disabled={isLoading}
+                    placeholder={placeholder}
+                    required={required}
+                  />
+                ) : (
+                  <Input
+                    id={name}
+                    name={name}
+                    type={type}
+                    value={formData[name as keyof Diplome] || ""}
+                    onChange={handleChange}
+                    className="col-span-3"
+                    disabled={isLoading}
+                    placeholder={placeholder}
+                    required={required}
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -132,8 +179,16 @@ export default function DiplomeModal({ diplome }: Props) {
             <Button
               className="max-w-44 w-full font-semibold uppercase"
               type="submit"
+              disabled={isLoading} // Désactive le bouton pendant le chargement
             >
-              {diplome ? "Modifier" : "Ajouter"}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {diplome ? "Modification..." : "Ajout en cours..."}
+                </>
+              ) : (
+                diplome ? "Modifier" : "Ajouter"
+              )}
             </Button>
           </DialogFooter>
         </form>

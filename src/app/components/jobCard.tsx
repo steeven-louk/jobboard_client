@@ -18,7 +18,7 @@ import {
   Wallet,
 } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { formatedRelativeTime } from "../utils/formatRelativeTime";
 
 import { useSession } from "next-auth/react";
@@ -27,7 +27,7 @@ import Image from "next/image";
 import { toast } from "react-toastify";
 
 interface IJob {
-  id?: number;
+  id: number;
   title: string;
   description: string;
   skill: string;
@@ -40,39 +40,62 @@ interface IJob {
   createdAt: string | Date;
   company: {
     logo: string | null;
-    domaine: string | null
+    domaine: string | null;
+    name:string
   };
 }
 
 interface JobCardProps {
-  path: string;
-  job: IJob | null;
+  path?: string;
+  job: IJob;
 }
 
 
 export const JobCard = ({ path, job }: JobCardProps) => {
-  const { data: session } = useSession();
+  const { data: session, status: sessionStatus } = useSession(); // Récupère le statut de la session
   const userRole = session?.user?.role;
-  const [isFavorite, setIsInFavorie] = useState<boolean>(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false); 
 
-  const addToFavorie = async () => {
-    if (!session){
-      toast.warning("Vous devez être connecté pour ajouter aux favoris")
-      return alert("Vous devez être connecté pour ajouter aux favoris");
-    }
-    try {
-      const jobId = job?.id;
-      if (typeof jobId === "number") {
-        const checkResponse = await isInFavorite(jobId);
-        setIsInFavorie(checkResponse);
 
-        const response = await toggleFavorite(jobId);
-        setIsInFavorie(response);
-        // console.log(response);
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      if (sessionStatus === "authenticated" && userRole === "USER" && job?.id) {
+        try {
+          const favoriteStatus = await isInFavorite(job.id);
+          setIsFavorite(favoriteStatus || false); // S'assurer que c'est un booléen
+        } catch (error) {
+          console.error("❌ Erreur lors de la vérification du statut favori :", error);
+        }
       }
+    };
+    checkFavoriteStatus();
+  }, [sessionStatus, userRole, job?.id]);
+
+
+  /**
+   * @function handleToggleFavorite
+   * @description Gère l'ajout ou la suppression d'une offre d'emploi des favoris.
+   * Affiche des messages toast pour informer l'utilisateur.
+   */
+  const handleToggleFavorite = async () => {
+    // Vérification de l'authentification avant toute opération sur les favoris
+    if (sessionStatus !== "authenticated") {
+      toast.warning("Vous devez être connecté pour gérer vos favoris.");
+      return;
+    }
+    // Vérification du rôle de l'utilisateur
+    if (userRole !== "USER") {
+      toast.warning("Seuls les utilisateurs peuvent gérer les favoris.");
+      return;
+    }
+
+    try {
+      const jobId = job.id;
+      const newFavoriteStatus = await toggleFavorite(jobId);
+      setIsFavorite(newFavoriteStatus); 
+
     } catch (error) {
-      console.error("Erreur lors de l'ajout aux favoris :", error);
-      toast.error("Erreur lors de l'ajout aux favoris");
+      console.error("❌ Erreur lors de l'opération sur les favoris :", error);
     }
   };
 
@@ -86,7 +109,7 @@ export const JobCard = ({ path, job }: JobCardProps) => {
         </Badge>
         {userRole === "USER" && (
           <BookmarkPlus
-            onClick={() => addToFavorie()}
+            onClick={handleToggleFavorite}
             className={`w-6 h-6 cursor-pointer transition ${
               isFavorite === true
                 ? "text-red-500  shadow-md shadow-gray-300"
@@ -135,7 +158,7 @@ export const JobCard = ({ path, job }: JobCardProps) => {
               {job?.duration}
             </span>
           )}
-          {job?.salary && (
+          {job?.salary !== null && (
             <span className="inline-flex gap-2">
               <Wallet className="color-primary" />${job?.salary}
             </span>

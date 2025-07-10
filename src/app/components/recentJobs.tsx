@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { JobCard } from "./jobCard";
 import { getAllJob } from "../services/jobService";
 import { JobCardSkeleton } from "./skeletons/job-card-skeleton";
+import { toast } from "react-toastify";
 
 
 interface IJob {
@@ -22,6 +23,7 @@ interface IJob {
   company: {
     logo: string | null;
     domaine: string | null;
+    name:string;
   };
 }
 export const RecentJobs = () => {
@@ -29,21 +31,28 @@ export const RecentJobs = () => {
   const [recentJobs, setRecentJobs] = useState<IJob[]>([]);;
 
   useEffect(() => {
-    const getRecentJob = async () => {
+    const fetchRecentJobs = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
-        const data:IJob[] = await getAllJob();
+        const data: IJob[] | null = await getAllJob(); 
+        if (data) {
+          const filteredData = data.slice(0, 6);
+          setRecentJobs(filteredData);
+        } else {
 
-        const filteredData = data?.slice(0, 4);
-        setRecentJobs(filteredData);
-      } catch (error) {
-        console.error("❌ Erreur récupération jobs:", error);
-        
+          console.warn("⚠️ Aucune donnée d'emploi récente récupérée.");
+          setRecentJobs([]); 
+        }
+      } catch (error: any) {
+        console.error("❌ Erreur lors de la récupération des emplois récents :", error);
+        toast.error(error.message || "Erreur lors de la récupération des emplois récents.");
+        setRecentJobs([]);
       } finally {
-        setIsLoading(false);
+        setIsLoading(false); // Termine le chargement
       }
     };
-    getRecentJob();
+
+    fetchRecentJobs();
   }, []);
 
   return (
@@ -63,11 +72,16 @@ export const RecentJobs = () => {
             <JobCardSkeleton key={index} />
           ))}
         </div>
-      ) : (
-        recentJobs
-          ?.slice(0, 6)
-          .map((job) => <JobCard path={""} key={job?.id} job={job} />)
-      )}
+      ): recentJobs.length > 0 ? (
+          // Affiche les offres d'emploi si disponibles
+          recentJobs
+            .slice(0, 6)
+            .map((job) => <JobCard path={""} key={job.id} job={job} />)
+        ) : (
+          <p className="col-span-full text-center text-gray-500">
+            Aucun emploi récent disponible pour le moment.
+          </p>
+        )}
     </section>
   );
 };

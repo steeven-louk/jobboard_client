@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { applyToJob } from "../services/applicationService";
-// import { toast } from "sonner";
+
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -30,48 +30,61 @@ interface Props {
 }
 
 export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
-  const [LM, setLM] = useState<string>("");
-  const [cv, setCv] = useState<{ CV: string | null }>({ CV: null });
+  const [coverLetter, setCoverLetter] = useState<string>("");
+  const [cvFile, setCvFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   // ✅ Gestion du fichier CV
-  const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setCv({ CV: reader.result as string });
-    };
-    reader.readAsDataURL(file);
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setCv({ CV: reader.result as string });
+  //   };
+  //   reader.readAsDataURL(file);
+  // };
+    const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setCvFile(file || null); // Stocke le File object ou null
   };
 
-  const postJob = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    setIsLoading(true);
+
+  const postJob = async (e: React.FormEvent) => {
+    e.preventDefault(); // Empêche le rechargement de la page par défaut
+    setIsLoading(true); // Active l'état de chargement
 
     try {
-      const job = await applyToJob(jobId, cv.CV, LM);
+      // Appel à applyToJob avec le fichier CV (cvFile) et la lettre de motivation (coverLetter).
+      // Le service applyToJob est responsable de l'upload du fichier si cvFile est un objet File.
+      const applicationResponse = await applyToJob(jobId, cvFile, coverLetter);
 
-      if (job) {
-        setIsLoading(false);
-        setOpen(false);
-        setLM("");
-        setCv({ CV: null });
+      // Si applyToJob réussit, il retourne une réponse (non null/undefined) et gère son propre toast.success.
+      if (applicationResponse) {
+        setOpen(false); // Ferme le tiroir
+        setCoverLetter(""); // Réinitialise le champ de la lettre de motivation
+        setCvFile(null); // Réinitialise l'état du fichier CV
+        // L'input de type file est réinitialisé visuellement par le navigateur
+        // lorsque l'état du fichier est mis à null.
       } else {
-        toast.error("Erreur lors de l'envoi");
-        throw new Error("Erreur lors de l'envoi");
+        // Ce bloc est un garde-fou. Normalement, `applyToJob` devrait lancer une erreur
+        // si l'opération ne réussit pas, et le `catch` block la gérerait.
+        // Il est ici au cas où `applyToJob` retournerait `null` ou `undefined` sans erreur.
+        toast.error("La candidature n'a pas pu être traitée correctement.");
       }
-    } catch (error) {
-      console.error("❌ Erreur:", error);
-      toast.error("❌ Échec de l'application au job");
-      setLM("");
-      setCv({ CV: null });
+    } catch (error: any) {
+      // Le service `applyToJob` affiche déjà un toast.error et log l'erreur.
+      // Il n'est donc pas nécessaire de dupliquer ces actions ici,
+      // sauf si un traitement spécifique à ce composant est requis.
+      console.error("❌ Erreur lors de l'envoi de la candidature depuis le formulaire:", error);
+      // toast.error("❌ Échec de l'application au job"); // Commenté pour éviter les toasts en double
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Désactive toujours l'état de chargement, que l'opération réussisse ou échoue
     }
   };
+  
   return (
     <div>
       <Drawer open={open} onOpenChange={setOpen}>
@@ -90,7 +103,7 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
           <Separator className="my-4" />
 
           <ScrollArea className="h-[43rem] md:h-[36rem]">
-            <form action="" onSubmit={postJob} className="p-4">
+            <form onSubmit={postJob} className="p-4">
               <div className="information mx-auto text-center mb-3">
                 <h1 className="font-bold text-2xl md:text-5xl">
                   Mes informations
@@ -112,6 +125,9 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
                     onChange={handleCvChange}
                     type="file"
                     id="cv"
+                    // Utilisation de la prop `key` pour forcer la réinitialisation visuelle de l'input file
+                    // lorsque `cvFile` est null (après soumission réussie ou annulation).
+                    key={cvFile ? "file-selected" : "file-unselected"}
                   />
                 </div>
               </div>
@@ -121,8 +137,8 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
                 <div className="grid w-full gap-1.5">
                   <Textarea
                     disabled={isLoading}
-                    value={LM}
-                    onChange={(e) => setLM(e.target.value)}
+                    value={coverLetter} 
+                    onChange={(e) => setCoverLetter(e.target.value)} 
                     className="h-[10rem]"
                     placeholder="Tapez votre message ici."
                   />
@@ -160,7 +176,8 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
               </div>
 
               <DrawerFooter>
-                <Button disabled={isLoading}>
+                {/* Le bouton de soumission du formulaire */}
+                <Button disabled={isLoading} type="submit">
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -171,7 +188,8 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
                   )}
                 </Button>
                 <DrawerClose>
-                  <Button disabled={isLoading} variant="outline">
+                  {/* Le bouton d'annulation, avec type="button" pour éviter la soumission du formulaire */}
+                  <Button disabled={isLoading} variant="outline" type="button">
                     Annuler
                   </Button>
                 </DrawerClose>

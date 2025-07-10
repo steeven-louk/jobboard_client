@@ -17,14 +17,12 @@ export function Pagination({
   const generatePagination = () => {
     const pages = [];
 
-    // Always add page 1
     pages.push(1);
 
     if (currentPage > 3) {
       pages.push("ellipsis-start");
     }
 
-    // Add pages around current page
     for (
       let i = Math.max(2, currentPage - 1);
       i <= Math.min(totalPages - 1, currentPage + 1);
@@ -37,7 +35,6 @@ export function Pagination({
       pages.push("ellipsis-end");
     }
 
-    // Always add last page if more than 1 page
     if (totalPages > 1) {
       pages.push(totalPages);
     }

@@ -26,7 +26,7 @@ interface Company {
 }
 
 interface CompanyEditFormProps {
-  company?: Company|null; // ✅ Rendre `company` optionnel
+  company?: Company|null;
   onSubmit: (data: Company) => void;
   onCancel: () => void;
 }

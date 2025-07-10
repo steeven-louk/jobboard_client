@@ -103,8 +103,8 @@ export default function RecruiterDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                {companyJob.length > 0 ? (
-                    companyJob.map((job) => <JobCard key={job.id} job={job} path={""} />)
+                {companyJob?.length > 0 ? (
+                    companyJob?.map((job) => <JobCard key={job.id} job={job} path={""} />)
                   ) : (
                     <p>Aucune offre publiée.</p>
                   )}
@@ -120,8 +120,8 @@ export default function RecruiterDashboard() {
               </CardHeader>
               <CardContent>
               <div className="space-y-4">
-                  {jobData.length > 0 ? (
-                    jobData.map((job) =>
+                  {jobData?.length > 0 ? (
+                    jobData?.map((job) =>
                       job.applications?.map((application) => (
                         <Card key={application.id}>
                           <CardContent className="flex justify-between items-center p-4">

@@ -25,7 +25,7 @@ interface IJob {
   };
 }
 export const RecentJobs = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [recentJobs, setRecentJobs] = useState<IJob[]>([]);;
 
   useEffect(() => {
@@ -37,11 +37,10 @@ export const RecentJobs = () => {
         const filteredData = data?.slice(0, 4);
         setRecentJobs(filteredData);
       } catch (error) {
-        // toast.error("Erreur lors de la récupération des jobs");
         console.error("❌ Erreur récupération jobs:", error);
         
       } finally {
-        setTimeout(() => setIsLoading(false), 500);
+        setIsLoading(false);
       }
     };
     getRecentJob();

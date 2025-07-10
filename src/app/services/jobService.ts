@@ -63,7 +63,7 @@ export const getDetailJob = async (id: number): Promise<IJob | null> => {
 
   }
 
-  return null; // 🔹 Ajout d'un return explicite en cas d'erreur
+  return null; 
 };
 
 export const createJob = async (jobData:IJobData): Promise<IJob[] | void> => {

@@ -1,8 +1,12 @@
 import axios from "axios";
 import { getSession } from "next-auth/react";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
+  ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+  : "http://localhost:5800/api";
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/api` : "http://localhost:5800/api",
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
@@ -15,6 +19,7 @@ api.interceptors.request.use(async (config) => {
   }
   return config;
 }, (error) => {
+  console.error("Erreur de l'intercepteur de requête Axios :", error)
   return Promise.reject(error);
 });
 

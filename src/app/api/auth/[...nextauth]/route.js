@@ -14,7 +14,6 @@ const authOptions = {
 
       /**
        * Fonction d'autorisation asynchrone.
-       * C'est ici que vous validez les identifiants de l'utilisateur auprès de votre backend.
        * @param credentials Les identifiants (email, password) fournis par l'utilisateur.
        * @returns {Promise<User | null>} L'objet utilisateur si l'authentification réussit, sinon null.
        */

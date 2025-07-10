@@ -8,15 +8,16 @@ import { handleUpload } from "./companyService";
  * renvoyées par votre API pour le profil utilisateur.
  */
 interface IUserProfile {
-  id: string; 
+  sexe: "Homme" | "Femme" | string; 
   fullName: string;
-  email: string;
+  id: string;
   phone: string;
-  picture: string; 
-  domaine?: string; 
-  birthdate?: string; // Date de naissance (format string, ex: "YYYY-MM-DD")
-  sexe?: string; // Sexe
-
+  location: string;
+  birthdate: Date | string ;
+  domaine: string;
+  picture?: string | File;
+  email: string;
+  
   formations?: any[];
   experiences?: any[];
 }

@@ -27,7 +27,7 @@ interface Profil {
   email: string;
   birthdate: Date |string;
   phone: string;
-  sexe: "Homme" | "Femme" | ""; 
+  sexe: "Homme" | "Femme" | string; 
   picture?: string | File;
   location:string;
 }

@@ -48,6 +48,7 @@ interface IApplicationSummary {
   id: string;
   jobId: number;
   status: string;
+  title:string;
   user: {
     fullName: string;
     email: string;

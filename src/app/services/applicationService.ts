@@ -15,7 +15,7 @@ interface IApplication {
     fullName: string;
     email: string;
     phone: string;
-    picture: string;
+    picture: string | null;
   };
 }
 

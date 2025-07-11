@@ -6,7 +6,7 @@ export default function Jobs() {
 
   return (
     <div>
-      <HeaderComponent pageName="Jobs" />
+      <HeaderComponent pageName="Offres d'emploi" />
       <JobContent />
     </div>
   );

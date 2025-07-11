@@ -342,7 +342,7 @@ export default function RegisterPage() {
                         </div>
 
                         <div>
-                          <Label htmlFor="companyLocation-recruiter">Localisation de l'entreprise</Label>
+                          <Label htmlFor="companyLocation-recruiter">Localisation de l&apos;entreprise</Label>
                           <Input
                             id="companyLocation-recruiter"
                             {...register("companyLocation")}

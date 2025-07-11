@@ -159,7 +159,7 @@ export default function ContactPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold mb-6 text-center">Contactez-nous</h1>
-        <p className="text-center text-lg mb-8 text-gray-700">
+        <p className="text-center text-lg mb-8 text-gray-700 dark:text-gray-300">
           Vous avez des questions ou des suggestions ? N&apos;hésitez pas à nous contacter. Notre équipe est là pour vous
           aider.
         </p>
@@ -173,8 +173,8 @@ export default function ContactPage() {
                   <Phone className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="font-semibold mb-2 text-lg">Téléphone</h3>
-                <p className="text-sm text-gray-600">+33 1 23 45 67 89</p>
-                <p className="text-sm text-gray-600">Lun-Ven, 9h-18h</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">+33 1 23 45 67 89</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Lun-Ven, 9h-18h</p>
               </div>
             </CardContent>
           </Card>
@@ -186,8 +186,8 @@ export default function ContactPage() {
                   <Mail className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="font-semibold mb-2 text-lg">Email</h3>
-                <p className="text-sm text-gray-600">contact@jobportal.fr</p>
-                <p className="text-sm text-gray-600">support@jobportal.fr</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">contact@jobportal.fr</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">support@jobportal.fr</p>
               </div>
             </CardContent>
           </Card>
@@ -199,8 +199,8 @@ export default function ContactPage() {
                   <MapPin className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="font-semibold mb-2 text-lg">Adresse</h3>
-                <p className="text-sm text-gray-600">123 Avenue de l&apos;Innovation</p>
-                <p className="text-sm text-gray-600">75001 Paris, France</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">123 Avenue de l&apos;Innovation</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">75001 Paris, France</p>
               </div>
             </CardContent>
           </Card>
@@ -214,35 +214,35 @@ export default function ContactPage() {
                 <CardTitle>Informations de contact détaillées</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="mb-4 text-gray-700">Remplissez le formulaire et notre équipe vous répondra dans les 24 heures.</p>
+                <p className="mb-4 text-gray-700 dark:text-gray-300">Remplissez le formulaire et notre équipe vous répondra dans les 24 heures.</p>
                 <div className="space-y-4">
                   <div className="flex items-start">
-                    <Phone className="h-5 w-5 mr-2 mt-0.5 text-gray-500" />
+                    <Phone className="h-5 w-5 mr-2 mt-0.5 text-gray-500 dark:text-gray-300" />
                     <div>
-                      <p className="font-medium text-gray-800">Téléphone</p>
-                      <p className="text-sm text-gray-600">+33 1 23 45 67 89</p>
+                      <p className="font-medium text-gray-800 dark:text-gray-300">Téléphone</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">+33 1 23 45 67 89</p>
                     </div>
                   </div>
                   <div className="flex items-start">
-                    <Mail className="h-5 w-5 mr-2 mt-0.5 text-gray-500" />
+                    <Mail className="h-5 w-5 mr-2 mt-0.5 text-gray-500 dark:text-gray-300" />
                     <div>
-                      <p className="font-medium text-gray-800">Email</p>
-                      <p className="text-sm text-gray-600">contact@jobportal.fr</p>
+                      <p className="font-medium text-gray-800 dark:text-gray-300">Email</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">contact@jobportal.fr</p>
                     </div>
                   </div>
                   <div className="flex items-start">
-                    <MapPin className="h-5 w-5 mr-2 mt-0.5 text-gray-500" />
+                    <MapPin className="h-5 w-5 mr-2 mt-0.5 text-gray-500 dark:text-gray-300" />
                     <div>
-                      <p className="font-medium text-gray-800">Adresse</p>
-                      <p className="text-sm text-gray-600">123 Avenue de l&apos;Innovation</p>
-                      <p className="text-sm text-gray-600">75001 Paris, France</p>
+                      <p className="font-medium text-gray-800 dark:text-gray-300">Adresse</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">123 Avenue de l&apos;Innovation</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">75001 Paris, France</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-6">
-                  <h3 className="font-semibold mb-2 text-gray-800">Heures d&apos;ouverture</h3>
-                  <div className="space-y-1 text-sm text-gray-600">
+                  <h3 className="font-semibold mb-2 text-gray-800 dark:text-gray-300">Heures d&apos;ouverture</h3>
+                  <div className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
                     <div className="flex justify-between">
                       <span>Lundi - Vendredi</span>
                       <span>9h00 - 18h00</span>
@@ -349,8 +349,8 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex items-start space-x-2 text-sm">
-                    <AlertCircle className="h-4 w-4 mt-0.5 text-gray-500" />
-                    <p className="text-gray-500">
+                    <AlertCircle className="h-4 w-4 mt-0.5 text-gray-500 dark:text-gray-300" />
+                    <p className="text-gray-500 dark:text-gray-300">
                       En soumettant ce formulaire, vous acceptez notre politique de confidentialité et notre politique
                       de traitement des données.
                     </p>

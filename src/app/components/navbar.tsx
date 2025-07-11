@@ -107,8 +107,8 @@ const Navbar = () => {
               href={item.href}
               className={`inline-flex items-center px-1 pt-1 border-b-2 transition-all duration-300 text-sm font-semibold
                 ${pathname === item.href
-                  ? "border-accent text-accent-foreground" 
-                  : "border-transparent text-gray-800 hover:border-accent hover:text-accent-foreground" 
+                  ? "border-accent text-accent-foreground dark:text-white" 
+                  : "border-transparent text-slate-300  hover:border-accent hover:text-accent-foreground" 
                 }`}
             >
               {item.name}
@@ -124,8 +124,8 @@ const Navbar = () => {
           {status === "authenticated" ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full flex items-center justify-center gap-2">
-                  <UserCircle2 size={30} className="text-gray-700 dark:text-gray-300" />
+                <Button variant="ghost" className="relative  w-fit bg-slate-500 rounded-full flex items-center justify-center gap-2">
+                  <UserCircle2 size={30} className="text-gray-700 dark:text-slate-300" />
                   {userName && (
                     <span className="hidden md:inline-block capitalize font-semibold text-sm">
                       {userName}

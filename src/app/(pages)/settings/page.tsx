@@ -79,7 +79,7 @@ const Settings = () => {
             <Card className="grid grid-cols-1 md:grid-cols-2 p-4 shadow-md">
               <CardContent className="flex flex-col justify-center p-0"> 
                 <CardTitle className="font-bold text-3xl">Pays</CardTitle>
-                <CardDescription className="mt-2 text-gray-600">
+                <CardDescription className="mt-2 text-gray-600 dark:text-gray-300">
                   Choisissez votre pays de navigation pour personnaliser votre expérience.
                 </CardDescription>
                 <div className="flex items-center gap-5 mt-4 text-lg font-medium">
@@ -116,7 +116,7 @@ const Settings = () => {
             <Card className="grid grid-cols-1 md:grid-cols-2 p-4 shadow-md">
               <CardContent className="flex flex-col justify-center p-0">
                 <CardTitle className="font-bold text-3xl">Mot de passe</CardTitle>
-                <CardDescription className="mt-2 text-gray-600">
+                <CardDescription className="mt-2 text-gray-600 dark:text-gray-300">
                   Mettez à jour votre mot de passe pour renforcer la sécurité de votre compte.
                 </CardDescription>
                 <div className="flex items-center gap-5 mt-4 text-lg font-medium">
@@ -161,10 +161,10 @@ const Settings = () => {
             <Card className="grid grid-cols-1 md:grid-cols-2 p-4 shadow-md">
               <CardContent className="flex flex-col justify-center p-0"> {/* Centrer verticalement le contenu */}
                 <CardTitle className="font-bold text-3xl">Supprimer mon compte</CardTitle>
-                <CardDescription className="mt-2 text-gray-600">
+                <CardDescription className="mt-2 text-gray-600 dark:text-gray-300">
                   Cette action est irréversible. Toutes vos données seront supprimées.
                 </CardDescription>
-                <p className="mt-4 text-gray-700">
+                <p className="mt-4 text-gray-700 dark:text-gray-300">
                   N’hésitez pas à contacter{" "}
                   <Link href={"/contact"} className="text-primary hover:underline"> {/* Utilisation de text-primary pour la cohérence */}
                     notre Service client

@@ -171,7 +171,7 @@ export default function CompanyProfilePage({
                 <CardTitle>À propos de l&apos;entreprise</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="mb-4 text-gray-700">{company?.description || "Aucune description fournie."}</p>
+                <p className="mb-4 text-gray-700 dark:text-slate-300">{company?.description || "Aucune description fournie."}</p>
               </CardContent>
             </Card>
 
@@ -206,14 +206,14 @@ export default function CompanyProfilePage({
           <div>
             <Card className="shadow-md mb-4">
               <CardContent className="space-y-2 py-4">
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-100">
                   <strong>Domaine :</strong>{" "}
                   {company?.domaine || "Non mentionné"}
                 </p>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-100">
                   <strong>Localisation :</strong> {company?.location || "Non renseignée"}
                 </p>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-100">
                   <strong>Taille de l&apos;entreprise :</strong>{" "}
                   {company?.employeeCount ? `${company.employeeCount} employés` : "Non spécifié"}
                 </p>

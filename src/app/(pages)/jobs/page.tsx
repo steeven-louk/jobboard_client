@@ -1,13 +1,14 @@
 "use client";
 import { HeaderComponent } from "@/app/components/headerComponent";
 import JobContent from "./component/jobContent";
+import { Suspense } from "react";
 
 export default function Jobs() {
 
   return (
-    <div>
+    <Suspense>
       <HeaderComponent pageName="Offres d'emploi" />
       <JobContent />
-    </div>
+    </Suspense>
   );
 }

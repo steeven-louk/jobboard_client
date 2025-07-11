@@ -28,7 +28,7 @@ interface IApplication {
 }
 
 interface IJobWithApplications {
-  id: number;
+  id: string;
   title: string;
   applications?: IApplication[]; // Tableau des candidatures pour ce job
 }

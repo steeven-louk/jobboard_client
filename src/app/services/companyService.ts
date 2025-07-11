@@ -37,7 +37,19 @@ interface IJob {
   id: number;
   title: string;
   description: string;
-  // ... autres propriétés d'une offre d'emploi
+  skill: string;
+  requirement: string;
+  location: string;
+  salary: number | null;
+  duration: string;
+  jobType: string;
+  isPremium: boolean;
+  createdAt: string | Date;
+  company: {
+    logo: string | null;
+    domaine: string | null;
+    name: string;
+  };
 }
 
 /**

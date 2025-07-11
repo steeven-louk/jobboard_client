@@ -98,7 +98,7 @@ const step3Schema = z.object({
   selectedOffer: z.union([
     OfferZodSchema, // Utilise le schéma nommé pour l'offre
     z.null(), // Permet explicitement la valeur null
-  ]).refine(offer => offer !== null, { message: "Veuillez choisir une offre de publication." }),
+  ]).refine(offer => offer !== undefined, { message: "Veuillez choisir une offre de publication." }),
 });
 
 // Schéma combiné pour la soumission finale (tous les champs du formulaire)
@@ -119,25 +119,10 @@ const jobFormSchema = z.object({
 type IJobFormData = z.infer<typeof jobFormSchema>;
 
 export default function NewJobPage() {
-  // const router = useRouter();
+
   const [step, setStep] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  // const stripePromise = loadStripe(
-  //   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-  // );
 
-  // const [jobData, setJobData] = useState<IJobType>({
-  //   title: "",
-  //   location: "",
-  //   salary: "",
-  //   jobType: "",
-  //   description: "",
-  //   skill: "",
-  //   requirement: "",
-  //   duration: "",
-  //   expiration_date: "",
-  //   selectedOffer: null,
-  // });
 
   const offerTypes: Offer[] = [
     {
@@ -231,17 +216,6 @@ export default function NewJobPage() {
   };
 
 
-  // const handleInputChange = (
-  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  // ) => {
-  //   const { name, value } = e.target;
-  //   setJobData((prev) => ({ ...prev, [name]: value }));
-  // };
-
-  // const handleSelectChange = (name: string, value: string) => {
-  //   setJobData((prev) => ({ ...prev, [name]: value }));
-  // };
-
   const onSubmit: SubmitHandler<IJobFormData> = async (data) => {
     setLoading(true); // Active l'état de chargement
 
@@ -319,226 +293,7 @@ export default function NewJobPage() {
   // };
 
   return (
-    // <ProtectedRoute requiredRole="RECRUITER">
-    //   <div className="container  mx-auto px-4 py-8 ">
-    //     <h1 className="text-3xl font-bold mb-6 text-center">
-    //       Ajouter une nouvelle offre d&apos;emploi
-    //     </h1>
 
-    //     <form
-    //       onSubmit={handleSubmit(onSubmit)}
-    //       className="shadow-md shadow-black rounded-md p-4 space-y-4 max-w-3xl mx-auto"
-    //     >
-    //       <Progress value={(step / 3) * 100} className="mb-6" />
-    //       {step === 1 && (
-    //         <>
-    //           <div className="form-group grid grid-cols-1 gap-2 md:gap-0 md:space-x-3 md:grid-cols-2">
-    //             <div>
-    //               <Label htmlFor="title">Titre du poste</Label>
-    //               <Input
-    //                 id="title"
-    //                 name="title"
-    //                 value={jobData.title}
-    //                 onChange={handleInputChange}
-    //                 required
-    //               />
-    //             </div>
-
-    //             <div>
-    //               <Label htmlFor="location">Localisation</Label>
-    //               <Input
-    //                 id="location"
-    //                 name="location"
-    //                 value={jobData.location}
-    //                 onChange={handleInputChange}
-    //                 required
-    //               />
-    //             </div>
-    //           </div>
-
-    //           <div className="form-group grid grid-cols-1 gap-2 md:gap-0 md:space-x-3 md:grid-cols-2">
-    //             <div>
-    //               <Label htmlFor="salary">Salaire</Label>
-    //               <Input
-    //                 id="salary"
-    //                 name="salary"
-    //                 type="number"
-    //                 value={jobData.salary}
-    //                 onChange={handleInputChange}
-    //                 required
-    //               />
-    //             </div>
-
-    //             <div>
-    //               <Label htmlFor="jobType">Type de contrat</Label>
-    //               <Select
-    //                 value={jobData.jobType}
-    //                 onValueChange={(value) =>
-    //                   handleSelectChange("jobType", value)
-    //                 }
-    //                 required
-    //               >
-    //                 <SelectTrigger name="jobType">
-    //                   <SelectValue placeholder="Sélectionnez le type de contrat" />
-    //                 </SelectTrigger>
-    //                 <SelectContent>
-    //                   <SelectItem value="CDI">CDI</SelectItem>
-    //                   <SelectItem value="CDD">CDD</SelectItem>
-    //                   <SelectItem value="FREELANCE">Freelance</SelectItem>
-    //                   <SelectItem value="STAGE">Stage</SelectItem>
-    //                   <SelectItem value="INTERIM">Interim</SelectItem>
-    //                 </SelectContent>
-    //               </Select>
-    //             </div>
-    //           </div>
-
-    //           <div>
-    //             <Label htmlFor="duration">Durée (en mois/années)</Label>
-    //             <Input
-    //               id="duration"
-    //               name="duration"
-    //               type="text"
-    //               value={jobData.duration}
-    //               onChange={handleInputChange}
-    //               required
-    //               placeholder="exemple: 18mois ou 2ans"
-    //             />
-    //           </div>
-    //           <div>
-    //             <Label htmlFor="description">Description du poste</Label>
-    //             <Textarea
-    //               id="description"
-    //               name="description"
-    //               value={jobData.description}
-    //               onChange={handleInputChange}
-    //               rows={8}
-    //               required
-    //             />
-    //           </div>
-    //         </>
-    //       )}
-
-    //       {step === 2 && (
-    //         <>
-    //           <div>
-    //             <Label htmlFor="skill">Compétences requises</Label>
-    //             <Textarea
-    //               id="skill"
-    //               name="skill"
-    //               value={jobData.skill}
-    //               onChange={handleInputChange}
-    //               rows={5}
-    //               required
-    //             />
-    //           </div>
-
-    //           <div>
-    //             <Label htmlFor="requirement">Exigences</Label>
-    //             <Textarea
-    //               id="requirement"
-    //               name="requirement"
-    //               value={jobData.requirement}
-    //               onChange={handleInputChange}
-    //               rows={5}
-    //               required
-    //             />
-    //           </div>
-
-    //           <div>
-    //             <Label htmlFor="expiration_date">
-    //               Date d&apos;expiration de l&apos;offre
-    //             </Label>
-    //             <Input
-    //               id="expiration_date"
-    //               name="expiration_date"
-    //               type="date"
-    //               value={jobData.expiration_date ? new Date(jobData.expiration_date).toISOString().split('T')[0] : ""}
-    //               onChange={handleInputChange}
-    //               required
-    //             />
-    //           </div>
-    //         </>
-    //       )}
-    //       {step === 3 && (
-    //         <>
-    //           <div className="space-y-4">
-    //             <Label className="text-xl font-semibold">
-    //               Choisissez votre offre de publication
-    //             </Label>
-    //             <RadioGroup
-    //               onValueChange={handleOfferChange}
-    //               defaultValue={offerTypes[0].id}
-    //             >
-    //               {offerTypes.map((offer, index) => (
-    //                 <div key={index} className="relative">
-    //                   <RadioGroupItem
-    //                     value={offer.id}
-    //                     id={`offer-${index}`}
-    //                     className="sr-only"
-    //                   />
-    //                   <Label
-    //                     htmlFor={`offer-${index}`}
-    //                     className="flex flex-col cursor-pointer"
-    //                   >
-    //                     <Card
-    //                       className= "border-green-500  hover:bg-secondary/50 p-4 border-2 transition-all"
-                         
-    //                     >
-    //                       <div className="flex justify-between items-center">
-    //                         <div>
-    //                           <p className="font-semibold text-lg">
-    //                             {offer.duration} jours
-    //                           </p>
-    //                           <p className="text-sm text-muted-foreground">
-    //                             {offer.description}
-    //                           </p>
-    //                         </div>
-    //                         <div className="text-right">
-    //                           <p className="text-xl font-bold">
-    //                             {offer.price}€
-    //                           </p>
-    //                           <p>
-    //                             {(offer.price / offer.duration).toFixed(2)} /
-    //                             jours
-    //                           </p>
-    //                         </div>
-    //                       </div>
-    //                     </Card>
-    //                   </Label>
-    //                 </div>
-    //               ))}
-    //             </RadioGroup>
-    //           </div>
-    //         </>
-    //       )}
-
-    //       {/* Navigation entre les étapes */}
-    //       <CardFooter>
-    //         <div className="flex justify-between gap-4 md:gap-0 mt-4">
-    //           {step > 1 && (
-    //             <Button type="button" onClick={() => setStep(step - 1)}>
-    //               Précédent
-    //             </Button>
-    //           )}
-
-    //           {step < 3 ? (
-    //             <Button
-    //               type="button"
-    //               className="ml-5"
-    //               onClick={() => setStep(step + 1)}
-    //             >
-    //               Suivant
-    //             </Button>
-    //           ) : (
-    //             <Button type="submit" className="bg-green-500 ml-5">
-    //               Publier l&apos;offre
-    //             </Button>
-    //           )}
-    //         </div>
-    //       </CardFooter>
-    //     </form>
-    //   </div>
-    // </ProtectedRoute>
     <ProtectedRoute requiredRole="RECRUITER">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 text-center">

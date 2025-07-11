@@ -12,7 +12,8 @@ interface ICompany {
   domaine: string;
   location: string;
   logo: string; // URL du logo
-  employeeCount: string
+  employeeCount: string;
+  userId: string
 }
 
 /**
@@ -86,14 +87,14 @@ export const getCompanies = async ():Promise<ICompany[] | null> => {
  * @returns {Promise<ICompany | null>} Une promesse qui résout en l'objet entreprise ou null en cas d'erreur/non trouvé.
  * @throws {Error} Lance une erreur si l'ID est invalide ou si la récupération échoue.
  */
-export const getCompanyDetail = async (id: string):Promise<ICompany | null> => {
+export const getCompanyDetail = async (id: string):Promise<ICompany > => {
     try {
         const companyId = parseInt(id);
         if (isNaN(companyId)) throw new Error("ID d'entreprise invalide.");
 
         const response = await api.get(`/company/company-detail/${companyId}`);
         if (response.status === 200) {
-            return response.data?.company || null;
+            return response.data?.company;
         }
 
         throw new Error(`Réponse inattendue du serveur: ${response.status}`);

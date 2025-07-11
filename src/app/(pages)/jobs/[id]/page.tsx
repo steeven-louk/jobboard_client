@@ -114,6 +114,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
     if (id) { // S'assure que l'ID est disponible
       fetchJobData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, sessionStatus]);
 
     /**

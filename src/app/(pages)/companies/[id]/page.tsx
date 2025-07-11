@@ -43,7 +43,7 @@ interface IJob {
 }
 
 interface ICompanyDetail {
-  id: number;
+  id: string;
   name: string;
   description: string;
   location: string;
@@ -103,6 +103,7 @@ export default function CompanyProfilePage({
     if (id) {
       fetchCompanyDetails();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
 

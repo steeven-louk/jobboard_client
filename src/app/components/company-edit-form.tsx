@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 
 interface Company {
-  id: number;
+  id: string;
   name: string;
   description: string;
   location: string;
@@ -38,7 +38,7 @@ export function CompanyEditForm({
 }: CompanyEditFormProps) {
   const [formData, setFormData] = useState<Company>(
     company ?? {
-      id: 0,
+      id: "",
       name: "",
       logo: undefined,
       domaine: "",

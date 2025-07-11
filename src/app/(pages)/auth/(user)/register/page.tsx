@@ -338,7 +338,8 @@ export default function RegisterPage() {
                             disabled={loading}
                             autoComplete="none"
                           />
-                          {errors.companyName && <p className="text-red-500 text-sm mt-1">{errors.companyName.message}</p>}
+
+                          {/* {role === "RECRUITER" && errors?.companyName && <p className="text-red-500 text-sm mt-1">{errors.companyName.message}</p>} */}
                         </div>
 
                         <div>
@@ -350,7 +351,7 @@ export default function RegisterPage() {
                             disabled={loading}
                             autoComplete="none"
                           />
-                          {errors.companyLocation && <p className="text-red-500 text-sm mt-1">{errors.companyLocation.message}</p>}
+                          {/* {role === "RECRUITER" && errors.companyLocation && <p className="text-red-500 text-sm mt-1">{errors.companyLocation.message}</p>} */}
                         </div>
 
                         <div>
@@ -362,7 +363,7 @@ export default function RegisterPage() {
                             disabled={loading}
                             autoComplete="none"
                           />
-                          {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
+                          {/* {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>} */}
                         </div>
 
                         <Button type="button" onClick={() => setStep(1)} variant="outline" className="w-full" disabled={loading}>

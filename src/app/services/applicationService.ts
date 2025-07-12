@@ -34,7 +34,7 @@ interface IApplyResponse {
  */
 export const getUserApplications = async ():Promise<IApplication[] | void> => {
   try {
-    const response = await api.get("/user/responses/");
+    const response = await api.get("/user/applications");
     
     if(response.status === 200){
         // const {data} =  application
@@ -62,10 +62,11 @@ export const getUserApplications = async ():Promise<IApplication[] | void> => {
 export const getApplication = async (id: string):Promise<IApplication | null> => {
   try {
     const response = await api.get(`/user/application/${Number(id)}`);
-    
+    console.log("response", response)
     if(response.status === 200){
         // const {data} =  application
-        // console.log(data);
+        console.log("response data", response)
+        console.log("application...",response.data);
         return response.data?.application || null;
       }
       // Si le statut n'est pas 200 mais ne lève pas d'erreur HTTP
@@ -90,6 +91,7 @@ export const changeStatus =async(application:IApplication,newStatus:string):Prom
    try {
     const {id} = application;
 
+    
     if(!id){
       throw new Error("ID de candidature manquant pour la mise a jour du statut.")
     }
@@ -99,7 +101,7 @@ export const changeStatus =async(application:IApplication,newStatus:string):Prom
       });
 
     if(response.status ===200){
-      toast.info(`Status mis à jour: ${newStatus}`)
+      toast.success(`Status mis à jour: ${newStatus}`)
     } else {
       // Gérer les cas où le statut n'est pas 200 mais pas une erreur HTTP
       throw new Error(`Échec de la mise à jour du statut avec le code : ${response.status}`);

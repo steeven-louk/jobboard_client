@@ -28,7 +28,8 @@ interface Profil {
   birthdate: Date |string;
   phone: string;
   sexe: "Homme" | "Femme" | string; 
-  picture?: string | File;
+  picture?: string | null;
+  // picture?: string | File;
   location:string;
 }
 
@@ -47,18 +48,7 @@ export default function ProfilModal({
   onSubmit,
   onOpenChange
 }: ProfilEditFormProps) {
-  // const initialData: Profil = profil || {
-  //   id: "",
-  //   fullName: "",
-  //   domaine: "",
-  //   email: "",
-  //   birthdate: "",
-  //   phone: "",
-  //   sexe: "",
-  //   picture: "",
-  //   location: "",
-  // };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     const initialData: Profil = profil
     ? {
         ...profil,
@@ -67,10 +57,10 @@ export default function ProfilModal({
             ? profil.birthdate.toISOString().split("T")[0]
             : profil.birthdate,
         sexe: profil.sexe === "Homme" || profil.sexe === "Femme" ? profil.sexe : "",
-        picture: typeof profil.picture === "string" ? profil.picture : undefined, // Ensure picture is string or undefined
+        picture: typeof profil.picture === "string" ? profil.picture : undefined, 
       }
     : {
-        id: "", // An ID might be generated on the backend for new profiles
+        id: "", 
         fullName: "",
         domaine: "",
         email: "",
@@ -78,7 +68,7 @@ export default function ProfilModal({
         phone: "",
         sexe: "",
         location: "",
-        picture: undefined, // Explicitly undefined for no initial picture
+        picture: undefined,
       };
 
   const [formData, setFormData] = useState<Profil>(initialData);
@@ -96,7 +86,8 @@ export default function ProfilModal({
       setImagePreview(typeof profil.picture === "string" ? profil.picture : undefined);
       setImageFile(null); // Reset file when new profil is loaded
     }
-  }, [initialData, profil]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ profil]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -139,19 +130,13 @@ export default function ProfilModal({
       setIsSubmitting(false);
     }
   };
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
 
-  //   onSubmit(formData);
-
-  //   onClose();
-  // };
 
   return (
        <Dialog open={isModalOpen} onOpenChange={(open) => {
       setIsModalOpen(open);
       if (onOpenChange) {
-        onOpenChange(open); // Propagate change to parent if needed
+        onOpenChange(open); 
       }
       // Reset form data if closing after successfully opening
       if (!open && !isSubmitting) {
@@ -209,8 +194,8 @@ export default function ProfilModal({
                   {imagePreview && (
                     <Image
                       src={imagePreview}
-                      width={80} // Increased size for better preview
-                      height={80} // Increased size for better preview
+                      width={80} 
+                      height={80} 
                       alt="Aperçu de la photo de profil"
                       className="w-20 h-20 rounded-full object-cover border border-gray-200"
                     />
@@ -221,7 +206,7 @@ export default function ProfilModal({
                     type="file"
                     accept="image/*"
                     onChange={handleImageFileChange}
-                    className="flex-1" // Allows input to take remaining space
+                    className="flex-1"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -246,7 +231,7 @@ export default function ProfilModal({
                 </RadioGroup>
               </div>
             </div>
-            <DialogFooter className="mt-6"> {/* Added margin-top for spacing */}
+            <DialogFooter className="mt-6"> 
               <Button
                 className="max-w-44 w-full uppercase tracking-wide"
                 type="submit"

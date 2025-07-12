@@ -65,9 +65,14 @@ export default function ApplicationDetailPage({
 
     const fetchApplicationDetails = async () => {
       setIsLoading(true);
+      console.log("ffff");
       try {
+      console.log("ffff");
         const data = await getApplication(id);
+      console.log("ffff", data);
+
         if (data) {
+          console.log(data)
           setApplication(data);
         } else {
           setApplication(null); // S'assurer que c'est null si aucune donnée
@@ -91,7 +96,7 @@ export default function ApplicationDetailPage({
       // Met à jour l'état local immédiatement pour une meilleure réactivité de l'UI
       setApplication({ ...application, status: newStatus });
       await changeStatus(application, newStatus); // Passe l'ID et le nouveau statut
-      toast.success(`Statut mis à jour à : ${newStatus}`);
+      // toast.success(`Statut mis à jour à : ${newStatus}`);
     } catch (error: any) {
       console.error("❌ Erreur lors du changement de statut :", error);
       toast.error(error.message || "Erreur lors de la mise à jour du statut.");
@@ -171,7 +176,7 @@ export default function ApplicationDetailPage({
                   </div>
                   <div className="img my-auto mt-4 md:mt-0 md:ml-4">
                     <Image
-                      src={application?.user.picture || "/placeholder.svg"} // Fallback image
+                      src={application?.user.picture || "/placeholder.svg"}
                       width={170}
                       height={170}
                       className="object-cover rounded-md border-2 border-gray-200"
@@ -223,7 +228,7 @@ export default function ApplicationDetailPage({
                     {/* Si coverLetter est du texte brut */}
                     <div className="mt-4">
                       <Label className="text-gray-600">Contenu de la lettre de motivation</Label>
-                      <p className="mt-2 whitespace-pre-wrap p-3 border rounded-md bg-gray-50 text-gray-800">
+                      <p className="mt-2 whitespace-pre-line p-3 border rounded-md bg-gray-50 text-gray-800">
                         {application.coverLetter || "Aucune lettre de motivation fournie."}
                       </p>
                     </div>

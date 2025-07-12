@@ -11,6 +11,10 @@ import {
   Building,
   CalendarDays,
   Users,
+  GraduationCap,
+  Briefcase,
+  Phone,
+  Mail,
 } from "lucide-react";
 
 
@@ -298,6 +302,143 @@ export function CompanyProfileSkeleton(): JSX.Element {
               <Skeleton className="h-10 w-full rounded-md" />
               <Skeleton className="h-10 w-full rounded-md" />
               <Skeleton className="h-10 w-full rounded-md" />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * @function ProfilePageSkeleton
+ * @description Composant de squelette de chargement pour la page de profil utilisateur.
+ * Il simule la mise en page d'une page de profil complète, incluant les informations
+ * de base de l'utilisateur, ses expériences professionnelles et ses diplômes.
+ *
+ * @returns {JSX.Element} Un composant de squelette représentant la page de profil.
+ */
+export function ProfilePageSkeleton(): JSX.Element {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      {/* Section supérieure du profil: Image, Nom, Email */}
+      <Card className="mb-8 shadow-md">
+        <CardContent className="flex flex-col md:flex-row items-center md:items-start p-6">
+          {/* Placeholder pour l'image de profil */}
+          <Skeleton className="h-32 w-32 rounded-full mb-4 md:mb-0 md:mr-6" />
+
+          <div className="flex-1 text-center md:text-left space-y-3">
+            {/* Placeholder pour le nom complet */}
+            <Skeleton className="h-8 w-3/4 mx-auto md:mx-0" />
+            {/* Placeholder pour l'email */}
+            <div className="flex items-center justify-center md:justify-start space-x-2">
+              <Mail className="h-5 w-5 text-gray-400 animate-pulse" />
+              <Skeleton className="h-5 w-1/2" />
+            </div>
+            {/* Placeholder pour le téléphone */}
+            <div className="flex items-center justify-center md:justify-start space-x-2">
+              <Phone className="h-5 w-5 text-gray-400 animate-pulse" />
+              <Skeleton className="h-5 w-1/3" />
+            </div>
+            {/* Placeholder pour la ville */}
+            <div className="flex items-center justify-center md:justify-start space-x-2">
+              <MapPin className="h-5 w-5 text-gray-400 animate-pulse" />
+              <Skeleton className="h-5 w-1/4" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Colonne principale: Expériences et Diplômes */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Section Expériences Professionnelles */}
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle>
+                <div className="flex items-center space-x-2">
+                  <Briefcase className="h-6 w-6 text-primary animate-pulse" />
+                  <Skeleton className="h-7 w-2/3" />
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Squelette pour chaque expérience */}
+              {[...Array(2)].map((_, index) => (
+                <div key={`exp-${index}`} className="border-b pb-4 last:border-b-0 last:pb-0">
+                  <Skeleton className="h-5 w-3/4 mb-2" /> {/* Titre du poste */}
+                  <Skeleton className="h-4 w-1/2 mb-1" /> {/* Entreprise */}
+                  <div className="flex items-center space-x-2 mb-1">
+                    <MapPin className="h-4 w-4 text-gray-300 animate-pulse" />
+                    <Skeleton className="h-4 w-1/4" /> {/* Localisation */}
+                  </div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <CalendarDays className="h-4 w-4 text-gray-300 animate-pulse" />
+                    <Skeleton className="h-4 w-1/3" /> {/* Dates */}
+                  </div>
+                  <Skeleton className="h-16 w-full" /> {/* Description */}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Section Diplômes et Formations */}
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle>
+                <div className="flex items-center space-x-2">
+                  <GraduationCap className="h-6 w-6 text-primary animate-pulse" />
+                  <Skeleton className="h-7 w-2/3" />
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Squelette pour chaque diplôme */}
+              {[...Array(2)].map((_, index) => (
+                <div key={`diplome-${index}`} className="border-b pb-4 last:border-b-0 last:pb-0">
+                  <Skeleton className="h-5 w-3/4 mb-2" /> {/* Titre du diplôme */}
+                  <Skeleton className="h-4 w-1/2 mb-1" /> {/* École */}
+                  <div className="flex items-center space-x-2 mb-1">
+                    <MapPin className="h-4 w-4 text-gray-300 animate-pulse" />
+                    <Skeleton className="h-4 w-1/4" /> {/* Localisation */}
+                  </div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <CalendarDays className="h-4 w-4 text-gray-300 animate-pulse" />
+                    <Skeleton className="h-4 w-1/3" /> {/* Dates */}
+                  </div>
+                  <Skeleton className="h-12 w-full" /> {/* Description */}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Colonne latérale: Informations supplémentaires ou actions */}
+        <div className="lg:col-span-1 space-y-8">
+          {/* Section à propos / description */}
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle>
+                <Skeleton className="h-7 w-1/2" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-24 w-full mb-2" />
+              <Skeleton className="h-6 w-5/6" />
+            </CardContent>
+          </Card>
+
+          {/* Section Contact / Réseaux Sociaux */}
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle>
+                <Skeleton className="h-7 w-1/3" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Skeleton className="h-5 w-2/3" />
+              <Skeleton className="h-5 w-1/2" />
+              <Skeleton className="h-5 w-3/4" />
             </CardContent>
           </Card>
         </div>

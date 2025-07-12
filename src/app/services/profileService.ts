@@ -15,7 +15,8 @@ interface IUserProfile {
   location: string;
   birthdate: Date | string ;
   domaine: string;
-  picture?: string | File;
+  picture?: string | null;
+  // picture?: string | File;
   email: string;
   
   formations?: any[];
@@ -79,12 +80,14 @@ export const updateUserProfile = async (
       throw new Error("ID utilisateur manquant.");
     }
 
-    const updatePayload = { ...formData }; // Créer une copie pour modifier l'image si c'est un fichier
+    const updatePayload = { ...formData }; // Creation d'une copie pour modifier l'image si c'est un fichier
 
     // Gérer l'upload de l'image de profil si un fichier est fourni
     if (updatePayload.picture && updatePayload.picture instanceof File) {
       try {
+        // console.log("updatePayload",updatePayload)
         const uploadResponse = await handleUpload("profile_image", userId, updatePayload.picture);
+        console.log(uploadResponse)
         if (!uploadResponse || !uploadResponse.fileUrl) {
           toast.warning("L'upload de l'image de profil a échoué. Annulation de la mise à jour.");
           console.error("❌ L'upload de l'image de profil a échoué. Annulation de la mise à jour.");

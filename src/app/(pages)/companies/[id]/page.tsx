@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,7 @@ import { Pagination } from "@/app/components/pagination";
 import { getCompanyDetail, updateCompany } from "@/app/services/companyService";
 import { toast } from "react-toastify";
 import { CompanyProfileSkeleton } from "@/app/components/skeletons/Skeletons";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 
 
@@ -165,17 +166,25 @@ export default function CompanyProfilePage({
 
         <div className="md:grid flex flex-col-reverse px-2 md:flex-none md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
-            {/* Section "À propos de l'entreprise" */}
-            <Card className="mb-8 shadow-md">
-              <CardHeader>
-                <CardTitle>À propos de l&apos;entreprise</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4 text-gray-700 dark:text-slate-300">{company?.description || "Aucune description fournie."}</p>
-              </CardContent>
-            </Card>
+            <Tabs defaultValue="about">              
+              <TabsList className="mb-4">
+                <TabsTrigger value="about">À propos de l&apos;entreprise</TabsTrigger>
+                <TabsTrigger value="jobs">Offres d&apos;emploi</TabsTrigger>
+              </TabsList>
+              <TabsContent value="about">
+                {/* Section "À propos de l'entreprise" */}
+                <Card className="mb-8 shadow-md">
 
-            {/* Section "Offres d'emploi actuelles" */}
+                  <CardHeader>
+                    <CardTitle>À propos de l&apos;entreprise</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="mb-4 whitespace-pre-line text-gray-700 dark:text-slate-300">{company?.description || "Aucune description fournie."}</CardDescription>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="jobs">
+                  {/* Section "Offres d'emploi actuelles" */}
             <Card className="shadow-md">
               <CardHeader>
                 <CardTitle>Offres d&apos;emploi actuelles</CardTitle>
@@ -200,6 +209,8 @@ export default function CompanyProfilePage({
                 onPageChange={handlePageChange}
               />
             )}
+              </TabsContent>
+            </Tabs>
           </div>
 
           {/* Colonne latérale avec les informations de l'entreprise et les actions du recruteur */}

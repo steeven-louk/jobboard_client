@@ -76,7 +76,6 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
       }
     } catch (error: any) {
       // Le service `applyToJob` affiche déjà un toast.error et log l'erreur.
-      // Il n'est donc pas nécessaire de dupliquer ces actions ici,
       // sauf si un traitement spécifique à ce composant est requis.
       console.error("❌ Erreur lors de l'envoi de la candidature depuis le formulaire:", error);
       // toast.error("❌ Échec de l'application au job"); // Commenté pour éviter les toasts en double
@@ -91,7 +90,7 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
         <DrawerTrigger asChild>
           <Button>Postuler maintenant</Button>
         </DrawerTrigger>
-        <DrawerContent className="md:max-w-[54rem] w-full mx-auto">
+        <DrawerContent className="md:max-w-[54rem] w-full h-full mx-auto">
           <DrawerHeader className="shadow-md shadow-black">
             <DrawerTitle className="uppercase font-semibold text-xl tracking-widest">
               {companyName}

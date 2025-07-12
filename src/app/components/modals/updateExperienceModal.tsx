@@ -21,7 +21,6 @@ import {
   handleUpdateExperience,
 } from "@/app/services/experienceService";
 import { toast } from "react-toastify";
-// import { toast } from "sonner";
 
 interface IExperience {
   id?: number;
@@ -42,7 +41,6 @@ interface Props {
 }
 
 export default function ExperienceModal({ experience, onSuccess }: Props) {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialData: IExperience = experience
     ? {
         ...experience,
@@ -70,10 +68,10 @@ export default function ExperienceModal({ experience, onSuccess }: Props) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // State to control modal open/close
 
-  // Effect to update form data when 'experience' prop changes (e.g., when opening for a different experience)
   useEffect(() => {
     setFormData(initialData);
-  }, [experience, initialData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [experience]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value, type } = e.target;
@@ -141,8 +139,7 @@ export default function ExperienceModal({ experience, onSuccess }: Props) {
       }
     } catch (error: any) {
       console.error("❌ Erreur lors de l'opération sur l'expérience :", error);
-      // The service functions (handleAddExperience, handleUpdateExperience) already handle toast.error
-      // You can add a generic fallback toast here if the service doesn't handle all error types.
+
       toast.error(error.message || "Erreur lors de l'opération sur l'expérience.");
     } finally {
       setIsSubmitting(false); // End loading

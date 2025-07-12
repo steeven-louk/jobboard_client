@@ -30,6 +30,7 @@ import { handleDeleteFormation } from "@/app/services/diplomeService";
 
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { ProfilePageSkeleton } from "@/app/components/skeletons/Skeletons";
 
 
 
@@ -69,7 +70,7 @@ interface IProfilDetail {
   location: string;
   birthdate: Date | string ;
   domaine: string;
-  picture?: string | File;
+  picture?: string | null;
   email: string;
   Experience?: IExperience[];
   Diplome?:IDiplome[];
@@ -79,7 +80,6 @@ interface IProfilDetail {
 const Profil = () => {
   const { data: session, status: sessionStatus } = useSession();
   const [userDetail, setUserDetail] = useState<IProfilDetail | undefined>(undefined);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState<boolean>(true); // État de chargement de la page
 
   const userRole = session?.user?.role ;
@@ -133,22 +133,9 @@ const Profil = () => {
     }
   };
 
-  // const handleProfilUpdate = async (updatedProfil:IProfilDetail, imageFile?: File | null) => {
-  //   setUserDetail(updatedProfil);
-
-  //   try {
-  //     await updateUserProfile(userId, updatedProfil);
-  //     // console.log("profile mis a jour avec succes")
-  //   } catch (error) {
-  //     toast("Erreur lors de la modification du profil");
-  //     console.log("Erreur lors de la modification du profil", error);
-  //   }
-  // };
 
     const handleProfilUpdate = async (updatedProfil: IProfilDetail, imageFile?: File | null) => {
     try {
-      // updateUserProfile attend un IUpdateUserProfileData qui inclut File | string pour picture
-      // Il faut donc s'assurer de passer le bon type.
       // Si un nouveau fichier est sélectionné, on le passe. Sinon, on passe l'URL existante ou undefined.
       const dataToSend = {
         ...updatedProfil,
@@ -156,20 +143,18 @@ const Profil = () => {
       };
 
       await updateUserProfile(userId, dataToSend);
-      // Le toast.success est déjà géré par updateUserProfile
       await fetchUserProfile(); // Re-charger le profil après mise à jour pour rafraîchir l'UI
     } catch (error: any) {
-      // Le toast.error est déjà géré par updateUserProfile
       console.error("❌ Erreur lors de la modification du profil :", error);
     }
   };
 
     // Affiche un skeleton de page pendant le chargement initial du profil
   if (isPageLoading || sessionStatus === "loading") {
-    return <h1>Chargement....</h1>;
-    // return <ProfilePageSkeleton />;
+    return <ProfilePageSkeleton />;
   }
 
+  
   return (
     <>
       <ProtectedRoute>
@@ -179,12 +164,11 @@ const Profil = () => {
             <div className="flex justify-between my-5 flex-col md:flex-row items-center md:items-start">
               <div className="left inline-flex gap-3 md:items-baseline items-center flex-col md:flex-row ">
                 <Image
-                  src={typeof userDetail?.picture || "/placeholder.svg"}
+                  src={userDetail?.picture || "/placeholder.svg"}
                   alt={`${userDetail?.fullName || "Utilisateur"} photo de profil`}
                   width={150}
                   height={150}
                   className="rounded-full w-[7rem] h-[7rem] object-cover bg-gray-200 mr-4 border-2 border-primary"
-                  // className="rounded-full w-[7rem] bg-red-500 h-[7rem] bg-cover  max-w-full max-h-full  mr-4"
                 />
                 <div className="flex flex-col gap-2">
                   <CardTitle className="text-2xl font-bold">{userDetail?.fullName}</CardTitle>

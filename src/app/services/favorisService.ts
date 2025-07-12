@@ -78,8 +78,6 @@ export const toggleFavorite = async (jobId: number): Promise<boolean> => {
     if (response.status === 200 || response.status === 201) {
 
       await getFavoris();
-
-      toast.success(response.data.isFavorite ? "Offre ajoutée aux favoris !" : "Offre retirée des favoris.");
       return response.data.isFavorite;
     }
     // Gérer les statuts non-200/201 qui ne sont pas des erreurs HTTP directes

@@ -43,7 +43,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
 
-  // Note: Si une redirection a eu lieu dans l'effet, ce rendu ne sera pas visible
+  //  Si une redirection a eu lieu dans l'effet, ce rendu ne sera pas visible
   // car la page aura déjà changé.
   if (session && (!requiredRole || session?.user?.role === requiredRole)) {
     return <>{children}</>;

@@ -29,7 +29,6 @@ interface Profil {
   phone: string;
   sexe: "Homme" | "Femme" | string; 
   picture?: string | null;
-  // picture?: string | File;
   location:string;
 }
 
@@ -72,12 +71,12 @@ export default function ProfilModal({
       };
 
   const [formData, setFormData] = useState<Profil>(initialData);
-  const [imageFile, setImageFile] = useState<File | null>(null); // State to hold the actual image file
+  const [imageFile, setImageFile] = useState<File | null>(null); 
   const [imagePreview, setImagePreview] = useState<string | undefined>(
     typeof profil?.picture === "string" ? profil.picture : undefined
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // State to control modal open/close
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); 
 
 
   useEffect(() => {
@@ -104,7 +103,7 @@ export default function ProfilModal({
       setImageFile(file); // Store the actual file
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string); // Set preview to Data URL
+        setImagePreview(reader.result as string); 
       };
       reader.readAsDataURL(file);
     } else {
@@ -118,11 +117,10 @@ export default function ProfilModal({
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      // Pass both formData and the actual imageFile to the onSubmit handler
       await onSubmit(formData, imageFile);
       toast.success("Profil mis à jour avec succès !");
       setIsModalOpen(false); // Close the modal on success
-      onClose(); // Call parent's onClose
+      onClose(); 
     } catch (error: any) {
       console.error("❌ Erreur lors de la mise à jour du profil :", error);
       toast.error(error.message || "Erreur lors de la mise à jour du profil.");
@@ -218,7 +216,7 @@ export default function ProfilModal({
                   className="flex space-x-4" 
                   value={formData.sexe || ""}
                   onValueChange={(value: "Homme" | "Femme" | "") => handleRadioChange(value)}
-                  disabled={isSubmitting} // Disable radio group during submission
+                  disabled={isSubmitting} 
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="Homme" id="Homme" />
@@ -235,7 +233,7 @@ export default function ProfilModal({
               <Button
                 className="max-w-44 w-full uppercase tracking-wide"
                 type="submit"
-                disabled={isSubmitting} // Disable button during submission
+                disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <>

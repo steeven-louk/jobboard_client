@@ -86,7 +86,7 @@ const authOptions = {
    
   session: {
     strategy: "jwt", // Utilise le stockage basé sur JWT pour la session
-    maxAge: 30 * 24 * 60 * 60, // 30 jours, ou ajustez selon vos besoins
+    maxAge: 30 * 24 * 60 * 60, // 30 jours
   },
   // Active le mode débogage en développement pour des logs plus détaillés
   debug: process.env.NODE_ENV === "development",

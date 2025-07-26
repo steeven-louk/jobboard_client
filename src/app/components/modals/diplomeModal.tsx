@@ -91,17 +91,16 @@ export default function DiplomeModal({ diplome, onSuccess }: Props) {
         toast.success("Formation ajoutée avec succès !");
       }
       setOpen(false); // Ferme le dialogue après une soumission réussie
-      // Appelle le callback onSuccess si fourni
+
       if (onSuccess) {
         onSuccess();
       }
     } catch (error: any) {
       console.error("❌ Erreur lors de l'opération sur la formation :", error);
-      // Le service `formationService` gère déjà le toast.error,
-      // mais un toast générique ici peut servir de fallback.
+
       toast.error(error.message || "Erreur lors de l'opération sur la formation.");
     } finally {
-      setIsLoading(false); // Désactive toujours l'état de chargement
+      setIsLoading(false); 
     }
   };
 

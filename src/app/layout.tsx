@@ -5,11 +5,16 @@ import { Footer } from "./components/footer";
 import Navbar from "./components/navbar";
 
 import { Providers } from "./utils/provider";
+// import {
+//   QueryClient,
+//   QueryClientProvider,
+// } from '@tanstack/react-query'
 
 import { ToastContainer } from 'react-toastify';
 
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ThemeProvider } from "./components/theme/theme-provider";
+import ReactQueryProvider from "./utils/ReactQueryProvider";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -34,33 +39,37 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="fr" suppressHydrationWarning>
       <body
         className={`${poppins.variable} ${lato.variable} font-sans`}
       >
         <Providers>
-          <ThemeProvider attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange>
+          <ReactQueryProvider>
+            <ThemeProvider attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange>
 
-            <Navbar />
-            {children}
-            <Footer />
+              <Navbar />
+              {children}
+              <Footer />
 
-            <ToastContainer position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick={false}
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              />
-            <SpeedInsights/>
-          </ThemeProvider>
+              <ToastContainer position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                />
+              <SpeedInsights/>
+            </ThemeProvider>
+
+          </ReactQueryProvider>
         </Providers>
       </body>
     </html>

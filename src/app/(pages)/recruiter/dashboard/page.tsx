@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +16,7 @@ import {
 import { toast } from "react-toastify";
 import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
 import { ApplicationCardSkeleton } from "@/app/components/skeletons/ApplicationCardSkeleton";
+import { useQuery } from "@tanstack/react-query";
 
 
 interface IApplication {
@@ -53,63 +54,59 @@ interface IPostedJob{
 }
 export default function RecruiterDashboard() {
   const [activeTab, setActiveTab] = useState<"jobs" | "applications">("jobs");
-  const [postedJobs, setPostedJobs] = useState<IPostedJob[]>([]); 
-  const [receivedApplications, setReceivedApplications] = useState<IJobWithApplications[]>([]);
-
-  const [isLoadingJobs, setIsLoadingJobs] = useState<boolean>(true);
-  const [isLoadingApplications, setIsLoadingApplications] = useState<boolean>(true); 
-
 
   /**
    * @function fetchCompanyJobs
    * @description Récupère les offres d'emploi publiées par l'entreprise.
    */
-  const fetchCompanyJobs = async () => {
-    setIsLoadingJobs(true);
-    try {
-      const response: IPostedJob[] | null = await getCompanyJobs();
-      setPostedJobs(response || []); // S'assurer que c'est un tableau vide si null
-    } catch (error: any) {
-      console.error("❌ Erreur lors de la récupération des offres d'emploi :", error);
-      toast.error(error.message || "Erreur lors de la récupération de vos offres d'emploi.");
-      setPostedJobs([]); // Réinitialise les offres en cas d'erreur
-    } finally {
-      setIsLoadingJobs(false);
-    }
-  };
+    // ✅ Requête pour récupérer les offres publiées
+  const {
+    data: postedJobs = [],
+    isLoading: isLoadingJobs,
+  } = useQuery<IPostedJob[] | null>({
+    queryKey: ["company-jobs"],
+    queryFn: async () => {
+      try {
+        const data = await getCompanyJobs();
+        if (data === null || data === undefined) {
+          return [];
+        };
+        return data;
+      } catch (error: any) {
+        toast.error(error.message || "Erreur lors de la récupération des offres d'emploi.");
+        return [];
+      }
+    },
+    enabled: activeTab === "jobs", // Ne s'active que si l'onglet "jobs" est sélectionné
+  });
+
 
   /**
    * @function fetchCompanyApplications
    * @description Récupère les candidatures reçues pour les offres de l'entreprise.
    */
-  const fetchCompanyApplications = async () => {
-    setIsLoadingApplications(true);
-    try {
-      const response: IJobWithApplications[] | null = await getCompanyApplyJobs();
-      setReceivedApplications(response || []); // S'assurer que c'est un tableau vide si null
-    } catch (error: any) {
-      console.error("❌ Erreur lors de la récupération des candidatures :", error);
-      toast.error(error.message || "Erreur lors de la récupération des candidatures.");
-      setReceivedApplications([]); // Réinitialise les candidatures en cas d'erreur
-    } finally {
-      setIsLoadingApplications(false); 
-    }
-  };
 
-  // Effet pour récupérer les offres d'emploi au montage ou au changement d'onglet
-  useEffect(() => {
-    if (activeTab === "jobs") {
-      fetchCompanyJobs();
-    }
-  }, [activeTab]); // Dépend de l'onglet actif
+  const {
+    data: receivedApplications = [],
+    isLoading: isLoadingApplications,
+  } = useQuery<IJobWithApplications[] | null>({
+    queryKey: ["company-applications"],
+    queryFn: async () => {
+      try {
+        const data = await getCompanyApplyJobs();
+        if (data === null || data === undefined) {
+          return [];
+        }
+        return data;
+      } catch (error: any) {
+        toast.error(error.message || "Erreur lors de la récupération des candidatures.");
+        return [];
+      }
+    },
+    enabled: activeTab === "applications", // Ne s'active que si l'onglet "applications" est sélectionné
+    
 
-  // Effet pour récupérer les candidatures au montage ou au changement d'onglet
-  useEffect(() => {
-    if (activeTab === "applications") {
-      fetchCompanyApplications();
-    }
-  }, [activeTab]); // Dépend de l'onglet actif
-
+  });
 
   
   return (
@@ -140,7 +137,7 @@ export default function RecruiterDashboard() {
                   {isLoadingJobs ? (
                     // Affiche des squelettes pendant le chargement des offres
                     [...Array(3)].map((_, index) => <JobCardSkeleton key={index} />)
-                  ) : postedJobs.length > 0 ? (
+                  ) : postedJobs && postedJobs?.length > 0 ? (
                     // Affiche les offres d'emploi si disponibles
                     postedJobs.map((job) => <JobCard key={job.id} job={job} path={`/jobs/${job.id}`} />)
                   ) : (
@@ -163,7 +160,7 @@ export default function RecruiterDashboard() {
                   {isLoadingApplications ? (
                     // Affiche des squelettes pendant le chargement des candidatures
                     [...Array(3)].map((_, index) => <ApplicationCardSkeleton key={index} />)
-                  ) : receivedApplications.length > 0 ? (
+                  ) :receivedApplications && receivedApplications?.length > 0 ? (
                     // Parcourt chaque job, puis chaque application pour ce job
                     receivedApplications.map((job) =>
                       job.applications && job.applications.length > 0 ? (

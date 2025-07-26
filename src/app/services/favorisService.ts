@@ -4,9 +4,6 @@ import api from "./api";
 /**
  * @interface IFavoriteJob
  * @description Représente la structure simplifiée d'une offre d'emploi favorite.
- * Adaptez cette interface pour qu'elle corresponde aux données réelles
- * renvoyées par votre API pour un élément favori.
- * Par exemple, cela pourrait être juste un ID, ou un objet complet de l'emploi.
  */
 interface IFavoriteJob {
   id: number; // L'ID de l'offre d'emploi
@@ -24,8 +21,7 @@ export const getFavoris = async (): Promise<IFavoriteJob[] | null> => {
   try {
     const response = await api.get("/user/favories");
     if (response.status === 200) {
-      // Assurez-vous que la structure de la réponse de l'API correspond à `data.favoris`
-      // et que `favoris` est un tableau d'objets `IFavoriteJob`.
+
       return response.data?.favoris || [];
     }
     // Gérer les statuts non-200 qui ne sont pas des erreurs HTTP directes

@@ -35,50 +35,32 @@ export const DrawerForm = ({ jobId, companyName, jobTitle }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
 
-  // ✅ Gestion du fichier CV
-  // const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (!file) return;
-
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //     setCv({ CV: reader.result as string });
-  //   };
-  //   reader.readAsDataURL(file);
-  // };
     const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    setCvFile(file || null); // Stocke le File object ou null
+    setCvFile(file || null); 
   };
 
 
   const postJob = async (e: React.FormEvent) => {
     e.preventDefault(); // Empêche le rechargement de la page par défaut
-    setIsLoading(true); // Active l'état de chargement
+    setIsLoading(true);
 
     try {
       // Appel à applyToJob avec le fichier CV (cvFile) et la lettre de motivation (coverLetter).
       // Le service applyToJob est responsable de l'upload du fichier si cvFile est un objet File.
       const applicationResponse = await applyToJob(jobId, cvFile, coverLetter);
 
-      // Si applyToJob réussit, il retourne une réponse (non null/undefined) et gère son propre toast.success.
       if (applicationResponse) {
-        setOpen(false); // Ferme le tiroir
+        setOpen(false);
         setCoverLetter(""); // Réinitialise le champ de la lettre de motivation
         setCvFile(null); // Réinitialise l'état du fichier CV
         // L'input de type file est réinitialisé visuellement par le navigateur
         // lorsque l'état du fichier est mis à null.
       } else {
-        // Ce bloc est un garde-fou. Normalement, `applyToJob` devrait lancer une erreur
-        // si l'opération ne réussit pas, et le `catch` block la gérerait.
-        // Il est ici au cas où `applyToJob` retournerait `null` ou `undefined` sans erreur.
         toast.error("La candidature n'a pas pu être traitée correctement.");
       }
     } catch (error: any) {
-      // Le service `applyToJob` affiche déjà un toast.error et log l'erreur.
-      // sauf si un traitement spécifique à ce composant est requis.
       console.error("❌ Erreur lors de l'envoi de la candidature depuis le formulaire:", error);
-      // toast.error("❌ Échec de l'application au job"); // Commenté pour éviter les toasts en double
     } finally {
       setIsLoading(false); // Désactive toujours l'état de chargement, que l'opération réussisse ou échoue
     }

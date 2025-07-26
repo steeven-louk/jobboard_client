@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { use } from "react";
 
 import { DrawerForm } from "@/app/components/drawerForm";
 import { HeaderComponent } from "@/app/components/headerComponent";
@@ -31,6 +31,7 @@ import { getDetailJob } from "@/app/services/jobService";
 import { toggleFavorite, isInFavorite } from "@/app/services/favorisService";
 import { toast } from "react-toastify";
 import { JobDetailSkeleton } from "@/app/components/skeletons/Skeletons";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 
@@ -56,66 +57,41 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
   const path = usePathname();
   const { id } = use(params);
 
-  const [jobDetail, setJobDetail] = useState<IJobDetail | null>(null);
-  const [isFavorite, setIsFavorite] = useState<boolean | null>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isTogglingFavorite, setIsTogglingFavorite] = useState<boolean>(false);
-
   const { data: session, status: sessionStatus } = useSession();
   const userRole = session?.user?.role;
+  const isAuthenticated = sessionStatus ==="authenticated"
+  const queryClient = useQueryClient();
 
-  // const addToFavorie = async () => {
-  //   if (!session) {
-  //     toast.info("Vous devez être connecté pour ajouter aux favoris");
-  //     return alert("Vous devez être connecté pour ajouter aux favoris");
-  //   }
-  //   try {
-  //     const response = await toggleFavorite(id);
-  //     setIsInFavorie(response);
-  //     if (isFavorite) {
-  //       toast.success("Favorie supprimé avec succes");
-  //     } else {
-  //       toast.success("Favorie ajouter avec succes");
-  //     }
+  const { data: jobDetail, isLoading, isError } = useQuery<IJobDetail | null>({
+    queryKey: ["job", id],
+    queryFn: async()=> await getDetailJob(id),
+    enabled: !!id, // Ne lance la requête que si l'ID est disponible
+  });
 
-  //     console.log(response);
-  //   } catch (error) {
-  //     toast.error("Erreur lors de l'ajout aux favoris");
-  //     console.error("Erreur lors de l'ajout aux favoris :", error);
-  //   }
-  // };
+    const {
+    data: isFavorite,
+    isFetching: isTogglingFavorite,
+  } = useQuery({
+    queryKey: ['favorite', id],
+    queryFn: () => isInFavorite(id),
+    enabled: !!id && isAuthenticated,
+  });
 
+    const favoriteMutation = useMutation({
+    mutationFn: () => toggleFavorite(id),
+    onSuccess: (newStatus: boolean) => {
+      queryClient.setQueryData(['favorite', id], newStatus);
+      toast.success(
+        newStatus
+          ? 'Offre ajoutée aux favoris avec succès !'
+          : 'Offre retirée des favoris avec succès !'
+      );
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Erreur lors de la mise à jour du favori.');
+    },
+  });
 
-  const fetchJobData = async () => {
-    setIsLoading(true); 
-    try {
-      // Vérifier si le job est en favori si l'utilisateur est connecté
-      if (sessionStatus === "authenticated" && id) {
-        const favoriteStatus = await isInFavorite(id);
-        setIsFavorite(favoriteStatus || null);
-      }
-
-      // Récupérer les détails du job
-      if (id) {
-        const jobResponse = await getDetailJob(id);
-        setJobDetail(jobResponse || null); // S'assurer que c'est null si aucune donnée
-      }
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la récupération des détails du job.");
-      console.error("❌ Erreur lors de la récupération du job :", error);
-      setJobDetail(null); // Réinitialise les détails du job en cas d'erreur
-    } finally {
-      setIsLoading(false); 
-    }
-  };
-
-  // Effet pour récupérer les données du job au montage ou si l'ID/session change
-  useEffect(() => {
-    if (id) { // S'assure que l'ID est disponible
-      fetchJobData();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, sessionStatus]);
 
     /**
    * @function handleToggleFavorite
@@ -123,27 +99,12 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
    * Nécessite une connexion utilisateur.
    */
   const handleToggleFavorite = async () => {
-    if (!session) {
-      toast.info("Vous devez être connecté pour ajouter/retirer des favoris.");
+
+    if (!isAuthenticated) {
+      toast.info("Vous devez être connecté pour ajouter ou retirer des favoris.");
       return;
     }
-    if (isTogglingFavorite || !id) return; // Empêche les clics multiples ou si jobId est null
-
-    setIsTogglingFavorite(true); // Active l'état de bascule
-    try {
-      const newFavoriteStatus = await toggleFavorite(id);
-      setIsFavorite(newFavoriteStatus); // Met à jour l'état local
-      if (newFavoriteStatus) {
-        toast.success("Offre ajoutée aux favoris avec succès !");
-      } else {
-        toast.success("Offre retirée des favoris avec succès !");
-      }
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de l'opération sur les favoris.");
-      console.error("❌ Erreur lors de l'ajout/retrait aux favoris :", error);
-    } finally {
-      setIsTogglingFavorite(false); // Désactive l'état de bascule
-    }
+    favoriteMutation.mutate();
   };
 
   // Affiche un skeleton de page pendant le chargement
@@ -152,7 +113,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
   }
 
   // Si le job n'est pas trouvé après le chargement
-  if (!jobDetail) {
+  if (isError || !jobDetail) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <h1 className="text-3xl font-bold text-gray-700">Offre d&apos;emploi non trouvée</h1>
@@ -223,32 +184,35 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
                 <span className="font-semibold">{jobDetail?.company?.name}</span> ?
               </CardDescription>
               <div className="btn-group flex flex-col gap-4 mt-4">
-                {userRole === "USER" && (
+                {(userRole === "USER" && isAuthenticated )&& (
                   <DrawerForm
                     jobId={id}
                     jobTitle={jobDetail?.title ?? ""}
                     companyName={jobDetail?.company.name ?? ""}
                   />
                 )}
-                <Button
-                  onClick={handleToggleFavorite}
-                  variant={isFavorite ? "destructive" : "outline"}
-                  className={`w-full transition font-semibold flex items-center gap-2`}
-                  disabled={isTogglingFavorite} // Désactive le bouton pendant la bascule
-                >
-                  {isTogglingFavorite ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : isFavorite ? (
-                    <Heart className="h-4 w-4 fill-current" /> 
-                  ) : (
-                    <Heart className="h-4 w-4" />
-                  )}
-                  {isTogglingFavorite
-                    ? "Mise à jour..."
-                    : isFavorite
-                    ? "Retirer des favoris"
-                    : "Ajouter aux favoris"}
-                </Button>
+                {isAuthenticated && (
+                  <Button
+                    onClick={handleToggleFavorite}
+                    variant={isFavorite ? "destructive" : "outline"}
+                    className={`w-full transition font-semibold flex items-center gap-2`}
+                    disabled={isTogglingFavorite} // Désactive le bouton pendant la bascule
+                  >
+                    {isTogglingFavorite ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : isFavorite ? (
+                      <Heart className="h-4 w-4 fill-current" /> 
+                    ) : (
+                      <Heart className="h-4 w-4" />
+                    )}
+                    {isTogglingFavorite
+                      ? "Mise à jour..."
+                      : isFavorite
+                      ? "Retirer des favoris"
+                      : "Ajouter aux favoris"}
+                  </Button>
+
+                )}
               </div>
             </Card>
             {/* Informations supplémentaires sur l'offre */}

@@ -1,5 +1,5 @@
 "use client";
-import { use, useEffect, useState } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -21,6 +21,7 @@ import { getCompanyDetail, updateCompany } from "@/app/services/companyService";
 import { toast } from "react-toastify";
 import { CompanyProfileSkeleton } from "@/app/components/skeletons/Skeletons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 
 
@@ -75,55 +76,61 @@ export default function CompanyProfilePage({
   const userRole = session?.user?.role;
   const userId = session?.user?.id || "";
 
-  const [company, setCompany] = useState<ICompanyDetail | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [isLoadingPage, setIsLoadingPage] = useState<boolean>(true);
 
   const JOBS_PER_PAGE = 4;
 
+  const {
+    data: company,
+    isLoading: isLoadingPage,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['company-detail', id],
+    queryFn: async () =>{
+       const data:ICompanyDetail | null =await getCompanyDetail(id);
+       return data;
+      },
+    enabled: !!id, // Ne lance la requête que si `id` est défini
+    // staleTime: 1000 * 60 * 5, // Les données sont considérées comme "fraîches" pendant 5 minutes
+
+  });
+
   const verifyUser = userId === company?.userId;
 
-  const fetchCompanyDetails = async () => {
-    setIsLoadingPage(true); // Active le chargement de la page
-    try {
-      const responseData: ICompanyDetail = await getCompanyDetail(id);
-      setCompany(responseData || null); // S'assurer que 'company' est null si les données sont vides
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la récupération du profil de l'entreprise.");
-      console.error("❌ Erreur lors de la récupération du profil de l'entreprise :", error);
-      setCompany(null); // Réinitialise l'entreprise en cas d'erreur
-    } finally {
-      setIsLoadingPage(false); // Désactive le chargement de la page
+  const updateCompanyMutation = useMutation<
+    ICompanyDetail,
+    Error,
+    { id: string; userId: string, payload: ICompanyEditFormData }
+  >({
+    mutationFn: async({ id, userId, payload }) =>{
+      const data = await updateCompany(id, userId, payload);
+      if (!data) {
+      throw new Error("Impossible de mettre à jour le profil de l'entreprise. Réponse vide.");
     }
-  };
-
-  // Effet pour récupérer les détails de l'entreprise au montage du composant
-  useEffect(() => {
-    // Ne tente de récupérer les détails que si l'ID est disponible
-    if (id) {
-      fetchCompanyDetails();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
+    return data;
+      },
+    onSuccess: () => {
+      toast.success("Profil de l'entreprise mis à jour avec succès !");
+      setIsEditModalOpen(false); 
+    },
+    onError: (error) => {
+      toast.error(
+        error.message || "Erreur lors de la modification du profil de l'entreprise."
+      );
+      console.error("❌ Erreur lors de la modification du profil de l'entreprise :", error);
+    },
+  });
 
   const handleCompanyUpdate = async (updatedCompanyData: ICompanyEditFormData, logoFile?: File | null) => {
-    try {
-      // Préparer le payload pour l'API, en priorisant le nouveau fichier logo
-      const payload = {
-        ...updatedCompanyData,
-        logo: logoFile || (typeof updatedCompanyData.logo === 'string' ? updatedCompanyData.logo : undefined),
-      };
-      
-      await updateCompany(id, userId, payload);
-      toast.success("Profil de l'entreprise mis à jour avec succès !");
-      setIsEditModalOpen(false); // Ferme la modale après la mise à jour
-      await fetchCompanyDetails(); // Re-charger les détails pour rafraîchir l'UI
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la modification du profil de l'entreprise.");
-      console.error("❌ Erreur lors de la modification du profil de l'entreprise :", error);
-    }
+    // Préparer le payload pour l'API, en priorisant le nouveau fichier logo
+    const payload = {
+      ...updatedCompanyData,
+      logo: logoFile || (typeof updatedCompanyData.logo === 'string' ? updatedCompanyData.logo : undefined),
+    };
+    updateCompanyMutation.mutate({ id, userId, payload });
+
   };
 
   const handlePageChange = (page: number) => {
@@ -131,12 +138,12 @@ export default function CompanyProfilePage({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const totalPages =company?.jobs? Math.ceil(company?.jobs?.length / JOBS_PER_PAGE):0;
+  const totalPages = company?.jobs ? Math.ceil(company.jobs.length / JOBS_PER_PAGE):0;
   const paginatedJobs = company?.jobs?.slice(
     (currentPage - 1) * JOBS_PER_PAGE,
     currentPage * JOBS_PER_PAGE
   ) || [];
-
+console.log("toatatl oage",paginatedJobs)
   if (isLoadingPage || sessionStatus === "loading") {
     return <CompanyProfileSkeleton />;
   }
@@ -148,6 +155,19 @@ export default function CompanyProfilePage({
           <h1 className="text-3xl font-bold text-gray-700">Entreprise non trouvée</h1>
           <p className="mt-4 text-gray-500">Désolé, l&apos;entreprise que vous recherchez n&apos;existe pas ou a été supprimée.</p>
         </div>
+    );
+  }
+
+    if (isError) {
+    // Si une erreur s'est produite lors de la récupération des détails de l'entreprise
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <h1 className="text-3xl font-bold text-gray-700">Erreur de chargement</h1>
+        <p className="mt-4 text-gray-500">
+          Désolé, une erreur est survenue lors de la récupération du profil de l&apos;entreprise.
+        </p>
+        <p className="text-red-500">{error?.message}</p>
+      </div>
     );
   }
   return (

@@ -40,9 +40,9 @@ export const getAllJob = async(): Promise<IJob[]>=>{
         return response?.data?.jobs as IJob[];
         }
       } catch (error:any) {
-        toast.error("Erreur lors de la récupération des jobs");
-          console.error("Erreur lors de la récupération des jobs :", error);
-        throw new Error(error || "Erreur lors de la récupération des jobs")
+        toast.error(error.message || " Erreur lors de la récupération des offres d'emplois");
+          console.error(" Erreur lors de la récupération des offres d'emploi :", error);
+        throw new Error(error || " Erreur lors de la récupération des offres d'emploi")
       }
       return [];
 }

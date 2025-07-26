@@ -9,6 +9,8 @@ import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
 import { getAllJob } from "@/app/services/jobService";
 import { toast } from "react-toastify";
 import { Pagination } from "@/app/components/pagination";
+import { useQuery } from "@tanstack/react-query";
+
 
 
 interface IJob {
@@ -34,10 +36,8 @@ export default function JobContent() {
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const [jobs, setJobs] = useState<IJob[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [sortBy, setSortBy] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   
   const JOBS_PER_PAGE = 6;
 
@@ -71,59 +71,29 @@ export default function JobContent() {
     setSearchTerm(initialSearchTerm);
   }, [searchParams]);
 
-  //Récupération des offres d'emploi
-  useEffect(() => {
-    const fetchJobs = async () => {
-      setIsLoading(true);
-      try {
-        const data: IJob[] | null = await getAllJob();
-        if (data) {
-          setJobs(data);
-        } else {
-          setJobs([]); // S'assurer que 'jobs' est un tableau vide si null
+    const {
+      isPending: isLoading, error, data: jobs } = useQuery({
+      queryKey: ['jobs'],
+      queryFn: async () => {
+        try {
+          const data: IJob[] | undefined = await getAllJob();
+          if (data === null || data === undefined) {
+            return [];
+          }
+          if (error){
+            console.log("error", error.message)
+          }
+          return data || undefined; 
+        } catch (err: any) {
+          toast.error(err.message || "Erreur lors de la récupération des offres d'emploi.");
+          console.error("❌ Erreur lors de la récupération des offres d'emploi :", err);
+          return []; // Retourne un tableau vide en cas d'erreur
         }
-      } catch (error: any) {
-        toast.error(error.message || "Erreur lors de la récupération des offres d'emploi.");
-        console.error("❌ Erreur lors de la récupération des offres d'emploi :", error);
-        setJobs([]); // Réinitialise les jobs en cas d'erreur
-      } finally {
-        setIsLoading(false); 
-      }
-    };
-    fetchJobs();
-  }, []);
+      },
+    })
 
-  // Filtrage des jobs
-  // const filteredJobs = getJobs
-  //   ?.filter((job) => {
-  //     if (!searchTerm.trim()) return true;
-  //     const searchLower = searchTerm.toLowerCase();
-  //     return (
-  //       job?.title?.toLowerCase().includes(searchLower) ||
-  //       job?.description?.toLowerCase().includes(searchLower) ||
-  //       job?.company?.domaine?.toLowerCase()?.includes(searchLower)
-  //     );
-  //   })
-  //   .filter((job) => {
-  //     if (Object.values(contractTypes).every((v) => !v)) return true;
-  //     return contractTypes[job?.jobType?.toLowerCase() as keyof typeof contractTypes] || false;
-  //   })
-  //   .sort((a, b) => {
-  //     switch (sortBy) {
-  //       case "recent":
-  //         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  //       case "salary-high":
-  //         return (b.salary || 0) - (a.salary || 0);
-  //       case "salary-low":
-  //         return (a.salary || 0) - (b.salary || 0);
-  //       case "company":
-  //         return a.company?.domaine?.localeCompare(b?.company?.domaine ?? "") ?? 0;
-  //       default:
-  //         return 0;
-  //     }
-  //   });
 
-  // ✅ Pagination
+  // Pagination
     const filteredJobs = jobs
     ?.filter((job) => {
       // Filtrage par terme de recherche
@@ -155,7 +125,6 @@ export default function JobContent() {
       );
       if (activeExperienceFilters.length === 0) return true; // Si aucun filtre d'expérience, inclure tous les jobs
 
-      // Normalise le niveau d'expérience du job pour la comparaison
       const jobExperienceLevelLower = job?.experienceLevel?.toLowerCase();
       return activeExperienceFilters.includes(jobExperienceLevelLower || "");
     })
@@ -173,13 +142,13 @@ export default function JobContent() {
           return (a.salary || 0) - (b.salary || 0);
         case "company":
           // Tri par nom de domaine de l'entreprise
-          return a.company?.name?.localeCompare(b?.company?.name ?? "") ?? 0; // Utilise company.name
+          return a.company?.name?.localeCompare(b?.company?.name ?? "") ?? 0; 
         default:
           return 0; // Pas de tri par défaut
       }
     });
-  const totalPages = Math.ceil(filteredJobs.length / JOBS_PER_PAGE);
-  const paginatedJobs = filteredJobs.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
+  const totalPages = Math.ceil((filteredJobs?.length ?? 0 )/ JOBS_PER_PAGE);
+  const paginatedJobs = filteredJobs?.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
 
   // Fonctions pour modifier les filtres et la recherche
   const handleSortChange = (value: string) => {
@@ -244,7 +213,7 @@ export default function JobContent() {
                 [...Array(JOBS_PER_PAGE)].map((_, index) => (
                   <JobCardSkeleton key={index} />
                 ))
-              ) : paginatedJobs.length > 0 ? (
+              ) : paginatedJobs && paginatedJobs.length > 0 ? (
                 // Affiche les cartes d'emploi paginées
                 paginatedJobs.map((job) => (
                   <JobCard key={job.id} job={job} path={""} /> // Lien vers la page de détail du job

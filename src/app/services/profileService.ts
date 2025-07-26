@@ -5,7 +5,6 @@ import { handleUpload } from "./companyService";
 /**
  * @interface IUserProfile
  * @description Représente la structure des données du profil utilisateur.
- * renvoyées par votre API pour le profil utilisateur.
  */
 interface IUserProfile {
   sexe: "Homme" | "Femme" | string; 
@@ -85,7 +84,7 @@ export const updateUserProfile = async (
     // Gérer l'upload de l'image de profil si un fichier est fourni
     if (updatePayload.picture && updatePayload.picture instanceof File) {
       try {
-        // console.log("updatePayload",updatePayload)
+
         const uploadResponse = await handleUpload("profile_image", userId, updatePayload.picture);
         console.log(uploadResponse)
         if (!uploadResponse || !uploadResponse.fileUrl) {
@@ -107,7 +106,7 @@ export const updateUserProfile = async (
       toast.success("Profil mis à jour avec succès !");
       // Recharger le profil utilisateur pour s'assurer que les données sont à jour
       await getUserProfile();
-      // Assurez-vous que l'API renvoie l'objet profil mis à jour dans `response.data`
+      
       return response.data;
     }
     throw new Error(`Échec de la mise à jour du profil avec le code : ${response.status}`);

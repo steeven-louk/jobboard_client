@@ -26,20 +26,6 @@ import api from "@/app/services/api";
 import { toast } from "react-toastify";
 import { Progress } from "@/components/ui/progress";
 import { Loader2 } from "lucide-react";
-// import axios from "axios";
-
-// interface IJobType {
-//   title: string;
-//   location: string;
-//   salary: number | string;
-//   jobType: string;
-//   description: string;
-//   skill: string;
-//   requirement: string;
-//   duration: string;
-//   expiration_date: Date | string |null;
-//   selectedOffer: Offer | null;
-// }
 
 interface Offer {
   id: string;
@@ -83,20 +69,10 @@ const step2Schema = z.object({
   }, { message: "La date d'expiration ne peut pas être dans le passé." }),
 });
 
-// Schéma pour l'étape 3 (sélection de l'offre) - les champs sont gérés par l'état local
-// const step3Schema = z.object({
-//   selectedOffer: z.object({
-//     id: z.string(),
-//     description: z.string(),
-//     price: z.number(),
-//     duration: z.number(),
-//   }, { required_error: "Veuillez choisir une offre de publication." }).nullable()
-//     .refine(offer => offer !== null, { message: "Veuillez choisir une offre de publication." }),
-// });
+
 const step3Schema = z.object({
-  // Correction ici : Utilisation de z.union pour permettre explicitement 'null'
   selectedOffer: z.union([
-    OfferZodSchema, // Utilise le schéma nommé pour l'offre
+    OfferZodSchema, // schéma nommé pour l'offre
     z.null(), // Permet explicitement la valeur null
   ]).refine(offer => offer !== undefined, { message: "Veuillez choisir une offre de publication." }),
 });
@@ -234,14 +210,14 @@ export default function NewJobPage() {
         return;
       }
 
-      // Appel à votre API backend pour créer une session de paiement Stripe
+      // Appel API backend pour créer une session de paiement Stripe
       const response = await api.post("/payment/create-checkout-session", {
         jobData: data, // Passe toutes les données du job
         offerId: data.selectedOffer.id,
         amount: data.selectedOffer.price,
       });
 
-      const session = response.data; // La réponse doit contenir l'objet session de Stripe
+      const session = response.data;
       if (session.sessionId) {
         // Redirige l'utilisateur vers la page de paiement Stripe
         await stripe.redirectToCheckout({ sessionId: session.sessionId });
@@ -255,42 +231,6 @@ export default function NewJobPage() {
       setLoading(false); // Désactive l'état de chargement
     }
   };
-
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   if (!jobData.selectedOffer) {
-  //     alert("Veuillez choisir une offre avant de publier.");
-  //     toast.info("Veuillez choisir une offre avant de publier.");
-  //     return;
-  //   }
-
-  //   try {
-  //     const stripe = await stripePromise;
-  //     if (!stripe) {
-  //       console.error("Erreur Stripe : Impossible de charger le paiement.");
-  //       return;
-  //     }
-
-  //     const response = await api.post("/payment/create-checkout-session", {
-  //       jobData,
-  //       offerId: jobData?.selectedOffer?.id,
-  //       amount: jobData.selectedOffer?.price,
-  //     });
-
-  //     const session = response;
-  //     await stripe?.redirectToCheckout({ sessionId: session.data.sessionId });
-  //   } catch (error) {
-  //     console.error("Erreur:", error);
-  //   }
-  // };
-
-  // const handleOfferChange = (value: string) => {
-  //   const selectedOffer =
-  //     offerTypes.find((offer) => offer.id === value) || offerTypes[0];
-  //   setJobData((prev) => ({ ...prev, selectedOffer }));
-  // };
 
   return (
 

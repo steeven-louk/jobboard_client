@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { JobCard } from "./jobCard";
 import { getAllJob } from "../services/jobService";
 import { JobCardSkeleton } from "./skeletons/job-card-skeleton";
-import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
 
 
 interface IJob {
@@ -27,33 +27,19 @@ interface IJob {
   };
 }
 export const RecentJobs = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [recentJobs, setRecentJobs] = useState<IJob[]>([]);;
 
-  useEffect(() => {
-    const fetchRecentJobs = async () => {
-      setIsLoading(true);
-      try {
-        const data: IJob[] | null = await getAllJob(); 
+  const { data:recentJobs, isLoading } = useQuery({
+    queryKey: ["recentJobs"],
+    queryFn: async () => {
+        const data: IJob[] | null = await getAllJob();
         if (data) {
           const filteredData = data.slice(0, 6);
-          setRecentJobs(filteredData);
-        } else {
+          return filteredData;
+        } 
+    },
+  });
 
-          console.warn("⚠️ Aucune donnée d'emploi récente récupérée.");
-          setRecentJobs([]); 
-        }
-      } catch (error: any) {
-        console.error("❌ Erreur lors de la récupération des emplois récents :", error);
-        toast.error(error.message || "Erreur lors de la récupération des emplois récents.");
-        setRecentJobs([]);
-      } finally {
-        setIsLoading(false); // Termine le chargement
-      }
-    };
 
-    fetchRecentJobs();
-  }, []);
 
   return (
     <section className="container px-4 md:px-10 mx-auto mt-5 md:my-10">
@@ -72,7 +58,7 @@ export const RecentJobs = () => {
             <JobCardSkeleton key={index} />
           ))}
         </div>
-      ): recentJobs.length > 0 ? (
+      ):recentJobs && recentJobs.length > 0 ? (
           // Affiche les offres d'emploi si disponibles
           recentJobs
             .slice(0, 6)

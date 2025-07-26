@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +25,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ApplicationDetailSkeleton } from "@/app/components/skeletons/Skeletons";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface IApplicationDetail {
   id: string;
@@ -51,60 +52,74 @@ export default function ApplicationDetailPage({
 }) {
   const { id } = use(params);
 
-  const [application, setApplication] = useState<IApplicationDetail | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isChangingStatus, setIsChangingStatus] = useState<boolean>(false);
 
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (!id) {
-      setIsLoading(false);
-      return;
-    }
+  const  {data: application, isLoading, isError} = useQuery<IApplicationDetail | null>({
+    queryKey: ['application', id],
+    queryFn: async()=> await getApplication(id),
+    enabled: !!id, // Ne lance la requête que si l'ID est disponible
+  })
 
-    const fetchApplicationDetails = async () => {
-      setIsLoading(true);
-      console.log("ffff");
-      try {
-      console.log("ffff");
-        const data = await getApplication(id);
-      console.log("ffff", data);
 
-        if (data) {
-          console.log(data)
-          setApplication(data);
-        } else {
-          setApplication(null); // S'assurer que c'est null si aucune donnée
-        }
-      } catch (error: any) {
-        console.error("❌ Erreur lors de la récupération de la candidature :", error);
-        toast.error(error.message || "Erreur lors de la récupération de la candidature.");
-        setApplication(null); // Réinitialise l'application en cas d'erreur
-      } finally {
-        setIsLoading(false);
+  const mutation = useMutation({
+    mutationFn: (newStatus: string) => changeStatus(application!, newStatus),
+    onSuccess: () => {
+      toast.success("Statut mis à jour avec succès.");
+      setIsChangingStatus(false); // Réinitialise l'état de changement de statut
+    },
+    // Mise à jour optimiste du statut de la candidature
+    onMutate: async(newStatus: string) => {
+      setIsChangingStatus(true); // Indique que le statut est en cours de changement
+
+      await queryClient.cancelQueries({ queryKey: ["application", id] }); // Stoppe les requêtes en cours
+
+      const previousData = queryClient.getQueryData(["application", id]); // Sauvegarde l'état actuel
+
+      // Mise à jour optimiste : changement immédiat du statut dans le cache
+      queryClient.setQueryData(["application", id], {
+        ...application!,
+        status: newStatus,
+      });
+
+      return { previousData }; // Pour permettre un rollback en cas d’erreur
+    },
+        onError: (err, newStatus, context) => {
+      setIsChangingStatus(false); // Réinitialise l'état de changement de statut
+      // En cas d’erreur, rollback de l’ancienne valeur et affichage toast
+      toast.error("Erreur lors de la mise à jour du statut.");
+      if (context?.previousData) {
+        queryClient.setQueryData(["application", id], context.previousData);
       }
-    };
-    fetchApplicationDetails();
-  }, [id]);
+    },
+    onSettled: () => {
+      // Rafraîchit la donnée une fois la mutation terminée (succès ou erreur)
+      queryClient.invalidateQueries({ queryKey: ["application", id] });
+    },
+  });
 
-  const handleStatusChange = async (newStatus: string) => {
-    if (!application || isChangingStatus) return; // Empêche les clics multiples ou si l'application est null
+  // const handleStatusChange = async (newStatus: string) => {
+  //   if (!application || isChangingStatus) return; // Empêche les clics multiples ou si l'application est null
 
-    setIsChangingStatus(true); 
-    try {
-      // Met à jour l'état local immédiatement pour une meilleure réactivité de l'UI
-      setApplication({ ...application, status: newStatus });
-      await changeStatus(application, newStatus); // Passe l'ID et le nouveau statut
-      // toast.success(`Statut mis à jour à : ${newStatus}`);
-    } catch (error: any) {
-      console.error("❌ Erreur lors du changement de statut :", error);
-      toast.error(error.message || "Erreur lors de la mise à jour du statut.");
-      // Optionnel: Revenir à l'ancien statut si l'API échoue
-      setApplication(prev => prev ? { ...prev, status: status } : null);
-    } finally {
-      setIsChangingStatus(false); 
-    }
+  //   setIsChangingStatus(true); 
+  //   try {
+  //     // Met à jour l'état local immédiatement pour une meilleure réactivité de l'UI
+  //     setApplication({ ...application, status: newStatus });
+  //     await changeStatus(application, newStatus); // Passe l'ID et le nouveau statut
+  //     // toast.success(`Statut mis à jour à : ${newStatus}`);
+  //   } catch (error: any) {
+  //     console.error("❌ Erreur lors du changement de statut :", error);
+  //     toast.error(error.message || "Erreur lors de la mise à jour du statut.");
+  //     // Optionnel: Revenir à l'ancien statut si l'API échoue
+  //     setApplication(prev => prev ? { ...prev, status: status } : null);
+  //   } finally {
+  //     setIsChangingStatus(false); 
+  //   }
+  // };
+    const handleStatusChange = (newStatus: string) => {
+    mutation.mutate(newStatus); // Lance la mutation
   };
 
   // Affiche un skeleton de page pendant le chargement
@@ -112,7 +127,7 @@ export default function ApplicationDetailPage({
     return <ApplicationDetailSkeleton />;
   }
 
-    if (!application) {
+    if (!application || isError) {
     return (
       <ProtectedRoute requiredRole="RECRUITER">
         <div className="container mx-auto px-4 py-8 text-center">
@@ -146,7 +161,7 @@ export default function ApplicationDetailPage({
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="profile">Profil</TabsTrigger>
                   <TabsTrigger value="resume">CV</TabsTrigger>
-                  <TabsTrigger value="coverLetter">Lettre de motivation</TabsTrigger>
+                  <TabsTrigger className="w-full" value="coverLetter">Lettre de motivation</TabsTrigger>
                 </TabsList>
 
                 {/* Contenu de l'onglet "Profil" */}

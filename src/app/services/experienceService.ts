@@ -29,10 +29,8 @@ export const handleAddExperience = async (formData: IExperience): Promise<IExper
 
     if (response.status === 201) {
       // Recharger le profil utilisateur pour s'assurer que les données sont à jour
-      // Cela dépend de la manière dont getUserProfile est implémenté et si ses données sont utilisées globalement.
       await getUserProfile();
       toast.success("Nouvelle expérience ajoutée avec succès !");
-      // Assurez-vous que l'API renvoie l'objet expérience créé dans `response.data`
       return response.data;
     }
     // Gérer les statuts non-201 qui ne sont pas des erreurs HTTP directes
@@ -57,7 +55,7 @@ export const handleDeleteExperience = async (id: number): Promise<void> => {
   try {
     const response = await api.delete(`/user/profil/experience/${id}`);
 
-    if (response.status === 200 || response.status === 204) { // 204 No Content est courant pour les suppressions réussies
+    if (response.status === 200 || response.status === 204) {
       // Recharger le profil utilisateur après la suppression
       await getUserProfile();
       toast.success("Expérience supprimée avec succès !");
@@ -89,7 +87,7 @@ export const handleUpdateExperience = async (id: number, formData: IExperience):
       // Recharger le profil utilisateur après la mise à jour
       await getUserProfile();
       toast.success("Expérience mise à jour avec succès !");
-      // Assurez-vous que l'API renvoie l'objet expérience mis à jour dans `response.data`
+      
       return response.data;
     }
     // Gérer les statuts non-200 qui ne sont pas des erreurs HTTP directes

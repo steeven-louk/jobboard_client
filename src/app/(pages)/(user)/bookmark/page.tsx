@@ -1,5 +1,4 @@
 "use client";
-import React, { useEffect, useState } from "react";
 
 import { HeaderComponent } from "@/app/components/headerComponent";
 import { JobCard } from "@/app/components/jobCard";
@@ -7,8 +6,8 @@ import { JobCard } from "@/app/components/jobCard";
 import { getFavoris } from "@/app/services/favorisService";
 import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
 import ProtectedRoute from "@/app/components/protectedRoutes";
-import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
 
 
 // ✅ Interface pour typer les favoris
@@ -37,30 +36,43 @@ interface IFavoris {
 }
 const Bookmark = () => {
   const { status: sessionStatus } = useSession(); // Récupère uniquement le statut de la session
-  const [bookmarkedJobs, setBookmarkedJobs] = useState<IFavoris[]>([]); 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const isAuthenticated = sessionStatus === "authenticated"; // Vérifie si l'utilisateur est authentifié
 
-  const fetchBookmarkedJobs = async () => {
-    setIsLoading(true); // Active le chargement
-    try {
-      const favorisData: IFavoris[] | null = await getFavoris(); // Le service peut retourner null ou un tableau
-      setBookmarkedJobs(favorisData || []); // S'assurer que c'est un tableau vide si null
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la récupération des favoris.");
-      console.error("❌ Erreur lors de la récupération des favoris :", error);
-      setBookmarkedJobs([]); // Réinitialise les favoris en cas d'erreur
-    } finally {
-      setIsLoading(false); // Désactive le chargement
-    }
-  };
+  const {
+    isPending: isLoading,
+    error,
+    data: bookmarkedJobs,
+    isError, // Pour une gestion plus claire des erreurs
+  } = useQuery({
+    queryKey: ['bookmark'],
+    queryFn: async () => {
 
-  useEffect(() => {
-    // Ne tente de récupérer les favoris que si la session est authentifiée.
-    // ProtectedRoute gérera la redirection si l'utilisateur n'est pas connecté.
-    if (sessionStatus === "authenticated") {
-      fetchBookmarkedJobs();
-    }
-  }, [sessionStatus]); 
+      try {
+        const data:IFavoris[] | null = await getFavoris();
+
+        return data ??[]; // Retourne les données directement
+      } catch (err: any) {
+        // Lancez l'erreur pour que react-query puisse la capturer
+        throw new Error(err.message || "Erreur lors de la récupération des favoris.");
+      }
+    },
+    enabled: isAuthenticated, // N'exécute la requête que si l'utilisateur est authentifié
+    refetchOnWindowFocus: false, // Ne pas rafraîchir lors du focus de la fenêtre
+  });
+
+
+    // Utilisation de isError pour afficher un message global si la requête a échoué
+  if (isError) {
+    return (
+      <ProtectedRoute>
+        <HeaderComponent pageName="Mes Favoris" />
+        <div className="container my-5 mx-auto p-5 text-center text-red-600">
+          <p>Une erreur est survenue lors du chargement de vos favoris.</p>
+          <p>{error?.message}</p>
+        </div>
+      </ProtectedRoute>
+    );
+  }
 
   return (
     <ProtectedRoute>
@@ -75,10 +87,10 @@ const Bookmark = () => {
                 <JobCardSkeleton key={index} />
               ))}
             </div>
-          ) : bookmarkedJobs.length > 0 ? (
+          ) : (bookmarkedJobs && bookmarkedJobs.length > 0) ? (
             // Affiche les JobCards si des favoris sont trouvés
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {bookmarkedJobs.map((favorisItem) => (
+              {bookmarkedJobs?.map((favorisItem) => (
                 favorisItem.job ? (
                   <JobCard path={""} key={favorisItem.job.id} job={favorisItem.job} />
                 ) : null // Ne rend rien si l'objet job est manquant

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { HeaderComponent } from "@/app/components/headerComponent";
 import DiplomeModal from "@/app/components/modals/diplomeModal";
@@ -31,6 +31,7 @@ import { handleDeleteFormation } from "@/app/services/diplomeService";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { ProfilePageSkeleton } from "@/app/components/skeletons/Skeletons";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 
@@ -45,7 +46,6 @@ interface IDiplome {
   level:string;
   competence?: string;
   description?:string
-
 }
 
 interface IExperience {
@@ -59,7 +59,6 @@ interface IExperience {
   description: string;
   competence: string;
   en_cours: boolean;
-
 }
 
 interface IProfilDetail {
@@ -74,79 +73,88 @@ interface IProfilDetail {
   email: string;
   Experience?: IExperience[];
   Diplome?:IDiplome[];
-
 }
 
 const Profil = () => {
   const { data: session, status: sessionStatus } = useSession();
-  const [userDetail, setUserDetail] = useState<IProfilDetail | undefined>(undefined);
-  const [isPageLoading, setIsPageLoading] = useState<boolean>(true); // État de chargement de la page
+  const authenticated = sessionStatus === "authenticated"
 
   const userRole = session?.user?.role ;
   const userId: string = session?.user?.id || "";
 
+  const queryClient = useQueryClient();
 
-  const fetchUserProfile = async () => {
-    setIsPageLoading(true); // Active le chargement de la page
-    try {
-      const data = await getUserProfile();
-      setUserDetail(data || undefined ); // S'assurer que c'est undefined si null
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la récupération du profil.");
-      console.error("❌ Erreur lors de la récupération du profil :", error);
-      setUserDetail(undefined); // Réinitialise les détails de l'utilisateur en cas d'erreur
-    } finally {
-      setIsPageLoading(false); // Désactive le chargement de la page
-    }
-  };
+  const {
+    data: userDetail,
+    isLoading: isPageLoading,
+    refetch: refetchUserProfile,
+  } = useQuery<IProfilDetail | undefined> ({
+    queryKey: ["id", userId],
+    queryFn: async()=>{
+      const data = await getUserProfile()
+      return data || undefined; // S'assurer que c'est undefined si null
+    },
+    enabled: authenticated, // Ne lance la requête que si l'utilisateur est authentifié
+  });
 
-  // Effet pour récupérer le profil au montage du composant
-  useEffect(() => {
-    // Ne pas tenter de récupérer le profil si la session n'est pas encore chargée
-    // ou si l'utilisateur n'est pas authentifié (ProtectedRoute gérera la redirection).
-    if (sessionStatus === "authenticated") {
-      fetchUserProfile();
-    }
-  }, [sessionStatus]);
+  const deleteExperienceMutation = useMutation({
+    mutationFn: handleDeleteExperience,
+    onSuccess: () => {
+      toast.success("Expérience supprimée !");
+      queryClient.invalidateQueries({ queryKey: ["id", userId] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Erreur lors de la suppression.");
+    },
+  });
 
   
-
-  const deleteExperience = async (id: number) => {
-    try {
-      await handleDeleteExperience(id);
-      toast.success("Expérience supprimée avec succès !");
-      await fetchUserProfile(); // Re-charger le profil après suppression pour rafraîchir l'UI
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la suppression de l'expérience.");
-      console.error("❌ Erreur lors de la suppression de l'expérience :", error);
-    }
-  };
-  
-  const deleteFormation = async (id: number) => {
-    try {
-      await handleDeleteFormation(id);
-      toast.success("Formation supprimée avec succès !");
-      await fetchUserProfile(); // Re-charger le profil après suppression pour rafraîchir l'UI
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la suppression de la formation.");
-      console.error("❌ Erreur lors de la suppression de la formation :", error);
-    }
-  };
+  const deleteFormationMutation = useMutation({
+    mutationFn: handleDeleteFormation,
+    onSuccess: () => {
+      toast.success("Formation supprimée !");
+      queryClient.invalidateQueries({ queryKey: ["id", userId] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Erreur lors de la suppression.");
+    },
+  });
 
 
-    const handleProfilUpdate = async (updatedProfil: IProfilDetail, imageFile?: File | null) => {
-    try {
-      // Si un nouveau fichier est sélectionné, on le passe. Sinon, on passe l'URL existante ou undefined.
+  const updateProfileMutation = useMutation({
+    mutationFn: async({
+      updatedProfil,
+      imageFile,
+    }: {
+      updatedProfil: IProfilDetail;
+      imageFile?: File | null;
+    }) => {
       const dataToSend = {
         ...updatedProfil,
-        picture: imageFile || (updatedProfil.picture || undefined), // Priorise le fichier, sinon l'URL, sinon undefined
+        picture: imageFile || updatedProfil.picture || undefined,
       };
+      const data = await updateUserProfile(userId, dataToSend);
+      return data;
+    },
+    onSuccess: () => {
+      // Invalide la requête pour recharger le profil mis à jour
+      queryClient.invalidateQueries({ queryKey: ["user-profile", userId] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Erreur lors de la mise à jour du profil.");
+    },
+  });
 
-      await updateUserProfile(userId, dataToSend);
-      await fetchUserProfile(); // Re-charger le profil après mise à jour pour rafraîchir l'UI
-    } catch (error: any) {
-      console.error("❌ Erreur lors de la modification du profil :", error);
-    }
+  const deleteExperience = async (id: number) => {
+    deleteExperienceMutation.mutate(id);
+  };
+
+  const deleteFormation = async (id: number) => {
+   deleteFormationMutation.mutate(id);
+  };
+
+  const handleProfilUpdate = async (updatedProfil: IProfilDetail, imageFile?: File | null) => {
+    updateProfileMutation.mutate({updatedProfil, imageFile});
   };
 
     // Affiche un skeleton de page pendant le chargement initial du profil
@@ -212,197 +220,8 @@ const Profil = () => {
           </Card>
           <Separator className="my-5" />
 
-          {/* {userRole === "USER" && (
-            <>
-              <section className="my-4 shadow-md p-3 rounded-md bg-white">
-                <div className="flex gap-4 md:gap-0 align-baseline md:flex-row flex-col justify-between">
-                  <div>
-                    <h1 className="font-bold text-2xl">Expérience</h1>
-                    <p>
-                      Parlez-nous de vos expériences passées et actuelles, de
-                      vos Projets
-                    </p>
-                  </div>
-                  <ExperienceModal />
-                </div>
-
-                <Separator className="my-5" />
-                {userDetail && userDetail.Experience &&  userDetail?.Experience?.length > 0 ? (
-                  userDetail?.Experience?.map((exp) => (
-                    <Card className="p-4 border-none shadow-none" key={exp.id}>
-                      <div className="flex justify-between">
-                        <div className="flex flex-col align-baseline gap-3">
-                          <span>Intitulé de poste</span>
-                          <CardTitle>{exp.title}</CardTitle>
-                        </div>
-                        <div className="btn-group inline-flex gap-3">
-                         
-                          <ExperienceModal experience={exp} />
-                          <Button
-                            onClick={() => deleteExperience(exp.id)}
-                            variant={"destructive"}
-                          >
-                            <Trash2 />
-                          </Button>
-                        </div>
-                      </div>
-                      <CardContent className="mt-6 grid gap-4 md:gap-0">
-                        <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                          <span className="text-gray-500">
-                            Entreprise ou client
-                          </span>
-                          <p className=" font-semibold inline-flex align-baseline">
-                            <Building /> {exp.entreprise}
-                          </p>
-                        </div>
-                        <div className="grid md:mt-4 md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                          <span className="text-gray-500">Localisation</span>
-                          <p className="relative text-start">{exp.location}</p>
-                        </div>
-                        <div className="grid md:my-4 md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                          <span className="text-gray-500">Type de contrat</span>
-                          <p className="">{exp.contract}</p>
-                        </div>
-                        <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                          <span className="text-gray-500">Date</span>
-                          <p className="inline-flex gap-3">
-                            De{" "}
-                            <span>
-                              {exp.date_debut ? new Date(exp?.date_debut).toLocaleDateString() : "N/A"}
-                            </span>{" "}
-                            à
-                            <span>
-                              {exp.date_fin ? new Date( exp?.date_fin).toLocaleDateString() : "Présent"}
-                            </span>
-                          </p>
-                        </div>
-                        <div className="flex md:my-4 flex-col md:flex-row gap-1 md:gap-5">
-                          <span className="text-gray-500">
-                            Description, missions
-                          </span>
-                          <p className="md:ml-[7.5rem]">{exp.description}</p>
-                        </div>
-                        <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                          <span className="text-gray-500">Compétences</span>
-                          <div className="flex flex-wrap gap-2">
-                            {exp.competence?.split(",")
-                              .map((skill: string, index: number) => (
-                                <Badge key={index} className="relative w-fit">
-                                  {skill.trim()}
-                                </Badge>
-                              ))}
-                          </div>
-                        </div>
-                      </CardContent>
-                      <Separator className="my-5" />
-                    </Card>
-                  ))
-                ) : (
-                  <p>Aucune expérience enregistrée.</p>
-                )}
-              </section>
-
-              <section className="my-5 shadow-md p-3 rounded-md bg-white">
-                <div className="flex gap-4 md:gap-0 align-baseline md:flex-row flex-col justify-between">
-                  <div>
-                    <h1 className="font-bold text-2xl">
-                      Diplômes & formations
-                    </h1>
-                    <p>
-                      Listez vos diplômes, formations et certifications
-                      pertinents.
-                    </p>
-                  </div>
-
-                  <DiplomeModal />
-                </div>
-                <Separator className="my-5" />
-                {userDetail?.Diplome && userDetail?.Diplome?.length > 0 ? (
-                  userDetail?.Diplome?.map((diplome) => (
-                    <Card key={diplome.id} className="border-none shadow-none">
-                   
-                      <CardContent className="mt-6 grid gap-4 md:gap-0 p-0 md:p-2">
-                        <div className="flex justify-between align-base">
-                          <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                            <span className="text-gray-500">Nom</span>
-                            <p className=" font-semibold inline-flex align-baseline">
-                              {diplome?.title}
-                            </p>
-                          </div>
-                          <div className="btn-group inline-flex gap-3">
-
-                            <DiplomeModal diplome={diplome} />
-                            <Button
-                              className="cursor-pointer"
-                              onClick={() => handleDeleteFormation(diplome?.id)}
-                              variant={"destructive"}
-                            >
-                              <Trash2 />
-                            </Button>
-                          </div>
-                        </div>
-                     
-                        <div className="grid md:mt-4 md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                          <span className="text-gray-500">Niveau</span>
-                          <p className="relative text-start">
-                            {diplome?.level}
-                          </p>
-                        </div>
-                        <div className="grid md:my-4 md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                          <span className="text-gray-500">
-                            École ou organisme
-                          </span>
-                          <p className="font-semibold inline-flex align-baseline">
-                            <Building />
-                            {diplome?.school}
-                          </p>
-                        </div>
-                        <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                          <span className="text-gray-500">Date</span>
-                          <p className="inline-flex gap-3">
-                            De{" "}
-                            <span>
-                              {diplome?.date_debut? new Date(
-                                diplome?.date_debut
-                              ).toLocaleDateString() : "N/A"}
-                            </span>{" "}
-                            à
-                            <span>
-                              {diplome?.date_fin ? new Date(diplome?.date_fin).toLocaleDateString():"Présent"}
-                            </span>
-                          </p>
-                        </div>
-
-                        <div className="flex md:my-4 flex-col md:flex-row  gap-1 md:gap-5">
-                          <span className="text-gray-500">Description</span>
-                          <p className="md:ml-[12rem]">
-                            {diplome?.description}
-                          </p>
-                        </div>
-                        <div className="grid md:grid-cols-2 md:w-[35rem] gap-1 md:gap-5">
-                          <span className="text-gray-500">Compétences</span>
-                          <div className="flex flex-wrap gap-2">
-                            {diplome?.competence?.split(",")
-                              .map((skill: string, index: number) => (
-                                <Badge key={index} className="relative w-fit">
-                                  {skill.trim()}
-                                </Badge>
-                              ))}
-                          </div>
-                        </div>
-
-                      </CardContent>
-                      <Separator className="my-5" />
-                    </Card>
-                  ))
-                ) : (
-                  <p>Aucun diplome enregistrée.</p>
-                )}
-              </section>
-            </>
-          )} */}
-                  {/* Section Expérience (visible uniquement pour les utilisateurs "USER") */}
-        {userRole === "USER" && (
+          {/* Section Expérience (visible uniquement pour les utilisateurs "USER") */}
+        {(userRole === "USER" && authenticated) && (
           <>
             <section className="my-4 shadow-md p-3 rounded-md bg-white">
               <div className="flex gap-4 md:gap-0 items-baseline md:flex-row flex-col justify-between">
@@ -413,7 +232,7 @@ const Profil = () => {
                   </p>
                 </div>
                 {/* Modal d'ajout d'expérience */}
-                <ExperienceModal onSuccess={fetchUserProfile} />
+                <ExperienceModal onSuccess={refetchUserProfile} />
               </div>
 
               <Separator className="my-5" />
@@ -427,7 +246,7 @@ const Profil = () => {
                       </div>
                       <div className="btn-group inline-flex gap-3">
                         {/* Modal de modification d'expérience */}
-                        <ExperienceModal experience={exp} onSuccess={fetchUserProfile} />
+                        <ExperienceModal experience={exp} onSuccess={refetchUserProfile} />
                         <Button
                           onClick={() => deleteExperience(exp.id)}
                           variant={"destructive"}
@@ -502,7 +321,7 @@ const Profil = () => {
                   </p>
                 </div>
                 {/* Modal d'ajout de diplôme */}
-                <DiplomeModal onSuccess={fetchUserProfile} />
+                <DiplomeModal onSuccess={refetchUserProfile} />
               </div>
               <Separator className="my-5" />
               {userDetail?.Diplome && userDetail.Diplome.length > 0 ? (
@@ -515,12 +334,12 @@ const Profil = () => {
                       </div>
                       <div className="btn-group inline-flex gap-3">
                         {/* Modal de modification de diplôme */}
-                        <DiplomeModal diplome={diplome} onSuccess={fetchUserProfile} />
+                        <DiplomeModal diplome={diplome} onSuccess={refetchUserProfile} />
                         <Button
                           className="cursor-pointer"
                           onClick={() => deleteFormation(diplome.id)}
                           variant={"destructive"}
-                          size="icon" // Bouton plus petit pour l'icône
+                          size="icon"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

@@ -66,7 +66,7 @@ export default function ExperienceModal({ experience, onSuccess }: Props) {
 
   const [formData, setFormData] = useState<IExperience>(initialData);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // State to control modal open/close
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setFormData(initialData);
@@ -89,30 +89,11 @@ export default function ExperienceModal({ experience, onSuccess }: Props) {
     }));
   }
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   if (!formData.en_cours && new Date(formData.date_debut) > new Date(formData.date_fin)) {
-  //     toast.error("La date de fin doit être postérieure à la date de début.");
-  //     return;
-  //   }
-
-  //   try {
-  //     if (experience) {
-  //       await handleUpdateExperience(experience?.id ?? 0, formData);
-  //     } else {
-  //       await handleAddExperience(formData);
-  //     }
-  //   } catch (error) {
-  //     toast.error("Erreur lors de l'opération");
-  //     console.error("Erreur lors de l'opération", error);
-  //   }
-  // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true); // Start loading
+    setIsSubmitting(true); 
 
-    // Client-side validation: Date de fin must be after Date de début if not "en cours"
+    //  Date de fin must be after Date de début if not "en cours"
     if (!formData.en_cours && formData.date_debut && formData.date_fin) {
       const startDate = new Date(formData.date_debut);
       const endDate = new Date(formData.date_fin);
@@ -135,7 +116,7 @@ export default function ExperienceModal({ experience, onSuccess }: Props) {
       }
       setIsModalOpen(false); // Close the modal on success
       if (onSuccess) {
-        onSuccess(); // Call success callback
+        onSuccess();
       }
     } catch (error: any) {
       console.error("❌ Erreur lors de l'opération sur l'expérience :", error);
@@ -149,7 +130,7 @@ export default function ExperienceModal({ experience, onSuccess }: Props) {
   return (
     <Dialog open={isModalOpen} onOpenChange={(open) => {
       setIsModalOpen(open);
-      // Reset form data when modal is closed (unless it's closing after submission)
+      // Reset form data when modal is closed
       if (!open && !isSubmitting) {
         setFormData(initialData);
       }

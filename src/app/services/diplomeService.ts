@@ -55,11 +55,10 @@ export const handleDeleteFormation = async (id: number): Promise<void> => {
   try {
     const response = await api.delete(`/user/profil/diplome/${id}`);
 
-    if (response.status === 200 || response.status === 204) { // 204 No Content est courant pour les suppressions réussies
+    if (response.status === 200 || response.status === 204) {
       await getUserProfile();
       toast.success("Formation supprimée avec succès !");
     } else {
-      // Gérer les statuts non-200/204 qui ne sont pas des erreurs HTTP directes
       throw new Error(`Réponse inattendue du serveur lors de la suppression: ${response.status}`);
     }
   } catch (error: any) {

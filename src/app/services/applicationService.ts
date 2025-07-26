@@ -37,7 +37,6 @@ export const getUserApplications = async ():Promise<IApplication[] | void> => {
     const response = await api.get("/user/applications");
     
     if(response.status === 200){
-        // const {data} =  application
         return response.data?.applications || [];
       }
        // Si le statut n'est pas 200 mais ne lève pas d'erreur HTTP, on peut considérer cela comme un échec

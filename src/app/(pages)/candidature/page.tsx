@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { HeaderComponent } from '@/app/components/headerComponent'
 import { JobCard } from '@/app/components/jobCard';
@@ -8,8 +8,8 @@ import ProtectedRoute from '@/app/components/protectedRoutes';
 import { getUserApplications } from '@/app/services/applicationService';
 
 import { JobCardSkeleton } from '@/app/components/skeletons/job-card-skeleton';
-import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
+import { useQuery } from '@tanstack/react-query';
 
 
 interface IJob {
@@ -39,31 +39,36 @@ interface IJob {
 
 const Candidature = () => {;
     const { status: sessionStatus } = useSession(); // Récupère uniquement le statut de la session
-    const [applications, setApplications] = useState<IApplications[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true); 
+    const authenticated = sessionStatus === "authenticated"; // Vérifie si l'utilisateur est authentifié  
 
+    const { data: applications = [], isLoading, isError, error } = useQuery<IApplications[]>({
+      queryKey: ['user-applications'],
+      queryFn: async() =>{
+            try {
+                const data = await getUserApplications();
+                // la fonction renvoie un tableau vide si les données sont null ou undefined
+                return data || [];
+            } catch (err: any) {
+                // Lance l'erreur pour que react-query la gère et la mette dans `error`
+                throw new Error(err.message || "Erreur lors de la récupération des candidatures.");
+            }
+        },
+      enabled: authenticated, // Ne lance la requête que si l'utilisateur est authentifié
+    })
 
-  const fetchUserApplications = async () => {
-    setIsLoading(true); 
-    try {
-      const data = await getUserApplications(); 
-      setApplications(data || []); 
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la récupération des candidatures.");
-      console.error("❌ Erreur lors de la récupération des candidatures :", error);
-      setApplications([]); // Réinitialise les candidatures en cas d'erreur
-    } finally {
-      setIsLoading(false); 
+     if (isError) {
+        return (
+            <ProtectedRoute requiredRole="USER">
+                <div>
+                    <HeaderComponent pageName="Mes Candidatures" />
+                    <div className="container my-5 mx-auto p-5 text-center text-red-600">
+                        <p>Une erreur est survenue lors du chargement de vos candidatures.</p>
+                        <p>{error?.message}</p>
+                    </div>
+                </div>
+            </ProtectedRoute>
+        );
     }
-  };
-
-  // Effet pour récupérer les candidatures au montage du composant
-  useEffect(() => {
-    // Ne tente de récupérer les candidatures que si la session est authentifiée.
-    if (sessionStatus === "authenticated") {
-      fetchUserApplications();
-    }
-  }, [sessionStatus]);
 
     return (
         <ProtectedRoute requiredRole="USER">
@@ -77,10 +82,10 @@ const Candidature = () => {;
                 <JobCardSkeleton key={index} />
               ))}
             </div>
-          ) : applications.length > 0 ? (
+          ) : (applications as IApplications[]).length > 0 ? (
             // Affiche les JobCards si des candidatures sont trouvées
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {applications.map((applicationItem) => (
+              {(applications as IApplications[]).map((applicationItem) => (
                 applicationItem.job ? (
                   <JobCard path={""} key={applicationItem.id} job={applicationItem.job} />
                 ) : null // Ne rend rien si l'objet job est manquant

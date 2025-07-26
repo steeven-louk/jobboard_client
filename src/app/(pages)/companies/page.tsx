@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { CompanyCard } from "@/app/components/company-card";
 import { Pagination } from "@/app/components/pagination";
 import { CompanyCardSkeleton } from "@/app/components/skeletons/company-card-skeleton";
 import { getCompanies } from "@/app/services/companyService";
-import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
 
 
 interface ICompany {
@@ -19,29 +19,20 @@ interface ICompany {
 }
 
 export default function CompaniesPage() {
-  const [companies, setCompanies] = useState<ICompany[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const COMPANIES_PER_PAGE = 6;
+  const {isLoading, data: companies =[]} = useQuery<ICompany[] | []>({
+    queryKey: ['companies'],
+    queryFn: async () => {
+      const data = await getCompanies();
+      return data || [];
+    },
+    
+    staleTime: 1000 * 60 * 5, // Les données sont considérées comme "fraîches" pendant 5 minutes
+  })
 
-  useEffect(() => {
-    const fetchAllCompanies = async () => {
-      setIsLoading(true);
-      try {
-        const responseData = await getCompanies();
-        setCompanies(responseData || []); 
-      } catch (error: any) {
-        console.error("❌ Erreur lors de la récupération des entreprises :", error);
-        toast.error(error.message || "Erreur lors de la récupération des entreprises.");
-        setCompanies([]); // Réinitialise les entreprises en cas d'erreur
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchAllCompanies();
-  }, []); 
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -53,6 +44,8 @@ export default function CompaniesPage() {
     (currentPage - 1) * COMPANIES_PER_PAGE,
     currentPage * COMPANIES_PER_PAGE
   );
+
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -62,9 +55,9 @@ export default function CompaniesPage() {
         {isLoading ? (
           // Affiche des squelettes pendant le chargement
           [...Array(COMPANIES_PER_PAGE)].map((_, index) => <CompanyCardSkeleton key={index} />)
-        ) : paginatedCompanies.length > 0 ? (
+        ) :paginatedCompanies.length > 0 ? (
           // Affiche les cartes d'entreprise si des entreprises sont trouvées
-          paginatedCompanies.map((company) => <CompanyCard key={company.id} company={company} />)
+          paginatedCompanies.map((company:ICompany) => <CompanyCard key={company.id} company={company} />)
         ) : (
           // Message si aucune entreprise n'est trouvée
           <p className="col-span-full text-center text-gray-500 py-10">Aucune entreprise trouvée pour le moment.</p>

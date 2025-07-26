@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation";
 import { JobFilters } from "@/app/components/jobFilter";
 import { JobCardSkeleton } from "@/app/components/skeletons/job-card-skeleton";
 import { getAllJob } from "@/app/services/jobService";
-import { toast } from "react-toastify";
 import { Pagination } from "@/app/components/pagination";
 import { useQuery } from "@tanstack/react-query";
 
@@ -72,26 +71,17 @@ export default function JobContent() {
   }, [searchParams]);
 
     const {
-      isPending: isLoading, error, data: jobs } = useQuery({
+      isPending: isLoading, data: jobs } = useQuery({
       queryKey: ['jobs'],
       queryFn: async () => {
-        try {
           const data: IJob[] | undefined = await getAllJob();
           if (data === null || data === undefined) {
             return [];
           }
-          if (error){
-            console.log("error", error.message)
-          }
-          return data || undefined; 
-        } catch (err: any) {
-          toast.error(err.message || "Erreur lors de la récupération des offres d'emploi.");
-          console.error("❌ Erreur lors de la récupération des offres d'emploi :", err);
-          return []; // Retourne un tableau vide en cas d'erreur
-        }
-      },
+          return data ?? []; 
+      
+      }
     })
-
 
   // Pagination
     const filteredJobs = jobs

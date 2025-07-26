@@ -93,7 +93,7 @@ export default function CompanyProfilePage({
        return data;
       },
     enabled: !!id, // Ne lance la requête que si `id` est défini
-    // staleTime: 1000 * 60 * 5, // Les données sont considérées comme "fraîches" pendant 5 minutes
+    staleTime: 1000 * 60 * 5, // Les données sont considérées comme "fraîches" pendant 5 minutes
 
   });
 
@@ -143,7 +143,7 @@ export default function CompanyProfilePage({
     (currentPage - 1) * JOBS_PER_PAGE,
     currentPage * JOBS_PER_PAGE
   ) || [];
-console.log("toatatl oage",paginatedJobs)
+
   if (isLoadingPage || sessionStatus === "loading") {
     return <CompanyProfileSkeleton />;
   }

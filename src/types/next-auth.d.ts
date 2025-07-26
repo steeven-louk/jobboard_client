@@ -10,6 +10,7 @@ declare module "next-auth" {
       role: "USER" | "RECRUITER" | "ADMIN";
       companyId?: number;
       token: string;
+      tokenExpiresAt: string; // Date d'expiration du token
     };
   }
 }

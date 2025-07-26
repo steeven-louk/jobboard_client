@@ -39,9 +39,9 @@ export const RedirectionRoute = () => {
       return;
     }
 
-    // Vérification de l'expiration du token
-    if (status === "authenticated" && session?.expires) {
-      const expirationDate = new Date(session.expires);
+    // Cas 3: Vérification de l'expiration du token
+    if (status === "authenticated" && session?.user?.tokenExpiresAt) {
+      const expirationDate = new Date(session.user.tokenExpiresAt);
       const now = new Date();
 
       if (now > expirationDate) {
@@ -52,7 +52,7 @@ export const RedirectionRoute = () => {
         return;
       }
     }
-    // Vérification de l'expiration du token
+
 
   }, [status, session, router, hasRedirected]);
 

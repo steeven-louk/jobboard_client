@@ -35,6 +35,8 @@ const authOptions = {
 
           // Vérifier si la réponse contient les données attendues (token et user)
           if (response.data.token && response.data.user) {
+            const expiresAt = new Date();
+            expiresAt.setDate(expiresAt.getDate() + 3); // Le token expire dans 3 jours
             // Retourner l'objet utilisateur avec les données nécessaires pour le JWT et la session
             return {
               id: response.data.user.id,
@@ -43,6 +45,7 @@ const authOptions = {
               role: response.data.user.role,
               companyId: response.data.user.companyId,
               token: response.data.token,
+              tokenExpiresAt: expiresAt.toISOString(), // Ajouter la date d'expiration du token
             };
           } else {
             // Si la réponse de l'API est invalide mais n'a pas déclenché d'erreur HTTP
@@ -64,6 +67,7 @@ const authOptions = {
         token.role = user.role;
         token.companyId = user.companyId
         token.token = user.token;
+        token.tokenExpiresAt = user.tokenExpiresAt; 
       }
       return token;
     },
@@ -73,6 +77,7 @@ const authOptions = {
         session.user.role = token.role ;
         session.user.companyId = token.companyId;
         session.user.token = token.token;
+        session.user.tokenExpiresAt = token.tokenExpiresAt;
       }
       return session;
     }

@@ -225,7 +225,7 @@ const Navbar = () => {
                     <Link
                       key={item.name}
                       href={item.href}
-                      className={`text-base font-medium ${pathname === item.href ? "text-accent" : "text-gray-700 hover:text-accent"}`}
+                      className={`text-base font-medium ${pathname === item.href ? "text-accent" : "text-gray-700 dark:text-slate-300 hover:text-accent"}`}
                       onClick={() => setIsMobileMenuOpen(false)} // Ferme le menu après avoir cliqué sur un lien
                     >
                       {item.name}
@@ -235,32 +235,32 @@ const Navbar = () => {
                   {/* Actions de session pour le menu mobile */}
                   {status === "authenticated" ? (
                     <>
-                      <Link href={"/profil"} className="flex items-center gap-2 text-gray-700 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Link href={"/profil"} className="flex items-center gap-2 text-gray-700 dark:text-slate-300 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
                         <UserCircle2 className="h-5 w-5" /> Profil
                       </Link>
                       {userRole === "USER" && (
                         <>
-                          <Link href={"/candidature"} className="flex items-center gap-2 text-gray-700 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
+                          <Link href={"/candidature"} className="flex items-center gap-2 text-gray-700 dark:text-slate-300 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
                             <BriefcaseBusiness className="h-5 w-5" /> Mes Candidatures
                           </Link>
-                          <Link href={"/bookmark"} className="flex items-center gap-2 text-gray-700 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
+                          <Link href={"/bookmark"} className="flex items-center gap-2 text-gray-700 dark:text-slate-300 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
                             <BookmarkIcon className="h-5 w-5" /> Offres sauvegardées
                           </Link>
                         </>
                       )}
                       {userRole === "RECRUITER" && (
                         <>
-                          <Link href={"/recruiter/dashboard"} className="flex items-center gap-2 text-gray-700 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
+                          <Link href={"/recruiter/dashboard"} className="flex items-center gap-2 text-gray-700 dark:text-slate-300 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
                             <LayoutDashboard className="h-5 w-5" /> Tableau de bord
                           </Link>
                           {companyId && (
-                            <Link href={`/companies/${companyId}`} className="flex items-center gap-2 text-gray-700 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
+                            <Link href={`/companies/${companyId}`} className="flex items-center gap-2 text-gray-700 dark:text-slate-300 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
                               <Building className="h-5 w-5" /> Mon entreprise
                             </Link>
                           )}
                         </>
                       )}
-                      <Link href={"/settings"} className="flex items-center gap-2 text-gray-700 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Link href={"/settings"} className="flex items-center gap-2 text-gray-700 dark:text-slate-300 hover:text-accent" onClick={() => setIsMobileMenuOpen(false)}>
                         <Settings className="h-5 w-5" /> Paramètres
                       </Link>
                       <Button

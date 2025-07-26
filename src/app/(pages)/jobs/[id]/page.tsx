@@ -154,7 +154,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
               <CardTitle className="capitalize text-2xl font-bold mb-5">
                 Description du poste
               </CardTitle>
-              <CardContent className="whitespace-pre-wrap text-gray-700 p-0"> 
+              <CardContent className="whitespace-pre-wrap  p-0"> 
                 {jobDetail?.description || "Aucune description disponible."}
               </CardContent>
             </Card>
@@ -162,7 +162,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
               <CardTitle className="capitalize text-2xl font-bold mb-5">
                 Compétences requises
               </CardTitle>
-              <CardContent className="whitespace-pre-wrap text-gray-700 p-0">
+              <CardContent className="whitespace-pre-wrap  p-0">
                 {jobDetail?.skill || "Aucune compétence spécifiée."}
               </CardContent>
             </Card>
@@ -170,7 +170,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
               <CardTitle className="capitalize text-2xl font-bold mb-5">
                 Exigences du poste
               </CardTitle>
-              <CardContent className="whitespace-pre-wrap text-gray-700 p-0">
+              <CardContent className="whitespace-pre-wrap  p-0">
                 {jobDetail?.requirement || "Aucune exigence spécifiée."}
               </CardContent>
             </Card>
@@ -179,7 +179,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
           <aside className="md:col-span-2">
             <Card className="card p-4 md:sticky md:top-11 shadow-md shadow-black">
               <CardTitle className="text-xl font-bold mb-3">Postuler à cette offre</CardTitle>
-              <CardDescription className="my-3 text-gray-600">
+              <CardDescription className="my-3 ">
                 Intéressé(e) par ce poste de <span className="font-semibold">{jobDetail?.title}</span> chez{" "}
                 <span className="font-semibold">{jobDetail?.company?.name}</span> ?
               </CardDescription>
@@ -218,7 +218,7 @@ const JobDetail = ({ params }: { params: Promise<{ id: number }> }) => {
             {/* Informations supplémentaires sur l'offre */}
             <Card className="card p-4 mt-4 shadow-md">
                 <CardTitle className="text-xl font-bold mb-3">Détails de l&apos;offre</CardTitle>
-                <div className="space-y-3 text-gray-700">
+                <div className="space-y-3 ">
                     <p className="flex items-center gap-2">
                         <BriefcaseBusiness className="h-5 w-5 text-primary" />
                         <strong>Type de contrat :</strong> {jobDetail?.jobType || "Non spécifié"}

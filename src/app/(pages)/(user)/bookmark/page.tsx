@@ -42,7 +42,7 @@ const Bookmark = () => {
     isPending: isLoading,
     error,
     data: bookmarkedJobs,
-    isError, // Pour une gestion plus claire des erreurs
+    isError,
   } = useQuery({
     queryKey: ['bookmark'],
     queryFn: async () => {

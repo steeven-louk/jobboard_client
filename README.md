@@ -59,6 +59,13 @@ npm run dev
 ├── stores/            # State Management (optionnel : Zustand)
 └── pages/             # API Routes ou pages spéciales
 ```
+## 📸 Aperçu de l'application
+
+<p align="center">
+  <img src="./public/assets/github_1.png" alt="Logo 1" width="450"/>
+  <br/>
+  <img src="./public/assets/github_2.png" alt="Logo 2" width="450"/>
+</p>
 
 ## 🧪 Tests
 👉 À implémenter

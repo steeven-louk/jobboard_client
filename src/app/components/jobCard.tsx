@@ -144,7 +144,7 @@ export const JobCard = ({ path, job }: JobCardProps) => {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="card-footer flex flex-col md:flex-row justify-between">
+      <CardFooter className="card-footer flex flex-col lg:flex-row justify-between">
         <div className="md:inline-flex flex flex-wrap md:flex-nowrap gap-6 md:gap-5 mt-3">
           {job?.company?.domaine && (
             <span className="inline-flex gap-2">
@@ -171,7 +171,7 @@ export const JobCard = ({ path, job }: JobCardProps) => {
         {!path && (
           <Button
             asChild
-            className=" rounded-md p-2 capitalize mt-4 md:mt-0 w-36"
+            className=" rounded-md p-2 capitalize mt-4 lg:mt-0 w-36"
           >
             <Link href={`/jobs/${job?.id}`}>job detail</Link>
           </Button>

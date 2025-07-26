@@ -195,7 +195,7 @@ export default function JobContent() {
           <SearchBar onSearch={handleSearch} initialSearchTerm={searchTerm} />
 
           <div className="flex flex-col md:flex-row gap-8 mt-8">
-            <aside className="w-full h-fit md:w-[20rem] rounded-md p-4 bg-white shadow-md">
+            <aside className="w-full h-fit md:w-[20rem] rounded-md shadow-md">
               <JobFilters
                 sortBy={sortBy}
                 contractTypes={contractTypes}
@@ -207,7 +207,7 @@ export default function JobContent() {
               />
             </aside>
             <main className="w-full">
-              <div className="job_component space-y-4">
+              <div className="space-y-4">
               {isLoading ? (
                 // Affiche des squelettes pendant le chargement
                 [...Array(JOBS_PER_PAGE)].map((_, index) => (

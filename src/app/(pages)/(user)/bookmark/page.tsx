@@ -89,7 +89,7 @@ const Bookmark = () => {
             </div>
           ) : (bookmarkedJobs && bookmarkedJobs.length > 0) ? (
             // Affiche les JobCards si des favoris sont trouvés
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2  gap-6">
               {bookmarkedJobs?.map((favorisItem) => (
                 favorisItem.job ? (
                   <JobCard path={""} key={favorisItem.job.id} job={favorisItem.job} />

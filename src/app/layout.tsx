@@ -5,14 +5,12 @@ import { Footer } from "./components/footer";
 import Navbar from "./components/navbar";
 
 import { Providers } from "./utils/provider";
-// import {
-//   QueryClient,
-//   QueryClientProvider,
-// } from '@tanstack/react-query'
 
 import { ToastContainer } from 'react-toastify';
 
+import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+
 import { ThemeProvider } from "./components/theme/theme-provider";
 import ReactQueryProvider from "./utils/ReactQueryProvider";
 const poppins = Poppins({
@@ -67,6 +65,7 @@ export default function RootLayout({
                 pauseOnHover
                 />
               <SpeedInsights/>
+              <Analytics/>
             </ThemeProvider>
 
           </ReactQueryProvider>
